@@ -2,23 +2,65 @@
 
 ## Type System
 
+### Sums, Intersections and Products
+
+Sum constraints in WTy2 can be expressed with the `|` constraint operator.
+
+Intersection constraints in WTy2 can be expressed with the `+` constraint operator.
+
+Product types in WTy2 are all derived from the basic `record` primitive.
+
+### Records
+
+In WTy2, the primitive product type is the `record`. The constraint signature of a record follows the form:
+`'(' (<field_name/identifier> ':' <constraint> '=' <default/expr>? ',')* ')'
+
+WTy2 supports implicit convertion between records with matching field names/constraints. In the case where a record being converted into contains a field that does not exist in the record being converted from, the value of the default expression is used (only if there is no default expression for that field does )
+
+#### Unresolved Questions
+
+- Should records support row polymorphism, or should convertion just throw away unmatched fields?
+	- Row polymorphism would be quite a powerful feature, but it is unclear how it would operate with data declations (would the constructors also be polymorphic?)
+- At what point should the default expression be evaluated? It is part of a signature, so compile-time seems most natural, but WTy2's advanced typing features could make something even more ambitious here possible if there is a good use-case.
+
+#### Tuples/Anonymous Fields
+
+A potential extension to this record syntax left for future work is suport for tuples with anonymous fields (i.e: tuples). The semantics for how these should integrate with existing records both syntax and semantics-wise is left for future work.
+
+### Tagged Records/Variants
+
+Data declarations in WTy2 allow for defining tagged records. They follow the BNF:
+
+`'data' <tag_name/identifier> <contents/record_type>?`
+
+One data declaration defines both a closed trait and a constructor which can create values satisfying the trait, both sharing the tag name.
+
+#### Additional Notes
+
+Defining constructors independently of the sum types they are used in (and allowing them to be used in multiple sum types) is similar in principle to polymorphic variants in OCAML (see: [OCaml - Polymorphic variants](https://v2.ocaml.org/manual/polyvariant.html)).
+
+All tags must share the same space of values given they can be combined in arbitrary disjunction constraints. This means the arguably most natural implementation is to simply prefix any tagged record with an integer, with every tag given a unique integer value. While this does have the advantage that no convertion work needs to be done when passing a value satisfying `A` to a function that expects `A | B`, it does mean zero-cost newtype wrappers as often used in Haskell are impossible. Luckily, WTy2 provides features to try and avoid this idiom (see named instances).
+
 ### Quantifiers
 
 #### Existential Quantifiers
 
-WTy2 features three different existential quantifiers with different uses. At a high level: `impl` is a reasonable default, `pure` is used for doing dependent type-level reasoning and `exis` is required for anything that interacts with the (scary) untyped outside world.
+WTy2 features three different existential quantifiers with different uses. At a high level: `impl` is a reasonable default, `pure` is used for doing dependent type-level reasoning and `exis` is required for anything that interacts with the (scary) untyped outside world.
 
 ##### Transparency
-- `pure` is fully transparent. This means that modifying the semantics of a function with a `pure`-quantified type, or changing the value of a `pure`-quantified constant is a breaking change.
-- Both `impl` and `exis` are opaque.
 
-##### Position Restrictions
-- `pure` and `impl` can appear in any type in a WTy2 program. `exis`, on the other hand can only appear in return position of functions.
+-   `pure` is fully transparent. This means that modifying the semantics of a function with a `pure`-quantified type, or changing the value of a `pure`-quantified constant is a breaking change.
+-   Both `impl` and `exis` are opaque.
+
+##### Placement Restrictions
+
+-   `pure` and `impl` can appear within any type signature in a WTy2 program. `exis`, on the other hand can only appear in function return types.
 
 ##### Convertion
-- Quantifiers can be implicitly downcast in a hierarchy that goes: `pure` -> `impl` -> `exis`.
-- `exis` quantified terms can be converted into `impl` quantified ones by performing an existential bind. An `impl` that depends on an `exis` cannot escape the scope and so must be implicitly converted back into `exis`.
-- `impl` quantified terms can be used as arguments to functions expecting `pure` quantified terms, but the return type quantifier then likewise switches from `pure` to `impl`. Another way to think about this rule is that every time a `pure` function is defined, a second, overload of that function where all `pure`s are replaced with `impl`s is defined as well.
+
+-   Quantifiers can be implicitly downcast in the following hierarchy: `pure` -> `impl` -> `exis`.
+-   `exis` quantified terms can be converted into `impl` quantified ones by performing an existential bind. An `impl` that depends on an `exis` cannot escape the local scope and so must be implicitly converted back into `exis`.
+-   `impl` quantified terms can be used as arguments to functions expecting `pure` quantified terms, but the return type quantifier then likewise switches from `pure` to `impl`. Another way to think about this rule is that every time a `pure` function is defined, an additional overload of that function where all `pure`s are replaced with `impl`s is defined as well.
 
 #### The Function Type
 
@@ -37,7 +79,7 @@ x <- readInt();
 printInt(x);
 ```
 
-requiring the result of the producing function be bound. This can often be cumbersome, and so WTy2 also allows you to surround an expression with `||`s to perform an anonymous bind inline:
+requiring the result of the producing function be bound. This can often be cumbersome, and so WTy2 also allows you to surround an expression with `||`s to perform an anonymous bind inline:
 
 ```
 printInt(|readInt()|)
@@ -45,4 +87,4 @@ printInt(|readInt()|)
 
 ##### Unresolved Questions:
 
-Is `||` ideal syntax for anonymous bind? Could it just be inferred?
+Is `||` ideal syntax for anonymous bind? Could it just be inferred?

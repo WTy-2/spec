@@ -13,7 +13,8 @@ Product constraints in WTy2 can be expressed using `record` constraints.
 ### Records
 
 In WTy2, the primitive product type is the `record`. The constraint signature of a record follows the form:
-`'(' (<field_name/identifier> ':' <constraint> '=' <default/expr>? ',')* ')'
+
+`'(' (<field_name/identifier> ':' <constraint> '=' <default/expr>? ',')* ')'`
 
 WTy2 supports implicit convertion between records with matching field names/constraints. In the case where a record being converted into contains a field that does not exist in the record being converted from, the value of the default expression is used (only if there is no default expression for that field does )
 

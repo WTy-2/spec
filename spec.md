@@ -8,7 +8,7 @@ Sum constraints in WTy2 can be expressed with the `|` constraint operator.
 
 Intersection constraints in WTy2 can be expressed with the `+` constraint operator.
 
-Product types in WTy2 are all derived from the basic `record` primitive.
+Product constraints in WTy2 can be expressed using `record` constraints.
 
 ### Records
 
@@ -79,7 +79,7 @@ x <- readInt();
 printInt(x);
 ```
 
-requiring the result of the producing function be bound. This can often be cumbersome, and so WTy2 also allows you to surround an expression with `||`s to perform an anonymous bind inline:
+requiring the result of the producing function be bound. This can often be cumbersome, and so WTy2 also allows the programmer to surround an expression with `||`s to perform an anonymous bind inline:
 
 ```
 printInt(|readInt()|)
@@ -88,3 +88,26 @@ printInt(|readInt()|)
 ##### Unresolved Questions:
 
 Is `||` ideal syntax for anonymous bind? Could it just be inferred?
+
+### Partial Application
+
+WTy2 is a functional programming language, so convenient partial application is quite important for writing clean, ergonomic code. Unlike many other functional programming languages however, WTy2 does not encourage currying functions, which the traditional FP approach of partially applying using combinators is not idiomatic. At the same time, introducing lambdas for every partial application is very clunky.
+
+WTy2 therefore provides a bit of syntax sugar to help here. Between the expression that evaluates to a function and the parenthesis containing the arguments, a `~` can be added. With this, fields are matched up like normal, but any remaining fields are packed into a new record type, and a closure is returned that takes this record, and then calls the function with the combination of all fields.
+
+#### Example Usage
+
+```
+fun addThree(x: Int, y: Int, z: Int) -> pure Int {
+	return x + y + z
+}
+
+// All below are equivalent
+addThree(1, 2, 3)
+addThree~(x: 1, z: 3)(2)
+addThree~(1)~(2)~(3)()
+```
+
+#### Unresolved Questions
+
+Is prefix `~` the best choice of syntax? Looking at just the end of the application, it is not obvious whether a function is being called or closure has been created. A potential alternative is to use `<>`s instead of `()`s, but this would potentially run into the parsing issues other languages encounter when treating `<>`s as a type of brackets (i.e: disambiguating with comparison operators).

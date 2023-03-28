@@ -1,42 +1,172 @@
 # The WTy2 Language Specification
 
+## Introduction
+
+### BNF
+
+In the below document, there are many uses of Backus-Naur form (BNF) to describe the syntax of the WTy2 language. Unfortunately, plain BNF has a few limitations that make expressions some common patterns in syntax (such as comma-separated lists of tokens) impossible to abstract over. Therefore, the BNF in use in this document here is extended with the concept of "macros".
+
+An example of a BNF macro definition is:
+
+`REPEAT_TWICE(<ARG>) := <ARG> <ARG>`
+
+This can then be used in BNF such as
+
+`REPEAT_TWICE('A' | 'B')`
+
+which should be interpreted as equivalent to explicitly writing out:
+
+`('A' | 'B') ('A' | 'B')`
+
+For those who have previously encountered parser combinators, you might note similarities between many of the uses of these BNF macros used in this document and common combinators.
+
+**Side Note:** After a quick bit of googling search, I was unable to find much discussion about a similar extension BNF containing macros, which I find slightly odd, given these macros do not increase the power of BNF in any way but do serve to make it much more expressive (at the cost of needing to sometimes jump to where a BNF macro is defined to fully understand some definition).
+
+On consideration, I wonder if it might make more sense to just break all pretenses and write actual Haskell Megaparsec code when describing syntax, as much I make fun of Jamie about it, he does have a bit of a point - when written well, Haskell with parser combinators really is not that dissimilar to BNF.
+
+### BNF Utilities
+
+In the following document, the below common BNF constructs are made use of:
+
+```
+COMMA_SEP1(<X>) := <X> (',' <X>)*
+
+COMMA_SEP0(<X>) := COMMA_SEP1(<X>)?
+
+<ident> := TODO
+```
+
 ## Type System
 
 ### Sums, Intersections and Products
 
-Sum constraints in WTy2 can be expressed with the `|` constraint operator.
+Sum types in WTy2 can be expressed with the `|` constraint operator.
 
-Intersection constraints in WTy2 can be expressed with the `+` constraint operator.
+Intersection types in WTy2 can be expressed with the `+` constraint operator.
 
-Product constraints in WTy2 can be expressed using `record` constraints.
+Product types in WTy2 can be expressed using `tuple` or `record` constraints.
+
+### Tuples
+
+In WTy2, the primitive product constraint is the `tuple`. The constraint signature of a tuple follows the form:
+
+`<tuple_constraint> := '(' COMMA_SEP0(<constraint>) ')'`
+
+Tuples are constructed via:
+
+`<tuple_construction> := '(' COMMA_SEP0(<expr>) ')'`
+
+...where the result of each expression must match the respective constraint.
+
+The elements of a tuple can be pattern-matched out with the pattern:
+
+`<tuple_pattern> := '(' COMMA_SEP0(<identifier>) ')'`
 
 ### Records
 
-In WTy2, the primitive product type is the `record`. The constraint signature of a record follows the form:
+WTy2 also includes another way to express product types known as a "record". The constraint signature of a record follows the form:
 
-`'(' (<field_name/identifier> ':' <constraint> '=' <default/expr>? ',')* ')'`
+```
+<record_constraint> := 
+	'(' COMMA_SEP1(<field_name/ident> ':' <constraint>) ')' 
+```
 
-WTy2 supports implicit convertion between records with matching field names/constraints. In the case where a record being converted into contains a field that does not exist in the record being converted from, the value of the default expression is used (only if there is no default expression for that field does )
+A record is effectively a tuple with names given to each element.
+
+Record constraints in specific positions (currently just function arguments and tagged constructors) can also contain defaults.
+
+```
+<record_constraint> := 
+	'(' COMMA_SEP1(<field_name/ident> ':' <constraint> ('=' <default/expr>)?) ')' 
+```
+
+To make working with records and tuples easier, WTy2 has allows for converting between different record and tuple types:
+
+#### Tuple -> Record
+
+Tuple-to-record conversions in WTy2 can be perfomed implicitly. Elements of the tuple are matched with fields of the record based on position (i.e: the first element of the tuple is attempted to be matched with the first field of the record and so on). If the tuple is larger than the record, the conversion fails. If the record is larger than the tuple, all remaining, unmatched fields must have defaults and are initialised with them.
+
+#### Record -> Tuple
+
+Record-to-tuple conversions in WTy2 are not implicit. Instead, all record traits contain a compiler-implemented method `toTuple()`, which converts the record into a tuple, retaining ordering of the fields.
+
+#### Record -> Record
+
+Let "A" be the record being converted from and "B" be the record being converted to. Then the process for matching the two records is as follows:
+
+```
+(1) Try to match all fields of B with same-named fields in A.
+(2) Try to initialise any remaining fields in B with defaults.
+(3) Fail if any fields in B remain unitialised
+```
+
+### Construction
+
+Construction of records in WTy2 allows for combining positional (anonymous) and named fields.
+
+```
+<positional_arg> = <expr>
+<named_arg> = <ident> '=' <expr>
+<record_construction> = '(' COMMA_SEP0(<positional_arg>) COMMA_SEP0(<named_arg>) ')'
+```
+
+The steps to match a record construction with a record constraint are as follows:
+```
+Let N be the number of positional arguments, and M be the number of named arguments in the construction.
+(1) Check if any of the named arguments in the construction match names with one of the first N fields in the constraint. Fail if so.
+(2) Try to match the first N fields of the record constraint with the positional arguments.
+(3) Try to match all of the named arguments in the construction with remaining arguments in the constraint.
+(4) Try to initialise any remaining fields in the constraint with defaults.
+(5) Fail if any fields in the constraint remain uninitialised.
+```
+
+Note an interesting consequence of these rules is that any number of additional named fields can be specified in a constructor that do not appear in the resulting record constraint:
+`
+```
+r: (x: Int, y: Int) = (x: 3, y: 1, z: 5)
+```
+
+One way to read this is as constructing a record that obeys the constraint `(x: Int, y: Int, z: Int)` and then implicitly converting that into accepts `(x: Int, y: Int)`. Implementations of WTy2 may want to warn the programmer in such cases.
+
+#### Design Note: Transitivity
+
+Transitivity of implicit conversions between types in WTy2 is a very useful property to try and retain, both for making the language intuitive to the programmer and for making implementation of type checking and inference easier. Decisions with regards to where types of record constraints can appear and which convertions can be done implicitly should be carefully made to ensure transitivity is not broken.
+
+Note if defaults could appear simply in the constraints of local variables, it would be possible to have:
+```
+r1: (x: Int, y: Int) = (2, 3)
+r2: (x: Int, z: Int = 4) = r1
+r3: (x: Int, z: Int) = r2
+```
+But clearly the assignment `r3 = r1` should not be allowed directly.
+
+Similarly, if `toTuple` could be done implicitly, we would have:
+```
+r1: (x: Int, y: Int) = (2, 3)
+p: (Int, Int) = r1
+r2: (a: Int, y: Int) = p
+```
+But `r2 = r1` should be disallowed.
 
 #### Unresolved Questions
 
 - Should records support row polymorphism, or should convertion just throw away unmatched fields?
 	- Row polymorphism would be quite a powerful feature, but it is unclear how it would operate with data declations (would the constructors also be polymorphic?)
+- Could record constraints containing default expressions appear in more places?
 - At what point should the default expression be evaluated? It is part of a signature, so compile-time seems most natural, but WTy2's advanced typing features could make something even more ambitious here possible if there is a good use-case.
-
-#### Tuples/Anonymous Fields
-
-A potential extension to this record syntax left for future work is suport for tuples with anonymous fields (i.e: tuples). The semantics for how these should integrate with existing records both syntax and semantics-wise is left for future work.
 
 ### Tagged Records/Variants
 
 Data declarations in WTy2 allow for defining tagged records. They follow the BNF:
 
-`'data' <tag_name/identifier> <contents/record_type>?`
+```
+<record_or_tuple_constraint> := <record_constraint> | <tuple_constraint>
+<data_dec> := 'data' <tag_name/identifier> <contents/record_or_tuple_constraint>?
+```
 
 One data declaration defines both a closed trait and a constructor which can create values satisfying the trait, both sharing the tag name.
 
-#### Additional Notes
+#### Design Note: OCAML's Polymorphic Variants
 
 Defining constructors independently of the sum types they are used in (and allowing them to be used in multiple sum types) is similar in principle to polymorphic variants in OCAML (see: [OCaml - Polymorphic variants](https://v2.ocaml.org/manual/polyvariant.html)).
 
@@ -63,7 +193,17 @@ WTy2 features three different existential quantifiers with different uses. At a 
 -   `exis` quantified terms can be converted into `impl` quantified ones by performing an existential bind. An `impl` that depends on an `exis` cannot escape the local scope and so must be implicitly converted back into `exis`.
 -   `impl` quantified terms can be used as arguments to functions expecting `pure` quantified terms, but the return type quantifier then likewise switches from `pure` to `impl`. Another way to think about this rule is that every time a `pure` function is defined, an additional overload of that function where all `pure`s are replaced with `impl`s is defined as well.
 
-#### The Function Type
+#### First-Class Functions
+
+WTy2 contains a built-in constraint for functions, written: 
+
+`'Fun' <argument/record_constraint> -> <return/constraint>`
+
+`Fun` contains a single method with no name, which takes a value obeying the argument constraint and returns a result obeying the return constraint.
+
+##### Variance
+
+Functions are covariant in argument constraint and contravariant in return constraint.
 
 ## Syntax
 
@@ -80,7 +220,7 @@ x <- readInt();
 printInt(x);
 ```
 
-requiring the result of the producing function be bound. This can often be cumbersome, and so WTy2 also allows the programmer to surround an expression with `||`s to perform an anonymous bind inline:
+requiring the result of the producing function be bound. This can become cumbersome, and so WTy2 also allows the programmer to surround an expression with `||`s to perform an anonymous bind inline:
 
 ```
 printInt(|readInt()|)

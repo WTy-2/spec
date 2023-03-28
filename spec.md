@@ -232,9 +232,9 @@ Is `||` ideal syntax for anonymous bind? Could it just be inferred?
 
 ### Partial Application
 
-WTy2 is a functional programming language, so convenient partial application is quite important for writing clean, ergonomic code. Unlike many other functional programming languages however, WTy2 does not encourage currying functions, which the traditional FP approach of partially applying using combinators is not idiomatic. At the same time, introducing lambdas for every partial application is very clunky.
+WTy2 is a functional programming language, so convenient partial application is quite important for writing clean, ergonomic code. Unlike many other functional programming languages however, WTy2 does not encourage currying functions, which means the traditional FP approach of partially applying using combinators is not exactly idiomatic. At the same time, introducing lambdas for every partial application is quite clunky.
 
-WTy2 therefore provides a bit of syntax sugar to help here. Between the expression that evaluates to a function and the parenthesis containing the arguments, a `~` can be added. With this, fields are matched up like normal, but any remaining fields are packed into a new record type, and a closure is returned that takes this record, and then calls the function with the combination of all fields.
+WTy2 therefore provides a bit of syntax sugar to help here. Between the function and the record constructor, a `~` can be inserted. In this case this, fields are matched up like normal, but any remaining unmatched fields are placed, retaining order, into a new record constraint. This constraint is used as the argument constraint for a new closure which performs the full application.
 
 #### Example Usage
 
@@ -243,8 +243,9 @@ fun addThree(x: Int, y: Int, z: Int) -> pure Int {
 	return x + y + z
 }
 
-// All below are equivalent
+// All below expressions perform the same function call
 addThree(1, 2, 3)
+fun(y: Int){ addThree(1, y, 3) }(2)
 addThree~(x: 1, z: 3)(2)
 addThree~(1)~(2)~(3)()
 ```

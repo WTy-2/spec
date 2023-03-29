@@ -2,7 +2,7 @@
 
 ## Introduction
 
-### BNF
+### BNF Macros
 
 In the below document, there are many uses of Backus-Naur form (BNF) to describe the syntax of the WTy2 language. Unfortunately, plain BNF has a few limitations which make some common patterns in syntax (such as comma-separated lists of tokens) impossible to abstract over. Therefore, the BNF in use in this document is extended with the concept of "macros".
 
@@ -56,6 +56,27 @@ WTy2's type system is in some ways actually closer to an OOP-based language like
 ### Differences from OOP Languages
 
 - WIP
+
+### Type Inference
+
+This will be hard.
+
+### Implementation and Performance
+
+#### Intermediate Language
+
+WTy2's type system is not simple. It might be worth investigating existing intermediate languages for other higher-order typed languages such as System FC to see if they might be applicable to WTy2.
+
+#### Monomorphisation
+
+WTy2 is unlike systems programming languages like C++ or Rust in that polymorphic terms cannot feasibly be implemented entirely via monomorphisation. There are a couple reasons for this (both effectively coming down to the fact that WTy2 has too gosh darn many types):
+
+- There are so many "types" in WTy2. Remember every "type" has a maximum of one inhabiting value - this means every integer has different "type" and so functions like `add` would have to be monomorphised for every combination of integers that are summed together.
+- WTy2 allows for taking untyped data from the outside world and binding it to terms with stronger types via `exis`. Wherever `exis` appears, all the info about the type that is left is the constraint, and so the resulting function must be monomorphised for every possible inhabiting type.
+
+Still, monomorphisation is a neat trick that can have a profound impact on performance. In some ways, it is especially well-suited to WTy2 as with every different value having a different type - monomorphisation would allow say, a function that takes a boolean and makes multiple decisions based on it, to be compiled twice for the boolean being true or false, eliminating the runtime jumps. 
+
+It is therefore suggested that implementations of the WTy2 language consider writing code that detects when it might be appropriate to monomorphise a function, and ensure the runtime representation of types is lossless enough to allow dispatching to these monomorphised copies of functions.
 
 ### Sums, Intersections and Products
 
@@ -192,6 +213,40 @@ One data declaration defines both a closed trait and a constructor which can cre
 Defining constructors independently of the sum types they are used in (and allowing them to be used in multiple sum types) is similar in principle to polymorphic variants in OCAML (see: [OCaml - Polymorphic variants](https://v2.ocaml.org/manual/polyvariant.html)).
 
 All tags must share the same space of values given they can be combined in arbitrary disjunction constraints. This means the arguably most natural implementation is to simply prefix any variant with an integer, with every tag given a unique integer value. While this does have the advantage that no convertion work needs to be done when passing a value satisfying `A` to a function that expects `A | B`, it does mean zero-cost newtype wrappers as often used in Haskell are impossible. Luckily, WTy2 provides features to try and avoid this idiom (see named instances).
+
+### Dependent Types
+
+WTy2 is a dependently typed language. It works by allowing terms in constraints rather than in types directly, but as previously mentioned, constraints are effectively types in WTy2 anyway so this is a somewhat nitpicky distinction. Still, to introduce dependent types in WTy2, it makes to sense to compare to other languages that include them.
+
+Languages like Idris and Agda still have ADTs, where each variant is given the same "type". To constrain a function, say, to only taking integers in a range between 0 and 10, the approach is to pass a evidence of this predicate. The additional power over Haskell being that this datatype's polymorphic arguments can be instantiated with terms as well as types. Specifically, we can write a predicate function that checks the condition (`pred x = 0 <= x && x <= 10`) and then simply pass propositional equality that this function is true along with the integer (`f :: pred x = x -> x -> ...`).
+
+WTy2 supports a pattern very similar to this, allowing where clauses to define additional constraints and allowing pure terms to appear inside constraints.
+
+```
+fun pred(x: Int) -> pure Bool {
+	return 0 <= x && x <= 10
+}
+
+fun f(x: Int) -> ...
+	where f(x): True
+{
+	...
+}
+```
+
+An arguably even more idiomatic way to define this in WTy2 though, is to tighten the constraint on `x` directly:
+
+```
+trait Pred := Int 
+	where (0 <= self): True + (self <= 10): True
+
+fun f(x: Pred) -> ... {
+	...
+}
+```
+
+By defining the predicate this way, we take advantage of WTy2's built in intersection type operator, which means we have `0 <= self` and `self <= 10` in scope immediately without having to write a separate proof.
+
 
 ### Quantifiers
 

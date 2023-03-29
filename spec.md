@@ -38,6 +38,25 @@ COMMA_SEP0(<X>) := COMMA_SEP1(<X>)?
 
 ## Type System
 
+WTy2's type system is likely to be slightly unintuitive to programmers coming from other languages. It has been designed with a couple goals in mind:
+- Aim for there to be exactly one "best" way to design every abstraction. If there has to be multiple, the relative trade-offs for each should be obvious and small in number.
+- Have it be possible to ensure extremely strong compile-time guarantees in the vein of dependent types, but optionally.
+
+WTy2's type system is in some ways actually closer to an OOP-based language like Java than it is to Haskell: it has subtyping, is strict and has mutability. A short summary of differences between WTy2, Haskell and OOP languages is provided below.
+
+### Differences from Haskell
+
+- Concrete "types" as they exist in Haskell cannot be written out explicitly. If they could, they would define the runtime value completely (there is a maximum of one inhabiting value for every WTy2 type). 
+- Types are instead written as constraints prefixed by some existential quantifier. Sometimes this quantifier can be elided because of surrounding context.
+- Constraints in WTy2 are similar to constraints in Haskell, but WTy2 is also extended with the concept of a "closed" constraint. Closed constraints can be used in more places and allow for pattern matching.
+- Like Haskell, constraints can imply other constraints, which with existential quantifiers, effectively allows for subtyping. Because constraints are so central to WTy2 programming, WTy2 also features variance with regards to these constraints, though the full extent of this feature is still being worked out.
+- Instead of typeclasses, WTy2 features traits. 
+- ADTs do not exist in WTy2. `data` declarations can only define single constructors, called variants. Closed traits can be used to group together a number of variants into something that can be pattern matched on.
+
+### Differences from OOP Languages
+
+- WIP
+
 ### Sums, Intersections and Products
 
 Sum types in WTy2 can be expressed with the `|` constraint operator.

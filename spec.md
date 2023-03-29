@@ -178,11 +178,11 @@ All tags must share the same space of values given they can be combined in arbit
 
 Central to WTy2's type system are quantifiers. As explicit types themselves are impossible to write out, the programmer must use quantifiers to refer to types indirectly, as the set of types a term could take.
 
-Importantly, quantifiers in WTy2 quantify over types (the inhabitants of constraints) but not constraints themselves. In the future, it might be an interesting direction to investigate quantifying over constraints, in a vein similar to Haskell's `-XConstraintKinds`.
+WTy2 currently includes one universal quantifiers, that quantifies over constraints, and three existential quantifiers, that quantify over types. It might be interesting to investigate allowing existential quantification over constraints and/or universal quantification over types as future features.
 
 #### The Universal Quantifier
 
-In WTy2, the universal quantifier is `for`. Using it, we can express the type of the identity function:
+In WTy2, the universal quantifier is `for`. As mentioned above, `for`, quantifies over **constraints**, not types, which means that types that are polymorphic over constraints can be represented by it. Using it, we can express the type of the identity function:
 
 `id: for a: Type. Fun(a) -> a`
 
@@ -194,7 +194,7 @@ The latter intended as preferred style, but there are places where writing out t
 
 #### Existential Quantifiers
 
-WTy2 features three different existential quantifiers with different uses. At a high level: `impl` is a reasonable default, `pure` is used for doing dependent type-level reasoning and `exis` is required for anything that interacts with the (scary) untyped outside world.
+WTy2 features three different existential quantifiers with different purposes. At a high level: `impl` is a reasonable default, `pure` is used for doing dependent type-level reasoning and `exis` is required for anything that interacts with the (scary) untyped outside world.
 
 ##### Transparency
 

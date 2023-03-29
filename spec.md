@@ -4,7 +4,7 @@
 
 ### BNF
 
-In the below document, there are many uses of Backus-Naur form (BNF) to describe the syntax of the WTy2 language. Unfortunately, plain BNF has a few limitations that make expressions some common patterns in syntax (such as comma-separated lists of tokens) impossible to abstract over. Therefore, the BNF in use in this document here is extended with the concept of "macros".
+In the below document, there are many uses of Backus-Naur form (BNF) to describe the syntax of the WTy2 language. Unfortunately, plain BNF has a few limitations which make some common patterns in syntax (such as comma-separated lists of tokens) impossible to abstract over. Therefore, the BNF in use in this document is extended with the concept of "macros".
 
 An example of a BNF macro definition is:
 
@@ -20,9 +20,9 @@ which should be interpreted as equivalent to explicitly writing out:
 
 For those who have previously encountered parser combinators, you might note similarities between many of the uses of these BNF macros used in this document and common combinators.
 
-**Side Note:** After a quick bit of googling search, I was unable to find much discussion about a similar extension BNF containing macros, which I find slightly odd, given these macros do not increase the power of BNF in any way but do serve to make it much more expressive (at the cost of needing to sometimes jump to where a BNF macro is defined to fully understand some definition).
+**Side Note:** After a quick bit of searching, I was unable to find much discussion about a similar extension BNF containing macros, which I find slightly odd, given these macros do not increase the power of BNF in any way but  do make it much more expressive (at the cost of sometimes obscuring the mechanics of a definition).
 
-On consideration, I wonder if it might make more sense to just break all pretenses and write actual Haskell Megaparsec code when describing syntax, as much I make fun of Jamie about it, he does have a bit of a point - when written well, Haskell with parser combinators really is not that dissimilar to BNF.
+On consideration, I wonder if it might make more sense to just drop all pretenses and write actual Haskell Megaparsec code when describing syntax. As much I make fun of Jamie about it, he does have a bit of a point: when written well, Haskell/Scala code using parser combinators really is not that dissimilar to BNF.
 
 ### BNF Utilities
 
@@ -67,20 +67,18 @@ The elements of a tuple can be pattern-matched out with the pattern:
 WTy2 also includes another way to express product types known as a "record". The constraint signature of a record follows the form:
 
 ```
-<record_constraint> := 
-	'(' COMMA_SEP1(<field_name/ident> ':' <constraint>) ')' 
+<record_constraint> := '(' COMMA_SEP1(<field_name/ident> ':' <constraint>) ')' 
 ```
 
 A record is effectively a tuple with names given to each element.
 
-Record constraints in specific positions (currently just function arguments and tagged constructors) can also contain defaults.
+Record constraints in specific positions (currently just function arguments and variant constructors) can also contain defaults.
 
 ```
-<record_constraint> := 
-	'(' COMMA_SEP1(<field_name/ident> ':' <constraint> ('=' <default/expr>)?) ')' 
+<record_constraint> := '(' COMMA_SEP1(<field_name/ident> ':' <constraint> ('=' <default/expr>)?) ')' 
 ```
 
-To make working with records and tuples easier, WTy2 has allows for converting between different record and tuple types:
+To make working with records and tuples easier, WTy2 supports converting between different record and tuple types:
 
 #### Tuple -> Record
 
@@ -126,26 +124,30 @@ Note an interesting consequence of these rules is that any number of additional 
 r: (x: Int, y: Int) = (x: 3, y: 1, z: 5)
 ```
 
-One way to read this is as constructing a record that obeys the constraint `(x: Int, y: Int, z: Int)` and then implicitly converting that into accepts `(x: Int, y: Int)`. Implementations of WTy2 may want to warn the programmer in such cases.
+One way to read this is as constructing a record that obeys the constraint `(x: Int, y: Int, z: Int)` and then implicitly converting that into `(x: Int, y: Int)`. Implementations of WTy2 may want to warn the programmer in such cases.
 
 #### Design Note: Transitivity
 
-Transitivity of implicit conversions between types in WTy2 is a very useful property to try and retain, both for making the language intuitive to the programmer and for making implementation of type checking and inference easier. Decisions with regards to where types of record constraints can appear and which convertions can be done implicitly should be carefully made to ensure transitivity is not broken.
+Transitivity of implicit conversions between types in WTy2 is a very useful property to try and retain, both for making the language intuitive to the programmer and for making implementation of type checking and inference easier. Decisions with regards to where types of record constraints can appear and which convertions can be done implicitly should be made carefully to ensure transitivity is not broken.
 
 Note if defaults could appear simply in the constraints of local variables, it would be possible to have:
+
 ```
 r1: (x: Int, y: Int) = (2, 3)
 r2: (x: Int, z: Int = 4) = r1
 r3: (x: Int, z: Int) = r2
 ```
+
 But clearly the assignment `r3 = r1` should not be allowed directly.
 
-Similarly, if `toTuple` could be done implicitly, we would have:
+Similarly, if `toTuple` could be done implicitly, a programmer could write:
+
 ```
 r1: (x: Int, y: Int) = (2, 3)
 p: (Int, Int) = r1
 r2: (a: Int, y: Int) = p
 ```
+
 But `r2 = r1` should be disallowed.
 
 #### Unresolved Questions
@@ -155,9 +157,9 @@ But `r2 = r1` should be disallowed.
 - Could record constraints containing default expressions appear in more places?
 - At what point should the default expression be evaluated? It is part of a signature, so compile-time seems most natural, but WTy2's advanced typing features could make something even more ambitious here possible if there is a good use-case.
 
-### Tagged Records/Variants
+### Variants
 
-Data declarations in WTy2 allow for defining tagged records. They follow the BNF:
+Data declarations in WTy2 allow for defining variants, which are effectively tagged records/tuples. Definitions follow the BNF:
 
 ```
 <record_or_tuple_constraint> := <record_constraint> | <tuple_constraint>
@@ -166,13 +168,29 @@ Data declarations in WTy2 allow for defining tagged records. They follow the BNF
 
 One data declaration defines both a closed trait and a constructor which can create values satisfying the trait, both sharing the tag name.
 
-#### Design Note: OCAML's Polymorphic Variants
+#### Design Note: The Set of Tags
 
 Defining constructors independently of the sum types they are used in (and allowing them to be used in multiple sum types) is similar in principle to polymorphic variants in OCAML (see: [OCaml - Polymorphic variants](https://v2.ocaml.org/manual/polyvariant.html)).
 
-All tags must share the same space of values given they can be combined in arbitrary disjunction constraints. This means the arguably most natural implementation is to simply prefix any tagged record with an integer, with every tag given a unique integer value. While this does have the advantage that no convertion work needs to be done when passing a value satisfying `A` to a function that expects `A | B`, it does mean zero-cost newtype wrappers as often used in Haskell are impossible. Luckily, WTy2 provides features to try and avoid this idiom (see named instances).
+All tags must share the same space of values given they can be combined in arbitrary disjunction constraints. This means the arguably most natural implementation is to simply prefix any variant with an integer, with every tag given a unique integer value. While this does have the advantage that no convertion work needs to be done when passing a value satisfying `A` to a function that expects `A | B`, it does mean zero-cost newtype wrappers as often used in Haskell are impossible. Luckily, WTy2 provides features to try and avoid this idiom (see named instances).
 
 ### Quantifiers
+
+Central to WTy2's type system are quantifiers. As explicit types themselves are impossible to write out, the programmer must use quantifiers to refer to types indirectly, as the set of types a term could take.
+
+Importantly, quantifiers in WTy2 quantify over types (the inhabitants of constraints) but not constraints themselves. In the future, it might be an interesting direction to investigate quantifying over constraints, in a vein similar to Haskell's `-XConstraintKinds`.
+
+#### The Universal Quantifier
+
+In WTy2, the universal quantifier is `for`. Using it, we can express the type of the identity function:
+
+`id: for a: Type. Fun(a) -> a`
+
+The quantification can also be moved to the left of the constraint signature:
+
+`id[a: Type]: Fun(a) -> a`
+
+The latter intended as preferred style, but there are places where writing out the quantifier explicitly is necessary (i.e: when nested inside some other constraint).
 
 #### Existential Quantifiers
 
@@ -197,13 +215,13 @@ WTy2 features three different existential quantifiers with different uses. At a 
 
 WTy2 contains a built-in constraint for functions, written: 
 
-`'Fun' <argument/record_constraint> -> <return/constraint>`
+`'Fun' <argument/record_or_tuple_constraint> -> <return/constraint>`
 
 `Fun` contains a single method with no name, which takes a value obeying the argument constraint and returns a result obeying the return constraint.
 
 ##### Variance
 
-Functions are covariant in argument constraint and contravariant in return constraint.
+Functions are contravariant in argument constraint and covariant in return constraint. Note that this, perhaps unintuitively, with the implicit convertion rules for records, allows for treating functions taking records (i.e: `Fun(x: Int, y: Int) -> Int`) as subtypes of functions taking matching tuples (i.e: `Fun(Int, Int) -> Int`). `(x: Int, y: Int)` is indeed not a subtype of `(Int, Int)`, but it is a supertype.
 
 ## Syntax
 

@@ -1,5 +1,12 @@
 # The WTy2 Language Specification
 
+
+## IMPORTANT NOTE
+
+As it turns out, designing a programming language without any sort of implementation with which to test out ideas is quite hard. Especially so when I don't even know any languages myself that operate under the same paradigm (dependent types). I think I have a lot of potentially interesting ideas, but playing the role of the programmer, compiler and CPU to evaluate if they are actually feasible/useful, and then crystallising them into concise (and precise) explanations is not easy.
+
+Therefore, I am going to halt progress on writing this spec for a bit while I try and actually write an (extremely minimal) compiler for a tiny subset of the WTy2 language (also I should probably do some revision...)
+
 ## Introduction
 
 ### BNF Macros
@@ -40,13 +47,14 @@ COMMA_SEP0(<X>) := COMMA_SEP1(<X>)?
 
 WTy2's type system is likely to be slightly unintuitive to programmers coming from other languages. It has been designed with a couple goals in mind:
 - Aim for there to be exactly one "best" way to design every abstraction. If there has to be multiple, the relative trade-offs for each should be obvious and small in number.
-- Have it be possible to ensure extremely strong compile-time guarantees in the vein of dependent types, but optionally.
+- Have it be possible to ensure extremely strong compile-time guarantees (dependent types), but optionally. It should be possible to start with a program that relies heavily on run-time assertions and bit-by-bit introduce more and more static checks without having to any major refactoring.
+- Possible to obtain really fast performance, without a runtime. WTy2 is designed to eventually be a capable systems programming language, meaning abstractions should ideally be close to zero-cost. WTy2 features linear types, unboxed types (including unboxed closures), and a novel approach to monomorphisation, where the compiler falls back on runtime dispatch (meaning no limitations with infinite types).
 
-WTy2's type system is in some ways actually closer to an OOP-based language like Java than it is to Haskell: it has subtyping, is strict and has mutability. A short summary of differences between WTy2, Haskell and OOP languages is provided below.
+In some ways, the WTy2's approach to types is actually closer to an OOP-based language like Java than it is to Haskell: it has subtyping, is strict and allows mutability. A short summary of differences between WTy2, Haskell and OOP languages is provided below.
 
 ### Differences from Haskell
 
-- Concrete "types" as they exist in Haskell cannot be written out explicitly. If they could, they would define the runtime value completely (there is a maximum of one inhabiting value for every WTy2 type). 
+- Concrete "types" as they exist in Haskell cannot be written out explicitly. If they could, they would define the runtime value completely (there is a maximum of one inhabiting value for every WTy2 "type"). 
 - Types are instead written as constraints prefixed by some existential quantifier. Sometimes this quantifier can be elided because of surrounding context.
 - Constraints in WTy2 are similar to constraints in Haskell, but WTy2 is also extended with the concept of a "closed" constraint. Closed constraints can be used in more places and allow for pattern matching.
 - Like Haskell, constraints can imply other constraints, which with existential quantifiers, effectively allows for subtyping. Because constraints are so central to WTy2 programming, WTy2 also features variance with regards to these constraints, though the full extent of this feature is still being worked out.
@@ -247,12 +255,15 @@ fun f(x: Pred) -> ... {
 
 By defining the predicate this way, we take advantage of WTy2's built in intersection type operator, which means we have `0 <= self` and `self <= 10` in scope immediately without having to write a separate proof.
 
+#### Where Clauses
+
+Types in WTy2 can contain where clauses 
 
 ### Quantifiers
 
 Central to WTy2's type system are quantifiers. As explicit types themselves are impossible to write out, the programmer must use quantifiers to refer to types indirectly, as the set of types a term could take.
 
-WTy2 currently includes one universal quantifiers, that quantifies over constraints, and three existential quantifiers, that quantify over types. It might be interesting to investigate allowing existential quantification over constraints and/or universal quantification over types as future features.
+WTy2 currently includes one universal quantifiers, that quantifies over constraints, and three existential quantifiers, that quantify over types. It might be interesting to investigate allowing existential quantification over constraints and/or universal quantification over types in the future.
 
 #### The Universal Quantifier
 

@@ -1,0 +1,6 @@
+[book]
+authors = ["Nathaniel Burke"]
+language = "en"
+multilingual = false
+src = "src"
+title = "The WTy2 Language Specification"

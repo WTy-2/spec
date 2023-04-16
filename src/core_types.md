@@ -29,12 +29,15 @@ Tuples/records/dependent pairs in WTy2 are surprisingly complicated, and so they
 It's worth noting though, that combining the above constructs in tuples typically gives back something that implements the same type.
 
 - Tuple of `Type`s <: `Type` (anonymous tuple type)
-- Tuple of `Bind`ings <: `Bind` (though recall all bindings are valid record types)
 - Tuple of `Constraint`s <: `Constraint` (conjunction)
+
+However...
+
+- Tuple of `Bind`ings <: `Type` (record type)
 
 ### Unit ("()")
 
-`()` is the unit tuple. It implements `Type`, `Term`, `Bind` AND `Constraint`.
+`()` is the unit tuple. It implements `Type`, `Term` AND `Constraint`.
 
 ### Design Note: Singleton Tuples
 
@@ -42,7 +45,7 @@ WTy2 does not contain a built-in singleton tuple (but does contain singleton rec
 
 ### Design Note: Bindings
 
-In WTy2, the types of records look almost identical to `Bind`ings. However, `Bind`ings are NOT first-class. `return (x: Int)` returns a `Type` which is equal to the record type `(x: Int)`. `{x : Int} = 4` is not a valid way to bring `x` into scope.
+In WTy2, the types of records look almost identical to `Bind`ings. However, `Bind`ings are NOT first-class. `return (x: Int)` returns a `Type` which is equal to the record type `(x: Int)`. `{x : Int}() = 4` is not a valid way to bring `x` into scope.
 
 ## Void ("!")
 

@@ -1,0 +1,388 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>The WTy2 Language Specification</title>
+        <meta name="robots" content="noindex" />
+
+
+        <!-- Custom HTML head -->
+        
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+    </head>
+    <body>
+    <div id="body-container">
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var html = document.querySelector('html');
+            var sidebar = null;
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded "><a href="introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="core_types.html"><strong aria-hidden="true">2.</strong> Core Types</a></li><li class="chapter-item expanded "><a href="dependent_types.html"><strong aria-hidden="true">3.</strong> Dependent Types</a></li><li class="chapter-item expanded "><a href="erasure_visibility.html"><strong aria-hidden="true">4.</strong> Erasure and Visibility</a></li><li class="chapter-item expanded "><a href="proofs.html"><strong aria-hidden="true">5.</strong> Proofs</a></li><li class="chapter-item expanded "><a href="io_ex.html"><strong aria-hidden="true">6.</strong> IO and the Ex Monad</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">The WTy2 Language Specification</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="introduction"><a class="header" href="#introduction">Introduction</a></h1>
+<p>WTy2 is a dependently typed, functional and imperative programming language.</p>
+<p>It was designed with a few goals in mind:</p>
+<ul>
+<li>Aim for there to be exactly one &quot;best&quot; way to design every abstraction. If there has to be multiple, the relative trade-offs for each should be obvious and small in number.</li>
+<li>Allow extremely strong compile-time guarantees (via dependent types), but optionally. It should be possible to start with a program that relies heavily on run-time assertions and bit-by-bit introduce more and more static checks without major refactoring.</li>
+<li>Possible to obtain really fast performance, without a language runtime. WTy2 is designed to eventually be a capable systems programming language, meaning abstractions should ideally be close to zero-cost. WTy2 features linear types, unboxed types (including unboxed closures), and a novel approach to monomorphisation, where the compiler falls back on runtime dispatch (meaning C++/Rust-level performance in the best case, without restrictions on the size of types).</li>
+<li>WTy2 collections are also built using a novel concept of &quot;type-aware allocators&quot;, that provide <strong>blazing fast</strong> <code>fmap</code> performance where order of traversal is unimportant.</li>
+</ul>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="core-types"><a class="header" href="#core-types">Core Types</a></h1>
+<p>WTy2 is a language with subtyping and with first-class types. This has an interesting consequence: instead of having some sort of &quot;kind&quot; system, the key language constructs in WTy2 simply implement various built-in types.</p>
+<h2 id="any-"><a class="header" href="#any-">Any (&quot;?&quot;)</a></h2>
+<p><code>?</code> is the supertype of all types.</p>
+<h2 id="type"><a class="header" href="#type">Type</a></h2>
+<p><code>Type</code> is the supertype of all &quot;types&quot;. This includes anything which can appear to the right of <code>:</code>.</p>
+<p>An automatic instance is derived for every type declaration.</p>
+<h2 id="constraint"><a class="header" href="#constraint">Constraint</a></h2>
+<p><code>Constraint</code> represents &quot;constraints&quot;. These sometimes look syntactically similar to bindings, but instead of bringing variables into scope, they constrain existing values.</p>
+<p>Constraints can be created with the built-in <code>&lt;:</code>, <code>~</code> and <code>=&gt;</code> operators.</p>
+<h2 id="functions"><a class="header" href="#functions">Functions</a></h2>
+<p><code>a -&gt; b</code> is the generic function type.</p>
+<h2 id="tuplesrecordsdependent-pairs"><a class="header" href="#tuplesrecordsdependent-pairs">Tuples/Records/Dependent Pairs</a></h2>
+<p>Tuples/records/dependent pairs in WTy2 are surprisingly complicated, and so they have their own dedicated section in the spec.</p>
+<p>It's worth noting though, that combining the above constructs in tuples typically gives back something that implements the same type.</p>
+<ul>
+<li>Tuple of <code>Type</code>s &lt;: <code>Type</code> (anonymous tuple type)</li>
+<li>Tuple of <code>Constraint</code>s &lt;: <code>Constraint</code> (conjunction)</li>
+</ul>
+<p>However...</p>
+<ul>
+<li>Tuple of <code>Bind</code>ings &lt;: <code>Type</code> (record type)</li>
+</ul>
+<h3 id="unit-"><a class="header" href="#unit-">Unit (&quot;()&quot;)</a></h3>
+<p><code>()</code> is the unit tuple. It implements <code>Type</code>, <code>Term</code> AND <code>Constraint</code>.</p>
+<h3 id="design-note-singleton-tuples"><a class="header" href="#design-note-singleton-tuples">Design Note: Singleton Tuples</a></h3>
+<p>WTy2 does not contain a built-in singleton tuple (but does contain singleton records). Instead <code>(X)</code> where <code>X</code> does not contain commas is parsed as a parenthesised expression.</p>
+<h3 id="design-note-bindings"><a class="header" href="#design-note-bindings">Design Note: Bindings</a></h3>
+<p>In WTy2, the types of records look almost identical to <code>Bind</code>ings. However, <code>Bind</code>ings are NOT first-class. <code>return (x: Int)</code> returns a <code>Type</code> which is equal to the record type <code>(x: Int)</code>. <code>{x : Int}() = 4</code> is not a valid way to bring <code>x</code> into scope.</p>
+<h2 id="void-"><a class="header" href="#void-">Void (&quot;!&quot;)</a></h2>
+<p><code>!</code> is the subtype of all types. It contains no inhabitants.</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="dependent-types"><a class="header" href="#dependent-types">Dependent Types</a></h1>
+<h2 id="constrained-by-"><a class="header" href="#constrained-by-">Constrained By <code>(&lt;==)</code></a></h2>
+<p>WTy2 features dependent types through desugaring to a single language construct, <code>&lt;==</code> (read as &quot;constrained by&quot;).</p>
+<p><code>&lt;==</code> is a type operator (it cannot occur at the value level) and has the following type signature:</p>
+<pre><code class="language-WTy2">&gt;&gt;&gt; :type (&lt;==)
+&gt; (&lt;==) : [a: Type](x: a, f: a -&gt; Constraint) -&gt; Type
+</code></pre>
+<p>To construct a value of type <code>a &lt;== b</code> from a value of type <code>a</code>, <code>b(a)</code> must be in the context. Matching on a value of type <code>a &lt;== b</code> is equivalent to matching on a value of type <code>a</code>, but <code>b(a)</code> is added to the context.</p>
+<p>This operator has similarities to refinement types (i.e: in Liquid Haskell) and dependent pairs (i.e: in Agda/Idris/Coq/Lean) but is a somewhat unique construct, which is primarily enabled from WTy2's robust support for first-class <code>Constraint</code>s and subtyping.</p>
+<p>An approximation of this operator in Idris could be defined like so:</p>
+<pre><code class="language-idris">Proof : Bool -&gt; Type
+Proof p = p = True
+
+data (&lt;==) : (a: Type) -&gt; (p: a -&gt; Bool) -&gt; Type where
+  Mk : (x: a) -&gt; (f: Proof (p x)) -&gt; ((&lt;==) a p)
+
+infix 4 &lt;==
+</code></pre>
+<p>Idris (as far as I am aware) does not have robust support for first-class constraints like WTy2 so we use <code>-&gt; Bool</code> (which can represent an arbitrary predicate) instead.</p>
+<p>An example use would be to restrict the integers received by a function:</p>
+<pre><code class="language-idris">total
+foo : (Nat &lt;== \x =&gt; 1 &lt;= x &amp;&amp; x &lt;= 3) -&gt; ()
+test3 (Mk 1 {f=Refl}) = ()
+test3 (Mk 2 {f=Refl}) = ()
+test3 (Mk 3 {f=Refl}) = ()
+</code></pre>
+<p>We can see that althought <code>foo</code> only matches on the natural number being <code>1</code>, <code>2</code> or <code>3</code>, the function is still correctly typechecked as <code>total</code>, as we must also pass a proof that the <code>Nat</code> is in the range <code>[1-3]</code>.</p>
+<p>Unfortunately, because of the lack of subtyping, when used in Idris, we must always pattern match on the <code>Mk</code> to bring the constraint into scope. In WTy2, both construction and matching is done entirely implicitly.</p>
+<p>The equivalent WTy2 declaration of <code>foo</code> is:</p>
+<pre><code class="language-WTy2">fun foo(x: Nat) &lt;== { 1 &lt;= x &amp;&amp; x &lt;= 3 ~ True }
+</code></pre>
+<p>This sort of constraint is useful enough that defining a type synonym is probably a good idea.</p>
+<pre><code>trait NatBetween(min: Nat, max: Nat)
+    := Nat &lt;== { min &lt;= it &amp;&amp; it &lt;= max ~ True }
+
+fun foo(x: NatBetween(1, 3))
+</code></pre>
+<h3 id="design-note-equivalent-constraints"><a class="header" href="#design-note-equivalent-constraints">Design Note: Equivalent Constraints</a></h3>
+<p>You may realise that as constraints can contain arbitrary expressions, we could formulate these constraints in many different ways. For example, we could write <code>{ contains([1, 2, 3], it) }</code>, or even <code>{ max(1, min(3, it)) ~ it }</code>. That these constraints do indeed imply each other though, is not always obvious (expecially to the typechecker).</p>
+<p>This is arguably the main pain-point with dependent types - proving that one constraint implies another can be tiresome and clutter up code significantly. WTy2 attempts to make this slightly less painful through the ability to write implicit <code>proof</code>s.</p>
+<h2 id="dependent-records--scoping-rules"><a class="header" href="#dependent-records--scoping-rules">Dependent Records / Scoping Rules</a></h2>
+<p>Where this gets more interesting is when wanting to describe constraints on one argument in terms of another.</p>
+<p>For example, imagine we want to define function <code>bar</code> which takes two <code>Nat</code>s, <code>x</code> and <code>y</code>, where <code>y</code> must be greater than <code>x</code>.</p>
+<p>One way to formulate this would be just:</p>
+<pre><code>fun bar(x: Nat, y: Nat) &lt;== { y &gt; x }
+</code></pre>
+<p>But another way to write this would be:</p>
+<pre><code>trait NatAbove(x: Nat) := Nat &lt;== { it &gt; x }
+
+fun bar(x: Nat, y: NatAbove(x))
+</code></pre>
+<p><code>x</code> is in scope when writing the type of <code>y</code>. Cyclic dependencies in these type signatures are also fine:</p>
+<pre><code>trait NatBelow(x: Nat) := Nat &lt;== { it &lt; x }
+
+trait NatAbove(x: Nat) := Nat &lt;== { it &gt; x }
+
+fun bar(x: NatBelow(y), y: NatAbove(x))
+</code></pre>
+<p>One way to view what is happening here is to move all types into a new <code>&lt;==</code> constraint.</p>
+<pre><code>fun bar(x: ?, y: ?) &lt;== { x: NatBelow(y), y: NatAbove(x) }
+</code></pre>
+<h3 id="unresolved-question"><a class="header" href="#unresolved-question">Unresolved Question:</a></h3>
+<p><code>NatBelow</code>/<code>NatAbove</code> require a <code>Nat</code> constraint on their argument. These <code>Nat</code> constraints can be obtained from looking at what <code>NatBelow</code>/<code>NatAbove</code> themselves imply, but this is quite a loopy typechecking case. If implementation for checking this proves too hard, or is there is a soundness hole discovered with these sorts of definitions, an alternative desugaring would be:</p>
+<pre><code>fun bar(x: Nat, y: Nat) &lt;== { x: NatBelow(y), y: NatAbove(x) }
+</code></pre>
+<p>In which case the applications of <code>NatBelow</code> and <code>NatAbove</code> typecheck trivially.</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="erasure-and-visibility"><a class="header" href="#erasure-and-visibility">Erasure and Visibility</a></h1>
+<p>In WTy2, erasure and visibility are intrinsically linked. WTy2 will only ever infer values that will be erased at runtime.</p>
+<p>There is a minor extension to record syntax to support erased/inferred arguments: they are contained in square brackets before the parenthesis.</p>
+<pre><code class="language-haskell">recTy :: Parser RecTy
+recTy = mkRecTy (optional $ brackets $ commaSep1 bind) (parens $ commaSep0 bind)
+</code></pre>
+<p>A term can be bound in the erased elements of a record only if it occurs to the right of some constraint operator or <code>:</code> in the non-erased elements.</p>
+<p>An example of erasure being useful is when working with length-indexed vectors:</p>
+<pre><code class="language-WTy2">fun vecLen[t: Type, n: Nat](v: Vec(t, n)): Nat &lt;== { it ~ n }
+
+fun returnsVecOfUnknownLen(...): [n: Nat](Vec[Bool, n])
+</code></pre>
+<p>In <code>vecLen</code>, binding <code>t</code> and <code>n</code> in the <code>[]</code>s allows them to be inferred, and makes it so there is no runtime cost of having to pass the type or length. Note if we had to pass the length explicitly, then the function would be entirely useless: we would need to know the length to calculate it!</p>
+<p>This combines nicely with functions like <code>returnsVecOfUnknownLen</code>. If we ever do actually need to know the length (perhaps to pattern match on it), then we can call <code>vecLen</code> on the result, and this all works out because we still have an erased <code>n: Nat</code> in scope.</p>
+<p>To be concrete, a term being erased means that it cannot be pattern matched on, or passed as an argument to somewhere where a non-erased term is expected.</p>
+<p>Unlike constraints in <code>&lt;==</code>, erased terms in records can be manually specified at construction or bound when matching.</p>
+<pre><code class="language-WTy2">[erasedLen=n](vec) = returnsVecOfUnknownLen(...);
+len = vecLen[Bool, erasedLen](vec);
+
+// From the signature of 'vecLen', `erasedLen ~ len` is in the context
+_: () &lt;== { erasedLen ~ len } = ();
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="proofs"><a class="header" href="#proofs">Proofs</a></h1>
+<p>In many dependently typed language, an unfortunate side effect of needing to translate between different constraints is that code must be cluttered with calls to functions that do effectively nothing except prove that some constraint implies another.</p>
+<p>WTy2 attempts to separate out the these &quot;proof&quot; functions from the code that requires them through the mechanism of implicit <code>proof</code>s.</p>
+<h2 id="syntax"><a class="header" href="#syntax">Syntax</a></h2>
+<pre><code class="language-haskell">-- | 'proofDec' is a valid top-level LValue
+{- Examples:
+
+proof(x: Nat, y: Nat) &lt;== { x ~ 2 * y }
+    : () &lt;== { even(x) }
+    = { ... }
+
+proof: (x: Nat, y: Nat)  &lt;== { x ~ 2 * y }
+    -&gt; () &lt;== { even(x) }
+    = { ... }
+
+proof mulTwoImplesEven(x: Nat, y: Nat) &lt;== { x ~ 2 * y }
+    : () &lt;== { even(x) }
+    = { ... }
+
+proof mulTwoImplesEven: (x: Nat, y: Nat) &lt;== { x ~ 2 * y }
+    -&gt; () &lt;== { even(x) }
+    = { ... }
+-}
+proofDec :: Parser ProofDec
+proofDec = &quot;proof&quot; *&gt; mkProofDec (optional termIdent)
+</code></pre>
+<p>As well as <code>fun</code>, WTy2 supports another keyword before top-level function declarations: <code>proof</code>. Named <code>proof</code>s can be called just like normal functions. However, their name can optionally be elided.</p>
+<h2 id="semantics"><a class="header" href="#semantics">Semantics</a></h2>
+<p>In WTy2, if at any point during typechecking, an expression fails to typecheck, then all in-scope <code>proof</code>s are iterated through. For every <code>proof</code>, all in-scope terms are compared against the arguments, and all compatible argument combinations to perform a call of this <code>proof</code> function are iterated through.</p>
+<p>For every call of the proof function, immediately before the failing to typecheck expression, a call to the function is introduced, discarding the result, but matching on it to bring any constraints into scope. The expression is then re-typechecked, with these constraints in scope. If it fails again, that function call is removed, and the next one is tried.</p>
+<p>If typechecking with any proof call succeeds, then that call to the proof is left in and typechecking proceeds as normal. If all proofs fail, then the type error is outputted as would be expected.</p>
+<p>Importantly, proofs are limited to single function calls. If there is a proof that <code>A =&gt; B</code> and a proof that <code>B =&gt; C</code>, and a proof of <code>A =&gt; C</code> is required, the programmer must explicitly write that proof. This is to ensure typechecking is decidable.</p>
+<h2 id="design-note-transitive-closure-of-proofs"><a class="header" href="#design-note-transitive-closure-of-proofs">Design Note: Transitive Closure of Proofs</a></h2>
+<p>While needing to write transitive proofs might seem slightly painful, note it is NOT intended that every single possible valid proof function is written. First of all, this is likely impossible (for the same reason typechecking would become undecidable: infinite valid proofs can be obtained starting from a finite number), but also, it is unnecessary! Why prove anything that isn't helpful?</p>
+<p>Instead, it is hoped that the WTy2 programmer writes code assuming all obvious implications are known to the typechecker, and then if a type error is found, the programmer writes the proof required for that specific error. Now all future times that same error would appear, the in-scope proof is implicitly called.</p>
+<h2 id="implementation-note-typechecking-performance"><a class="header" href="#implementation-note-typechecking-performance">Implementation Note: Typechecking Performance</a></h2>
+<p>A naive implementation of the above algorithm will have a pretty devastating impact on typechecking performance. Hopefully some good method of pruning the search space can be found. It is also suggested that when proofs are successfully found, that information is cached somehow so on future compilation it does not need to be rediscovered.</p>
+<p>Note the process of searching in-scope terms to find something that will allow the program to typecheck is not at all a new idea. Idris, for example, allows for writing explicit &quot;holes&quot; in programs https://docs.idris-lang.org/en/latest/elaboratorReflection/holes.html, where the compiler can automatically search for expressions that fit the desired type signature using functions labelled with <code>#hint</code> pragmas. Compared to this, WTy2 holes are relatively modest: the expressions are limited to single function calls.</p>
+<h2 id="implementation-note-runtime-performance"><a class="header" href="#implementation-note-runtime-performance">Implementation Note: Runtime Performance</a></h2>
+<p>WTy2 does not assume totality of functions. This includes proofs, and so it is entirely possible for a proof to typecheck, but then at runtime loop infinitely or crash.</p>
+<p>For this reason, to preserve safety, running these proofs is unfortunately necessary. Running these proofs can have severe performance impacts however (to the point of changing the time complexity of many algorithms). It is therefore suggested that WTy2 implementations allow compiling with an option that skips over calls to <code>proof</code>s where the values are discarded, assuming totality. This has the result of turning infinite loops/runtime crashes into undefined behaviour.</p>
+<h2 id="compiler-warnings"><a class="header" href="#compiler-warnings">Compiler Warnings</a></h2>
+<p>Marking a function as a <code>proof</code>s is only useful if it returns proof of a constraint that mentions at least one of the arguments. It is suggested that this property should be checked for (possibly producing a warning) by implementations.</p>
+<h2 id="imports"><a class="header" href="#imports">Imports</a></h2>
+<p>Importing proofs operates similarly to importing type instances: they are implicitly imported from modules.</p>
+<p>In fact, proofs can be thought of as somewhat similar to instances: they allow defining implications between one constraint and another. The main difference is arguably that <code>proof</code>s must be justified while <code>instance</code>s are taken as axioms, but for this reason are much more limited (to prevent unsoundness).</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="io-and-the-ex-monad"><a class="header" href="#io-and-the-ex-monad">IO and the Ex Monad</a></h1>
+<p>WTy2 is an impure language. Side-effects like printing to the terminal can occur at any time without requiring monads.</p>
+<p>However, if values are read from the outside world, they do need to be wrapped in the <code>Ex</code> monad.</p>
+<p>The purpose of this is twofold: we make explicit the CPS conversion which allows for efficient monomorphisation, and we get some nice properties like parametricity.</p>
+<p>As an explanation on the first point, imagine we have a function <code>readBool() -&gt; Ex(Bool)</code> and then pass the returned integer to functions <code>f</code> and <code>g</code>.</p>
+<pre><code class="language-WTy2">x &lt;- readBool();
+f(x);
+g(x);
+</code></pre>
+<p>This is transformed into</p>
+<pre><code class="language-WTy2">readBool() &gt;&gt;= { f(it); g(it); }
+</code></pre>
+<p>This allows the compiler to analyse the closure <code>{ f(it); g(it); }</code> and potentially monomorphise it for <code>True</code> and <code>False</code>. This means that if both <code>f</code> and <code>g</code> switch on the boolean, we can compile this into a single switch (without relying on inlining, which while very useful, has limitations with regards to code bloat: if <code>f</code> and <code>g</code> are very large functions, and they were called in many places, it would be much more desirable to compile only two copies of <code>f</code> and <code>g</code> for the <code>True</code> and <code>False</code> cases, instead of a version for every single call).</p>
+<p>The <code>Ex</code> monad is used to encourage code of this style, while making it obvious where extra closures are coming from. For example, if we did not have the <code>Ex</code> monad, then it would be very unclear if code like:</p>
+<pre><code>x = readBool();
+f(x);
+g(x);
+</code></pre>
+<p>was compiled into <code>x = readBool(); { f(it); g(it); }(x)</code> or not.</p>
+<h2 id="parametricity"><a class="header" href="#parametricity">Parametricity</a></h2>
+<p>With <code>Ex</code>, WTy2 also obeys a weakened form a parametricity. In Haskell, a non-partial function with type signature <code>forall t. t -&gt; t -&gt; t</code> can (in the absense of hacks like <code>unsafePeformIO</code>) only have two implementations (return the first element, or return the second).</p>
+<p>In WTy2, a function with type signature <code>[t: Type](a: t, b: t) -&gt; t</code> also can only return the first element or the second, but it may perform other side-effects as well (the return value just cannot be influenced by those side-effects).</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr.min.js"></script>
+        <script src="mark.min.js"></script>
+        <script src="searcher.js"></script>
+
+        <script src="clipboard.min.js"></script>
+        <script src="highlight.js"></script>
+        <script src="book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+        <script>
+        window.addEventListener('load', function() {
+            window.setTimeout(window.print, 100);
+        });
+        </script>
+
+    </div>
+    </body>
+</html>

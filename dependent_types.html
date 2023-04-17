@@ -1,0 +1,264 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Dependent Types - The WTy2 Language Specification</title>
+
+
+        <!-- Custom HTML head -->
+        
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+    </head>
+    <body>
+    <div id="body-container">
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var html = document.querySelector('html');
+            var sidebar = null;
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded "><a href="introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="core_types.html"><strong aria-hidden="true">2.</strong> Core Types</a></li><li class="chapter-item expanded "><a href="dependent_types.html" class="active"><strong aria-hidden="true">3.</strong> Dependent Types</a></li><li class="chapter-item expanded "><a href="erasure_visibility.html"><strong aria-hidden="true">4.</strong> Erasure and Visibility</a></li><li class="chapter-item expanded "><a href="proofs.html"><strong aria-hidden="true">5.</strong> Proofs</a></li><li class="chapter-item expanded "><a href="io_ex.html"><strong aria-hidden="true">6.</strong> IO and the Ex Monad</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">The WTy2 Language Specification</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="dependent-types"><a class="header" href="#dependent-types">Dependent Types</a></h1>
+<h2 id="constrained-by-"><a class="header" href="#constrained-by-">Constrained By <code>(&lt;==)</code></a></h2>
+<p>WTy2 features dependent types through desugaring to a single language construct, <code>&lt;==</code> (read as &quot;constrained by&quot;).</p>
+<p><code>&lt;==</code> is a type operator (it cannot occur at the value level) and has the following type signature:</p>
+<pre><code class="language-WTy2">&gt;&gt;&gt; :type (&lt;==)
+&gt; (&lt;==) : [a: Type](x: a, f: a -&gt; Constraint) -&gt; Type
+</code></pre>
+<p>To construct a value of type <code>a &lt;== b</code> from a value of type <code>a</code>, <code>b(a)</code> must be in the context. Matching on a value of type <code>a &lt;== b</code> is equivalent to matching on a value of type <code>a</code>, but <code>b(a)</code> is added to the context.</p>
+<p>This operator has similarities to refinement types (i.e: in Liquid Haskell) and dependent pairs (i.e: in Agda/Idris/Coq/Lean) but is a somewhat unique construct, which is primarily enabled from WTy2's robust support for first-class <code>Constraint</code>s and subtyping.</p>
+<p>An approximation of this operator in Idris could be defined like so:</p>
+<pre><code class="language-idris">Proof : Bool -&gt; Type
+Proof p = p = True
+
+data (&lt;==) : (a: Type) -&gt; (p: a -&gt; Bool) -&gt; Type where
+  Mk : (x: a) -&gt; (f: Proof (p x)) -&gt; ((&lt;==) a p)
+
+infix 4 &lt;==
+</code></pre>
+<p>Idris (as far as I am aware) does not have robust support for first-class constraints like WTy2 so we use <code>-&gt; Bool</code> (which can represent an arbitrary predicate) instead.</p>
+<p>An example use would be to restrict the integers received by a function:</p>
+<pre><code class="language-idris">total
+foo : (Nat &lt;== \x =&gt; 1 &lt;= x &amp;&amp; x &lt;= 3) -&gt; ()
+test3 (Mk 1 {f=Refl}) = ()
+test3 (Mk 2 {f=Refl}) = ()
+test3 (Mk 3 {f=Refl}) = ()
+</code></pre>
+<p>We can see that althought <code>foo</code> only matches on the natural number being <code>1</code>, <code>2</code> or <code>3</code>, the function is still correctly typechecked as <code>total</code>, as we must also pass a proof that the <code>Nat</code> is in the range <code>[1-3]</code>.</p>
+<p>Unfortunately, because of the lack of subtyping, when used in Idris, we must always pattern match on the <code>Mk</code> to bring the constraint into scope. In WTy2, both construction and matching is done entirely implicitly.</p>
+<p>The equivalent WTy2 declaration of <code>foo</code> is:</p>
+<pre><code class="language-WTy2">fun foo(x: Nat) &lt;== { 1 &lt;= x &amp;&amp; x &lt;= 3 ~ True }
+</code></pre>
+<p>This sort of constraint is useful enough that defining a type synonym is probably a good idea.</p>
+<pre><code>trait NatBetween(min: Nat, max: Nat)
+    := Nat &lt;== { min &lt;= it &amp;&amp; it &lt;= max ~ True }
+
+fun foo(x: NatBetween(1, 3))
+</code></pre>
+<h3 id="design-note-equivalent-constraints"><a class="header" href="#design-note-equivalent-constraints">Design Note: Equivalent Constraints</a></h3>
+<p>You may realise that as constraints can contain arbitrary expressions, we could formulate these constraints in many different ways. For example, we could write <code>{ contains([1, 2, 3], it) }</code>, or even <code>{ max(1, min(3, it)) ~ it }</code>. That these constraints do indeed imply each other though, is not always obvious (expecially to the typechecker).</p>
+<p>This is arguably the main pain-point with dependent types - proving that one constraint implies another can be tiresome and clutter up code significantly. WTy2 attempts to make this slightly less painful through the ability to write implicit <code>proof</code>s.</p>
+<h2 id="dependent-records--scoping-rules"><a class="header" href="#dependent-records--scoping-rules">Dependent Records / Scoping Rules</a></h2>
+<p>Where this gets more interesting is when wanting to describe constraints on one argument in terms of another.</p>
+<p>For example, imagine we want to define function <code>bar</code> which takes two <code>Nat</code>s, <code>x</code> and <code>y</code>, where <code>y</code> must be greater than <code>x</code>.</p>
+<p>One way to formulate this would be just:</p>
+<pre><code>fun bar(x: Nat, y: Nat) &lt;== { y &gt; x }
+</code></pre>
+<p>But another way to write this would be:</p>
+<pre><code>trait NatAbove(x: Nat) := Nat &lt;== { it &gt; x }
+
+fun bar(x: Nat, y: NatAbove(x))
+</code></pre>
+<p><code>x</code> is in scope when writing the type of <code>y</code>. Cyclic dependencies in these type signatures are also fine:</p>
+<pre><code>trait NatBelow(x: Nat) := Nat &lt;== { it &lt; x }
+
+trait NatAbove(x: Nat) := Nat &lt;== { it &gt; x }
+
+fun bar(x: NatBelow(y), y: NatAbove(x))
+</code></pre>
+<p>One way to view what is happening here is to move all types into a new <code>&lt;==</code> constraint.</p>
+<pre><code>fun bar(x: ?, y: ?) &lt;== { x: NatBelow(y), y: NatAbove(x) }
+</code></pre>
+<h3 id="unresolved-question"><a class="header" href="#unresolved-question">Unresolved Question:</a></h3>
+<p><code>NatBelow</code>/<code>NatAbove</code> require a <code>Nat</code> constraint on their argument. These <code>Nat</code> constraints can be obtained from looking at what <code>NatBelow</code>/<code>NatAbove</code> themselves imply, but this is quite a loopy typechecking case. If implementation for checking this proves too hard, or is there is a soundness hole discovered with these sorts of definitions, an alternative desugaring would be:</p>
+<pre><code>fun bar(x: Nat, y: Nat) &lt;== { x: NatBelow(y), y: NatAbove(x) }
+</code></pre>
+<p>In which case the applications of <code>NatBelow</code> and <code>NatAbove</code> typecheck trivially.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="core_types.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next" href="erasure_visibility.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="core_types.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next" href="erasure_visibility.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr.min.js"></script>
+        <script src="mark.min.js"></script>
+        <script src="searcher.js"></script>
+
+        <script src="clipboard.min.js"></script>
+        <script src="highlight.js"></script>
+        <script src="book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+    </div>
+    </body>
+</html>

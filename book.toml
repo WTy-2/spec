@@ -4,3 +4,7 @@ language = "en"
 multilingual = false
 src = "src"
 title = "The WTy2 Language Specification"
+
+[output.html]
+git-repository-url = "https://github.com/WTy-2/spec/"
+edit-url-template = "https://github.com/WTy-2/spec/edit/main/{path}"

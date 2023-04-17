@@ -2,14 +2,9 @@
 
 In WTy2, erasure and visibility are intrinsically linked. WTy2 will only ever infer values that will be erased at runtime.
 
-There is a minor extension to record syntax to support erased/inferred arguments: they are contained in square brackets before the parenthesis.
+A type surrounded in parenthesis can be prefixed with something that looks similar to a record type but the bindings are placed inside brackets (`[]`) instead of parenthesis.
 
-```haskell
-recTy :: Parser RecTy
-recTy = mkRecTy (optional $ brackets $ commaSep1 bind) (parens $ commaSep0 bind)
-```
-
-A term can be bound in the erased elements of a record only if it occurs to the right of some constraint operator or `:` in the non-erased elements.
+A term can be bound in the erased elements of a record only if it occurs (to the right of some constraint operator[^note]) or `:` in the non-erased elements.
 
 An example of erasure being useful is when working with length-indexed vectors:
 
@@ -34,3 +29,6 @@ len = vecLen[Bool, erasedLen](vec);
 // From the signature of 'vecLen', `erasedLen ~ len` is in the context
 _: () <== { erasedLen ~ len } = ();
 ```
+
+[^note]
+The exact condition with constraint operators which makes it legal for a variable to be erased and inferred is a work-in-progress. In theory we only want to allow erasure if there is a possibility that it can be inferred, but detecting this is potentially non-trivial.

@@ -84,7 +84,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="core_types.html"><strong aria-hidden="true">2.</strong> Core Types</a></li><li class="chapter-item expanded "><a href="dependent_types.html"><strong aria-hidden="true">3.</strong> Dependent Types</a></li><li class="chapter-item expanded "><a href="erasure_visibility.html"><strong aria-hidden="true">4.</strong> Erasure and Visibility</a></li><li class="chapter-item expanded "><a href="proofs.html"><strong aria-hidden="true">5.</strong> Proofs</a></li><li class="chapter-item expanded "><a href="io_ex.html"><strong aria-hidden="true">6.</strong> IO and the Ex Monad</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="core_types.html"><strong aria-hidden="true">2.</strong> Core Types</a></li><li class="chapter-item expanded "><a href="declarations.html"><strong aria-hidden="true">3.</strong> Declarations</a></li><li class="chapter-item expanded "><a href="dependent_types.html"><strong aria-hidden="true">4.</strong> Dependent Types</a></li><li class="chapter-item expanded "><a href="erasure_visibility.html"><strong aria-hidden="true">5.</strong> Erasure and Visibility</a></li><li class="chapter-item expanded "><a href="proofs.html"><strong aria-hidden="true">6.</strong> Proofs</a></li><li class="chapter-item expanded "><a href="io_ex.html"><strong aria-hidden="true">7.</strong> IO and the Ex Monad</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -188,6 +188,33 @@
 <p>In WTy2, the types of records look almost identical to <code>Bind</code>ings. However, <code>Bind</code>ings are NOT first-class. <code>return (x: Int)</code> returns a <code>Type</code> which is equal to the record type <code>(x: Int)</code>. <code>{x : Int}() = 4</code> is not a valid way to bring <code>x</code> into scope.</p>
 <h2 id="void-"><a class="header" href="#void-">Void (&quot;!&quot;)</a></h2>
 <p><code>!</code> is the subtype of all types. It contains no inhabitants.</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="declarations"><a class="header" href="#declarations">Declarations</a></h1>
+<p>WTy2 supports top-level bindings in the form of &quot;declarations&quot;.</p>
+<p>All named declarations can be prefixed with visibility annotations.</p>
+<h2 id="type-declarations"><a class="header" href="#type-declarations">Type Declarations</a></h2>
+<p>Type declarations define &quot;types&quot;. Note types in WTy2 are quite different from types in many other languages: for instance, types can be open, allowing instances for the type to be made apart from it's declaration.</p>
+<p>Note &quot;type&quot;s in WTy2 were originally named &quot;trait&quot;s for this very reason. I have since decided it makes more sense to just call them &quot;type&quot;s because there is no other construct in the language which fits the role.</p>
+<p>Open types can have a number of associated functions that must be defined at instances of that type. In these functions, there is an implicit constant <code>self: Type</code> in scope which refers to the intance head.</p>
+<p>Supertypes of the type are optionally explicitly declared after the <code>{}</code>s with <code>=&gt;</code>.</p>
+<p>As an example, here is the <code>MonadC</code> type, which is similar to a <code>Monad</code> in functional languages like <code>Haskell</code> but is not total (meaning it can support data structures like sets and hashmaps)</p>
+<pre><code class="language-WTy2">type MonadC[c: Type] {
+
+    fun fmap[a: c, b: c](x: self(a), f: a -&gt; b): self(b)
+
+    fun pure[a: c](x: a): self(a)
+
+    fun (&gt;&gt;=)[a: c, b: c](x: self(a), f: a -&gt; self(b)): self(b)
+} =&gt; c -&gt; Any
+</code></pre>
+<p><sup class="footnote-reference"><a href="#note">1</a></sup></p>
+<h2 id="instance-declarations"><a class="header" href="#instance-declarations">Instance Declarations</a></h2>
+<h2 id="data-declarations"><a class="header" href="#data-declarations">Data Declarations</a></h2>
+<p>Data declarations define &quot;variants&quot;. These are simply constructors that create values.</p>
+<h2 id="functionconstantproof-declarations"><a class="header" href="#functionconstantproof-declarations">Function/Constant/Proof Declarations</a></h2>
+<div class="footnote-definition" id="note"><sup class="footnote-definition-label">1</sup>
+<p>Note that with function contravariance, we could also have <code>f: c -&gt; b</code> in <code>fmap</code>, and if <code>MonadC</code> itself was contravariant, <code>x: self(c)</code> and then no need for <code>a</code>. WTy2 currently does not support variance due to added complexity, but code like this shows places where it could be very useful.</p>
+</div>
+<p>Also note the the <code>a: c</code> and <code>b: c</code> constraints here are slightly tiresome. Arguably these could be inferred from their use as arguments to <code>self</code>. There has been some research in Haskell on doing this inference https://richarde.dev/papers/2020/partialdata/partialdata.pdf and it appears to be highly effective in practice (though it is unclear how well it will extend to a language with subtyping).</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="dependent-types"><a class="header" href="#dependent-types">Dependent Types</a></h1>
 <h2 id="constrained-by-"><a class="header" href="#constrained-by-">Constrained By <code>(&lt;==)</code></a></h2>
 <p>WTy2 features dependent types through desugaring to a single language construct, <code>&lt;==</code> (read as &quot;constrained by&quot;).</p>
@@ -256,11 +283,8 @@ fun bar(x: NatBelow(y), y: NatAbove(x))
 <p>In which case the applications of <code>NatBelow</code> and <code>NatAbove</code> typecheck trivially.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="erasure-and-visibility"><a class="header" href="#erasure-and-visibility">Erasure and Visibility</a></h1>
 <p>In WTy2, erasure and visibility are intrinsically linked. WTy2 will only ever infer values that will be erased at runtime.</p>
-<p>There is a minor extension to record syntax to support erased/inferred arguments: they are contained in square brackets before the parenthesis.</p>
-<pre><code class="language-haskell">recTy :: Parser RecTy
-recTy = mkRecTy (optional $ brackets $ commaSep1 bind) (parens $ commaSep0 bind)
-</code></pre>
-<p>A term can be bound in the erased elements of a record only if it occurs to the right of some constraint operator or <code>:</code> in the non-erased elements.</p>
+<p>A type surrounded in parenthesis can be prefixed with something that looks similar to a record type but the bindings are placed inside brackets (<code>[]</code>) instead of parenthesis.</p>
+<p>A term can be bound in the erased elements of a record only if it occurs (to the right of some constraint operator<sup class="footnote-reference"><a href="#note">1</a></sup>) or <code>:</code> in the non-erased elements.</p>
 <p>An example of erasure being useful is when working with length-indexed vectors:</p>
 <pre><code class="language-WTy2">fun vecLen[t: Type, n: Nat](v: Vec(t, n)): Nat &lt;== { it ~ n }
 
@@ -276,6 +300,8 @@ len = vecLen[Bool, erasedLen](vec);
 // From the signature of 'vecLen', `erasedLen ~ len` is in the context
 _: () &lt;== { erasedLen ~ len } = ();
 </code></pre>
+<p><sup class="footnote-reference"><a href="#note">1</a></sup>
+The exact condition with constraint operators which makes it legal for a variable to be erased and inferred is a work-in-progress. In theory we only want to allow erasure if there is a possibility that it can be inferred, but detecting this is potentially non-trivial.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="proofs"><a class="header" href="#proofs">Proofs</a></h1>
 <p>In many dependently typed language, an unfortunate side effect of needing to translate between different constraints is that code must be cluttered with calls to functions that do effectively nothing except prove that some constraint implies another.</p>
 <p>WTy2 attempts to separate out the these &quot;proof&quot; functions from the code that requires them through the mechanism of implicit <code>proof</code>s.</p>

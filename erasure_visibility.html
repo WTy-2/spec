@@ -83,7 +83,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="core_types.html"><strong aria-hidden="true">2.</strong> Core Types</a></li><li class="chapter-item expanded "><a href="dependent_types.html"><strong aria-hidden="true">3.</strong> Dependent Types</a></li><li class="chapter-item expanded "><a href="erasure_visibility.html" class="active"><strong aria-hidden="true">4.</strong> Erasure and Visibility</a></li><li class="chapter-item expanded "><a href="proofs.html"><strong aria-hidden="true">5.</strong> Proofs</a></li><li class="chapter-item expanded "><a href="io_ex.html"><strong aria-hidden="true">6.</strong> IO and the Ex Monad</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="core_types.html"><strong aria-hidden="true">2.</strong> Core Types</a></li><li class="chapter-item expanded "><a href="declarations.html"><strong aria-hidden="true">3.</strong> Declarations</a></li><li class="chapter-item expanded "><a href="dependent_types.html"><strong aria-hidden="true">4.</strong> Dependent Types</a></li><li class="chapter-item expanded "><a href="erasure_visibility.html" class="active"><strong aria-hidden="true">5.</strong> Erasure and Visibility</a></li><li class="chapter-item expanded "><a href="proofs.html"><strong aria-hidden="true">6.</strong> Proofs</a></li><li class="chapter-item expanded "><a href="io_ex.html"><strong aria-hidden="true">7.</strong> IO and the Ex Monad</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -152,11 +152,8 @@
                     <main>
                         <h1 id="erasure-and-visibility"><a class="header" href="#erasure-and-visibility">Erasure and Visibility</a></h1>
 <p>In WTy2, erasure and visibility are intrinsically linked. WTy2 will only ever infer values that will be erased at runtime.</p>
-<p>There is a minor extension to record syntax to support erased/inferred arguments: they are contained in square brackets before the parenthesis.</p>
-<pre><code class="language-haskell">recTy :: Parser RecTy
-recTy = mkRecTy (optional $ brackets $ commaSep1 bind) (parens $ commaSep0 bind)
-</code></pre>
-<p>A term can be bound in the erased elements of a record only if it occurs to the right of some constraint operator or <code>:</code> in the non-erased elements.</p>
+<p>A type surrounded in parenthesis can be prefixed with something that looks similar to a record type but the bindings are placed inside brackets (<code>[]</code>) instead of parenthesis.</p>
+<p>A term can be bound in the erased elements of a record only if it occurs (to the right of some constraint operator<sup class="footnote-reference"><a href="#note">1</a></sup>) or <code>:</code> in the non-erased elements.</p>
 <p>An example of erasure being useful is when working with length-indexed vectors:</p>
 <pre><code class="language-WTy2">fun vecLen[t: Type, n: Nat](v: Vec(t, n)): Nat &lt;== { it ~ n }
 
@@ -172,6 +169,8 @@ len = vecLen[Bool, erasedLen](vec);
 // From the signature of 'vecLen', `erasedLen ~ len` is in the context
 _: () &lt;== { erasedLen ~ len } = ();
 </code></pre>
+<p><sup class="footnote-reference"><a href="#note">1</a></sup>
+The exact condition with constraint operators which makes it legal for a variable to be erased and inferred is a work-in-progress. In theory we only want to allow erasure if there is a possibility that it can be inferred, but detecting this is potentially non-trivial.</p>
 
                     </main>
 

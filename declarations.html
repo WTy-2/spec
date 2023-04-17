@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Dependent Types - The WTy2 Language Specification</title>
+        <title>Declarations - The WTy2 Language Specification</title>
 
 
         <!-- Custom HTML head -->
@@ -83,7 +83,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="core_types.html"><strong aria-hidden="true">2.</strong> Core Types</a></li><li class="chapter-item expanded "><a href="declarations.html"><strong aria-hidden="true">3.</strong> Declarations</a></li><li class="chapter-item expanded "><a href="dependent_types.html" class="active"><strong aria-hidden="true">4.</strong> Dependent Types</a></li><li class="chapter-item expanded "><a href="erasure_visibility.html"><strong aria-hidden="true">5.</strong> Erasure and Visibility</a></li><li class="chapter-item expanded "><a href="proofs.html"><strong aria-hidden="true">6.</strong> Proofs</a></li><li class="chapter-item expanded "><a href="io_ex.html"><strong aria-hidden="true">7.</strong> IO and the Ex Monad</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="core_types.html"><strong aria-hidden="true">2.</strong> Core Types</a></li><li class="chapter-item expanded "><a href="declarations.html" class="active"><strong aria-hidden="true">3.</strong> Declarations</a></li><li class="chapter-item expanded "><a href="dependent_types.html"><strong aria-hidden="true">4.</strong> Dependent Types</a></li><li class="chapter-item expanded "><a href="erasure_visibility.html"><strong aria-hidden="true">5.</strong> Erasure and Visibility</a></li><li class="chapter-item expanded "><a href="proofs.html"><strong aria-hidden="true">6.</strong> Proofs</a></li><li class="chapter-item expanded "><a href="io_ex.html"><strong aria-hidden="true">7.</strong> IO and the Ex Monad</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -121,7 +121,7 @@
                         <a href="https://github.com/WTy-2/spec/" title="Git repository" aria-label="Git repository">
                             <i id="git-repository-button" class="fa fa-github"></i>
                         </a>
-                        <a href="https://github.com/WTy-2/spec/edit/main/src/dependent_types.md" title="Suggest an edit" aria-label="Suggest an edit">
+                        <a href="https://github.com/WTy-2/spec/edit/main/src/declarations.md" title="Suggest an edit" aria-label="Suggest an edit">
                             <i id="git-edit-button" class="fa fa-edit"></i>
                         </a>
 
@@ -150,82 +150,43 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="dependent-types"><a class="header" href="#dependent-types">Dependent Types</a></h1>
-<h2 id="constrained-by-"><a class="header" href="#constrained-by-">Constrained By <code>(&lt;==)</code></a></h2>
-<p>WTy2 features dependent types through desugaring to a single language construct, <code>&lt;==</code> (read as &quot;constrained by&quot;).</p>
-<p><code>&lt;==</code> is a type operator (it cannot occur at the value level) and has the following type signature:</p>
-<pre><code class="language-WTy2">&gt;&gt;&gt; :type (&lt;==)
-&gt; (&lt;==) : [a: Type](x: a, f: a -&gt; Constraint) -&gt; Type
-</code></pre>
-<p>To construct a value of type <code>a &lt;== b</code> from a value of type <code>a</code>, <code>b(a)</code> must be in the context. Matching on a value of type <code>a &lt;== b</code> is equivalent to matching on a value of type <code>a</code>, but <code>b(a)</code> is added to the context.</p>
-<p>This operator has similarities to refinement types (i.e: in Liquid Haskell) and dependent pairs (i.e: in Agda/Idris/Coq/Lean) but is a somewhat unique construct, which is primarily enabled from WTy2's robust support for first-class <code>Constraint</code>s and subtyping.</p>
-<p>An approximation of this operator in Idris could be defined like so:</p>
-<pre><code class="language-idris">Proof : Bool -&gt; Type
-Proof p = p = True
+                        <h1 id="declarations"><a class="header" href="#declarations">Declarations</a></h1>
+<p>WTy2 supports top-level bindings in the form of &quot;declarations&quot;.</p>
+<p>All named declarations can be prefixed with visibility annotations.</p>
+<h2 id="type-declarations"><a class="header" href="#type-declarations">Type Declarations</a></h2>
+<p>Type declarations define &quot;types&quot;. Note types in WTy2 are quite different from types in many other languages: for instance, types can be open, allowing instances for the type to be made apart from it's declaration.</p>
+<p>Note &quot;type&quot;s in WTy2 were originally named &quot;trait&quot;s for this very reason. I have since decided it makes more sense to just call them &quot;type&quot;s because there is no other construct in the language which fits the role.</p>
+<p>Open types can have a number of associated functions that must be defined at instances of that type. In these functions, there is an implicit constant <code>self: Type</code> in scope which refers to the intance head.</p>
+<p>Supertypes of the type are optionally explicitly declared after the <code>{}</code>s with <code>=&gt;</code>.</p>
+<p>As an example, here is the <code>MonadC</code> type, which is similar to a <code>Monad</code> in functional languages like <code>Haskell</code> but is not total (meaning it can support data structures like sets and hashmaps)</p>
+<pre><code class="language-WTy2">type MonadC[c: Type] {
 
-data (&lt;==) : (a: Type) -&gt; (p: a -&gt; Bool) -&gt; Type where
-  Mk : (x: a) -&gt; (f: Proof (p x)) -&gt; ((&lt;==) a p)
+    fun fmap[a: c, b: c](x: self(a), f: a -&gt; b): self(b)
 
-infix 4 &lt;==
-</code></pre>
-<p>Idris (as far as I am aware) does not have robust support for first-class constraints like WTy2 so we use <code>-&gt; Bool</code> (which can represent an arbitrary predicate) instead.</p>
-<p>An example use would be to restrict the integers received by a function:</p>
-<pre><code class="language-idris">total
-foo : (Nat &lt;== \x =&gt; 1 &lt;= x &amp;&amp; x &lt;= 3) -&gt; ()
-test3 (Mk 1 {f=Refl}) = ()
-test3 (Mk 2 {f=Refl}) = ()
-test3 (Mk 3 {f=Refl}) = ()
-</code></pre>
-<p>We can see that althought <code>foo</code> only matches on the natural number being <code>1</code>, <code>2</code> or <code>3</code>, the function is still correctly typechecked as <code>total</code>, as we must also pass a proof that the <code>Nat</code> is in the range <code>[1-3]</code>.</p>
-<p>Unfortunately, because of the lack of subtyping, when used in Idris, we must always pattern match on the <code>Mk</code> to bring the constraint into scope. In WTy2, both construction and matching is done entirely implicitly.</p>
-<p>The equivalent WTy2 declaration of <code>foo</code> is:</p>
-<pre><code class="language-WTy2">fun foo(x: Nat) &lt;== { 1 &lt;= x &amp;&amp; x &lt;= 3 ~ True }
-</code></pre>
-<p>This sort of constraint is useful enough that defining a type synonym is probably a good idea.</p>
-<pre><code>trait NatBetween(min: Nat, max: Nat)
-    := Nat &lt;== { min &lt;= it &amp;&amp; it &lt;= max ~ True }
+    fun pure[a: c](x: a): self(a)
 
-fun foo(x: NatBetween(1, 3))
+    fun (&gt;&gt;=)[a: c, b: c](x: self(a), f: a -&gt; self(b)): self(b)
+} =&gt; c -&gt; Any
 </code></pre>
-<h3 id="design-note-equivalent-constraints"><a class="header" href="#design-note-equivalent-constraints">Design Note: Equivalent Constraints</a></h3>
-<p>You may realise that as constraints can contain arbitrary expressions, we could formulate these constraints in many different ways. For example, we could write <code>{ contains([1, 2, 3], it) }</code>, or even <code>{ max(1, min(3, it)) ~ it }</code>. That these constraints do indeed imply each other though, is not always obvious (expecially to the typechecker).</p>
-<p>This is arguably the main pain-point with dependent types - proving that one constraint implies another can be tiresome and clutter up code significantly. WTy2 attempts to make this slightly less painful through the ability to write implicit <code>proof</code>s.</p>
-<h2 id="dependent-records--scoping-rules"><a class="header" href="#dependent-records--scoping-rules">Dependent Records / Scoping Rules</a></h2>
-<p>Where this gets more interesting is when wanting to describe constraints on one argument in terms of another.</p>
-<p>For example, imagine we want to define function <code>bar</code> which takes two <code>Nat</code>s, <code>x</code> and <code>y</code>, where <code>y</code> must be greater than <code>x</code>.</p>
-<p>One way to formulate this would be just:</p>
-<pre><code>fun bar(x: Nat, y: Nat) &lt;== { y &gt; x }
-</code></pre>
-<p>But another way to write this would be:</p>
-<pre><code>trait NatAbove(x: Nat) := Nat &lt;== { it &gt; x }
-
-fun bar(x: Nat, y: NatAbove(x))
-</code></pre>
-<p><code>x</code> is in scope when writing the type of <code>y</code>. Cyclic dependencies in these type signatures are also fine:</p>
-<pre><code>trait NatBelow(x: Nat) := Nat &lt;== { it &lt; x }
-
-trait NatAbove(x: Nat) := Nat &lt;== { it &gt; x }
-
-fun bar(x: NatBelow(y), y: NatAbove(x))
-</code></pre>
-<p>One way to view what is happening here is to move all types into a new <code>&lt;==</code> constraint.</p>
-<pre><code>fun bar(x: ?, y: ?) &lt;== { x: NatBelow(y), y: NatAbove(x) }
-</code></pre>
-<h3 id="unresolved-question"><a class="header" href="#unresolved-question">Unresolved Question:</a></h3>
-<p><code>NatBelow</code>/<code>NatAbove</code> require a <code>Nat</code> constraint on their argument. These <code>Nat</code> constraints can be obtained from looking at what <code>NatBelow</code>/<code>NatAbove</code> themselves imply, but this is quite a loopy typechecking case. If implementation for checking this proves too hard, or is there is a soundness hole discovered with these sorts of definitions, an alternative desugaring would be:</p>
-<pre><code>fun bar(x: Nat, y: Nat) &lt;== { x: NatBelow(y), y: NatAbove(x) }
-</code></pre>
-<p>In which case the applications of <code>NatBelow</code> and <code>NatAbove</code> typecheck trivially.</p>
+<p><sup class="footnote-reference"><a href="#note">1</a></sup></p>
+<h2 id="instance-declarations"><a class="header" href="#instance-declarations">Instance Declarations</a></h2>
+<h2 id="data-declarations"><a class="header" href="#data-declarations">Data Declarations</a></h2>
+<p>Data declarations define &quot;variants&quot;. These are simply constructors that create values.</p>
+<h2 id="functionconstantproof-declarations"><a class="header" href="#functionconstantproof-declarations">Function/Constant/Proof Declarations</a></h2>
+<div class="footnote-definition" id="note"><sup class="footnote-definition-label">1</sup>
+<p>Note that with function contravariance, we could also have <code>f: c -&gt; b</code> in <code>fmap</code>, and if <code>MonadC</code> itself was contravariant, <code>x: self(c)</code> and then no need for <code>a</code>. WTy2 currently does not support variance due to added complexity, but code like this shows places where it could be very useful.</p>
+</div>
+<p>Also note the the <code>a: c</code> and <code>b: c</code> constraints here are slightly tiresome. Arguably these could be inferred from their use as arguments to <code>self</code>. There has been some research in Haskell on doing this inference https://richarde.dev/papers/2020/partialdata/partialdata.pdf and it appears to be highly effective in practice (though it is unclear how well it will extend to a language with subtyping).</p>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="declarations.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="core_types.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
-                            <a rel="next" href="erasure_visibility.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next" href="dependent_types.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
 
@@ -235,11 +196,11 @@ fun bar(x: NatBelow(y), y: NatAbove(x))
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="declarations.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="core_types.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
 
-                    <a rel="next" href="erasure_visibility.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next" href="dependent_types.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>

@@ -45,8 +45,10 @@ fun alloc(a: Alloc, t: Type): RefTo(a, t)
 // Create a new allocator and allocate an expression using it
 fun new[t](x: t): [a] RefTo(a, t)
 
-// Function application, but wrap in the allocator
-fun build[a: Alloc, t: Type, ref ~ RefTo(a, t)](x: ref, f: ref -> t): ref {
+// Function application, but wrap in the allocator at the end
+fun build[a: Alloc, t: Type](x: RefTo(a, t), f: RefTo(a, t) -> t)
+    : RefTo(a, t)
+{
     alloc(allocOf(x), f(x))
 }
 
@@ -54,6 +56,13 @@ fun build[a: Alloc, t: Type, ref ~ RefTo(a, t)](x: ref, f: ref -> t): ref {
 // in the signatures of 'x' or 'y'
 x: List(t=Int) = new(Nil)
 y: List(t=Int) = build(x) { Cons(3, it) }
+
+// Alternative style - arguably a more natural order
+fun wrap[a: Alloc, t: Type](f: RefTo(a, t) -> t)
+    : RefTo(a, t) -> RefTo(a, t)
+    = {{ alloc(allocOf(it), f(it)) }}
+
+z: List(t=Int) = wrap { Cons(3, it) } (x)
 ```
 
 There are some interesting interactions with enforcing code like this: for example, if you have two different lists, potentially created with different allocators, the elements from one allocator must be all copied into the other. Because of this, it is recommended that if an algorithm involves a lot of merging of linked data structures, there is a single allocator created once and all sub-structures are creates with it.

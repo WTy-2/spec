@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Proofs - The WTy2 Language Specification</title>
+        <title>Recursive Types - The WTy2 Language Specification</title>
 
 
         <!-- Custom HTML head -->
@@ -83,7 +83,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="core_types.html"><strong aria-hidden="true">2.</strong> Core Types</a></li><li class="chapter-item expanded "><a href="declarations.html"><strong aria-hidden="true">3.</strong> Declarations</a></li><li class="chapter-item expanded "><a href="dependent_types.html"><strong aria-hidden="true">4.</strong> Dependent Types</a></li><li class="chapter-item expanded "><a href="erasure_visibility.html"><strong aria-hidden="true">5.</strong> Erasure and Visibility</a></li><li class="chapter-item expanded "><a href="recursive_types.html"><strong aria-hidden="true">6.</strong> Recursive Types</a></li><li class="chapter-item expanded "><a href="proofs.html" class="active"><strong aria-hidden="true">7.</strong> Proofs</a></li><li class="chapter-item expanded "><a href="io_ex.html"><strong aria-hidden="true">8.</strong> IO and the Ex Monad</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="core_types.html"><strong aria-hidden="true">2.</strong> Core Types</a></li><li class="chapter-item expanded "><a href="declarations.html"><strong aria-hidden="true">3.</strong> Declarations</a></li><li class="chapter-item expanded "><a href="dependent_types.html"><strong aria-hidden="true">4.</strong> Dependent Types</a></li><li class="chapter-item expanded "><a href="erasure_visibility.html"><strong aria-hidden="true">5.</strong> Erasure and Visibility</a></li><li class="chapter-item expanded "><a href="recursive_types.html" class="active"><strong aria-hidden="true">6.</strong> Recursive Types</a></li><li class="chapter-item expanded "><a href="proofs.html"><strong aria-hidden="true">7.</strong> Proofs</a></li><li class="chapter-item expanded "><a href="io_ex.html"><strong aria-hidden="true">8.</strong> IO and the Ex Monad</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -121,7 +121,7 @@
                         <a href="https://github.com/WTy-2/spec/" title="Git repository" aria-label="Git repository">
                             <i id="git-repository-button" class="fa fa-github"></i>
                         </a>
-                        <a href="https://github.com/WTy-2/spec/edit/main/src/proofs.md" title="Suggest an edit" aria-label="Suggest an edit">
+                        <a href="https://github.com/WTy-2/spec/edit/main/src/recursive_types.md" title="Suggest an edit" aria-label="Suggest an edit">
                             <i id="git-edit-button" class="fa fa-edit"></i>
                         </a>
 
@@ -150,62 +150,52 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="proofs"><a class="header" href="#proofs">Proofs</a></h1>
-<p>In many dependently typed language, an unfortunate side effect of needing to translate between different constraints is that code must be cluttered with calls to functions that do effectively nothing except prove that some constraint implies another.</p>
-<p>WTy2 attempts to separate out the these &quot;proof&quot; functions from the code that requires them through the mechanism of implicit <code>proof</code>s.</p>
-<h2 id="syntax"><a class="header" href="#syntax">Syntax</a></h2>
-<pre><code class="language-haskell">-- | 'proofDec' is a valid top-level LValue
-{- Examples:
+                        <h1 id="recursive-types"><a class="header" href="#recursive-types">Recursive Types</a></h1>
+<p>Elsewhere in this spec (I may go back and fix it up later), I have been relatively loose with defining types like:</p>
+<pre><code class="language-WTy2">data Cons(head: t, tail: List(t))
+data Nil
 
-proof(x: Nat, y: Nat) &lt;== { x ~ 2 * y }
-    : () &lt;== { even(x) }
-    = { ... }
-
-proof: (x: Nat, y: Nat)  &lt;== { x ~ 2 * y }
-    -&gt; () &lt;== { even(x) }
-    = { ... }
-
-proof mulTwoImplesEven(x: Nat, y: Nat) &lt;== { x ~ 2 * y }
-    : () &lt;== { even(x) }
-    = { ... }
-
-proof mulTwoImplesEven: (x: Nat, y: Nat) &lt;== { x ~ 2 * y }
-    -&gt; () &lt;== { even(x) }
-    = { ... }
--}
-proofDec :: Parser ProofDec
-proofDec = &quot;proof&quot; *&gt; mkProofDec (optional termIdent)
+type List(t: Type) = [head: t, tail: List(t)]
+                     Is(Cons(head, tail))
+                   | Is(Nil)
 </code></pre>
-<p>As well as <code>fun</code>, WTy2 supports another keyword before top-level function declarations: <code>proof</code>. Named <code>proof</code>s can be called just like normal functions. However, their name can optionally be elided.</p>
-<h2 id="semantics"><a class="header" href="#semantics">Semantics</a></h2>
-<p>In WTy2, if at any point during typechecking, an expression fails to typecheck, then all in-scope <code>proof</code>s are iterated through. For every <code>proof</code>, all in-scope terms are compared against the arguments, and all compatible argument combinations to perform a call of this <code>proof</code> function are iterated through.</p>
-<p>For every call of the proof function, immediately before the failing to typecheck expression, a call to the function is introduced, discarding the result, but matching on it to bring any constraints into scope. The expression is then re-typechecked, with these constraints in scope. If it fails again, that function call is removed, and the next one is tried.</p>
-<p>If typechecking with any proof call succeeds, then that call to the proof is left in and typechecking proceeds as normal. If all proofs fail, then the type error is outputted as would be expected.</p>
-<p>Importantly, proofs are limited to single function calls. If there is a proof that <code>A =&gt; B</code> and a proof that <code>B =&gt; C</code>, and a proof of <code>A =&gt; C</code> is required, the programmer must explicitly write that proof. This is to ensure typechecking is decidable.</p>
-<h2 id="design-note-transitive-closure-of-proofs"><a class="header" href="#design-note-transitive-closure-of-proofs">Design Note: Transitive Closure of Proofs</a></h2>
-<p>While needing to write transitive proofs might seem slightly painful, note it is NOT intended that every single possible valid proof function is written. First of all, this is likely impossible (for the same reason typechecking would become undecidable: infinite valid proofs can be obtained starting from a finite number), but also, it is unnecessary! Why prove anything that isn't helpful?</p>
-<p>Instead, it is hoped that the WTy2 programmer writes code assuming all obvious implications are known to the typechecker, and then if a type error is found, the programmer writes the proof required for that specific error. Now all future times that same error would appear, the in-scope proof is implicitly called.</p>
-<h2 id="implementation-note-typechecking-performance"><a class="header" href="#implementation-note-typechecking-performance">Implementation Note: Typechecking Performance</a></h2>
-<p>A naive implementation of the above algorithm will have a pretty devastating impact on typechecking performance. Hopefully some good method of pruning the search space can be found. It is also suggested that when proofs are successfully found, that information is cached somehow so on future compilation it does not need to be rediscovered.</p>
-<p>Note the process of searching in-scope terms to find something that will allow the program to typecheck is not at all a new idea. Idris, for example, allows for writing explicit &quot;holes&quot; in programs https://docs.idris-lang.org/en/latest/elaboratorReflection/holes.html, where the compiler can automatically search for expressions that fit the desired type signature using functions labelled with <code>#hint</code> pragmas. Compared to this, WTy2 holes are relatively modest: the expressions are limited to single function calls.</p>
-<h2 id="implementation-note-runtime-performance"><a class="header" href="#implementation-note-runtime-performance">Implementation Note: Runtime Performance</a></h2>
-<p>WTy2 does not assume totality of functions. This includes proofs, and so it is entirely possible for a proof to typecheck, but then at runtime loop infinitely or crash.</p>
-<p>For this reason, to preserve safety, running these proofs is unfortunately necessary. Running these proofs can have severe performance impacts however (to the point of changing the time complexity of many algorithms). It is therefore suggested that WTy2 implementations allow compiling with an option that skips over calls to <code>proof</code>s where the values are discarded, assuming totality. This has the result of turning infinite loops/runtime crashes into undefined behaviour.</p>
-<h2 id="compiler-warnings"><a class="header" href="#compiler-warnings">Compiler Warnings</a></h2>
-<p>Marking a function as a <code>proof</code>s is only useful if it returns proof of a constraint that mentions at least one of the arguments. It is suggested that this property should be checked for (possibly producing a warning) by implementations.</p>
-<h2 id="imports"><a class="header" href="#imports">Imports</a></h2>
-<p>Importing proofs operates similarly to importing type instances: they are implicitly imported from modules.</p>
-<p>In fact, proofs can be thought of as somewhat similar to instances: they allow defining implications between one constraint and another. The main difference is arguably that <code>proof</code>s must be justified while <code>instance</code>s are taken as axioms, but for this reason are much more limited (to prevent unsoundness).</p>
+<p>Unfortunately, there is a bit of an issue with values of this type - they have unbounded size! Specifically, if a function takes a <code>List(Int)</code>, for example, the actual list it could receive could have any number of <code>Cons</code> nodes.</p>
+<p>Furthermore, it is not clear how to implement variance for this type. If we have a <code>List(Int)</code>, then ideally at each node we would not store any information informing us that the item is an <code>Int</code> (we can know that it could be nothing else from the type signature). However, we would like to be able to pass this into functions accepting say <code>List(Num)</code> or <code>[n: Num] List(n)</code> (where <code>n</code> could be instantiated to <code>Num</code>). This would seemingly require creating an entirely new list with the <code>Int</code> marker placed on every node.</p>
+<p>One potential solution is to simply not use recursive types. WTy2 supplies a an array list type that is fast and provides great memory locality. In languages like Haskell and Closure, however, the utility of being able to create many large data structures that share data cannot really be understated. As a functional language with pattern matching, WTy2 really should be able to achieve something similar.</p>
+<p>The way we can achieve this is through references, but perhaps in a slightly different way to what you might imagine coming from languages like Rust.</p>
+<pre><code>data Cons[r](head: t, tail: List(r, t))
+data Nil
+type List(r: Ref, t: Type) = [head, tail: List(r, t)]
+                             Is(r(Cons(h, t)))
+                           | Is(Nil)
+</code></pre>
+<p>The main interesting thing about this definition is that <code>r</code>, the type variable that will be instantiated to some sort of reference that will break up the infinite type, is generic. We could instantiate <code>r</code> to some owning reference type like <code>Box</code> and get a definition similar to what we would achieve in Rust, but we can do better.</p>
+<p>The problem with <code>Box</code> or any other global allocator is that we lose locality. If the elements are added to the list randomly over time, then they will be placed in virtually random locations in memory. What we would like is for every element of the same list to be placed in more-or-less the same location.</p>
+<pre><code>type Alloc = ...
+type RefTo(a: Alloc, t: Type) = ...
+
+// Create a new allocator and allocate an expression using it
+fun new[t](x: t): [a] RefTo(a, t)
+
+// Allocate to an existing (inferred, based on return type) allocator
+fun build[a](x: t): RefTo(a, t)
+
+[a0] x: List(r=a0, t=Int) = new(Nil)
+y: List(r=a0, t=Int) = build(Cons(3, x))
+</code></pre>
+<p>There are some interesting interactions with enforcing code like this: for example, if you have two different lists, potentially created with different allocators, the elements from one allocator must be all copied into the other. Because of this, it is recommended that if an algorithm involves a lot of merging of linked data structures, there is a single allocator created once and all sub-structures are creates with it.</p>
+<p>Note that using allocators like this also helps with the variance problem as mentioned above. Allocators in WTy2 are type-aware. Allocators must provide a way of recovering full type information for every value that is stored by them, but to ensure memory is not wasted, elements with common type prefixes are stored together. The exact mechanism for how to find the prefix is WIP but one could imagine, for instance, a binary tree which is traversed based on the reference and stores the common prefixes at the leaves.</p>
+<p>The main downside is arguably the unfortunate amount of syntactic noise. It is hoped that as WTy2 matures, common patterns with this sort of code will be discovered and syntax sugar will be created that can abstract some of it away.</p>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="recursive_types.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="erasure_visibility.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
-                            <a rel="next" href="io_ex.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next" href="proofs.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
 
@@ -215,11 +205,11 @@ proofDec = &quot;proof&quot; *&gt; mkProofDec (optional termIdent)
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="recursive_types.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="erasure_visibility.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
 
-                    <a rel="next" href="io_ex.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next" href="proofs.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>

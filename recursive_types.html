@@ -160,7 +160,7 @@ type List(t: Type) = [head: t, tail: List(t)]
                    | Is(Nil)
 </code></pre>
 <p>Unfortunately, there is a bit of an issue with values of this type - they have unbounded size! Specifically, if a function takes a <code>List(Int)</code>, for example, the actual list it could receive could have any number of <code>Cons</code> nodes.</p>
-<p>Furthermore, it is not clear how to implement variance for this type. If we have a <code>List(Int)</code>, then ideally at each node we would not store any information informing us that the item is an <code>Int</code> (we can know that it could be nothing else from the type signature). However, we would like to be able to pass this into functions accepting say <code>List(Num)</code> or <code>[n: Num] List(n)</code> (where <code>n</code> could be instantiated to <code>Num</code>). This would seemingly require creating an entirely new list with the <code>Int</code> marker placed on every node.</p>
+<p>Furthermore, it is not clear how to implement variance for this type. If we have a <code>List(Int)</code>, then ideally at each node we would not store any information informing us that the item is an <code>Int</code> (we can know that it could be nothing else from the type signature). However, we would like to be able to pass this into functions accepting say <code>List(Num)</code>, this would seemingly require creating an entirely new list with the <code>Int</code> marker placed on every node.</p>
 <p>One potential solution is to simply not use recursive types. WTy2 supplies a an array list type that is fast and provides great memory locality. In languages like Haskell and Closure, however, the utility of being able to create many large data structures that share data cannot really be understated. As a functional language with pattern matching, WTy2 really should be able to achieve something similar.</p>
 <p>The way we can achieve this is through references, but perhaps in a slightly different way to what you might imagine coming from languages like Rust.</p>
 <pre><code>data Cons[r](head: t, tail: List(r, t))
@@ -184,7 +184,7 @@ fun new[t](x: t): [a] RefTo(a, t)
 fun build(a: Alloc, x: t): RefTo(a, t)
 
 // We take advantage of partial signatures to not need to specify the allocator
-// In the signatures of 'x' or 'y'
+// in the signatures of 'x' or 'y'
 x: List(t=Int) = new(Nil)
 y: List(t=Int) = build(alloc(x), Cons(3, x))
 </code></pre>

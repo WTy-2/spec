@@ -5,5 +5,6 @@
 - [Declarations](./declarations.md)
 - [Dependent Types](./dependent_types.md)
 - [Erasure and Visibility](./erasure_visibility.md)
+- [Recursive Types](./recursive_types.md)
 - [Proofs](./proofs.md)
 - [IO and the Ex Monad](./io_ex.md)

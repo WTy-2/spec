@@ -35,14 +35,19 @@ The problem with `Box` or any other global allocator is that we lose locality. I
 type Alloc = ...
 type RefTo(a: Alloc, t: Type) = ...
 
+// Get the allocator of a reference
+fun alloc[a: Alloc, t: Type](r: RefTo(a, t)): Alloc <== { it ~ a }
+
 // Create a new allocator and allocate an expression using it
 fun new[t](x: t): [a] RefTo(a, t)
 
-// Allocate to an existing (inferred, based on return type) allocator
-fun build[a](x: t): RefTo(a, t)
+// Allocate to an existing allocator
+fun build(a: Alloc, x: t): RefTo(a, t)
 
-[a0] x: List(r=a0, t=Int) = new(Nil)
-y: List(r=a0, t=Int) = build(Cons(3, x))
+// We take advantage of partial signatures to not need to specify the allocator
+// In the signatures of 'x' or 'y'
+x: List(t=Int) = new(Nil)
+y: List(t=Int) = build(alloc(x), Cons(3, x))
 ```
 
 There are some interesting interactions with enforcing code like this: for example, if you have two different lists, potentially created with different allocators, the elements from one allocator must be all copied into the other. Because of this, it is recommended that if an algorithm involves a lot of merging of linked data structures, there is a single allocator created once and all sub-structures are creates with it.

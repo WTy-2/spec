@@ -17,7 +17,7 @@ Supertypes of the type are optionally explicitly declared after the `{}`s with `
 As an example, here is the `MonadC` type, which is similar to a `Monad` in functional languages like `Haskell` but is not total (meaning it can support data structures like sets and hashmaps)
 
 ```WTy2
-type MonadC[c: Type] {
+type MonadC(c: Type) {
 
     fun fmap[a: c, b: c](x: self(a), f: a -> b): self(b)
 

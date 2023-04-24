@@ -20,10 +20,10 @@ One potential solution is to simply not use recursive types. WTy2 supplies a an 
 The way we can achieve this is through references, but perhaps in a slightly different way to what you might imagine coming from languages like Rust.
 
 ```
-data Cons[r](head: t, tail: List(r, t))
+data Cons[r: Ref](head: t, tail: List(r, t))
 data Nil
 type List(r: Ref, t: Type) = r(
-    [head, tail: List(r, t)] Is(Cons(h, t))
+    [head, tail: List(r, t)] Is(Cons(head, tail))
                            | Is(Nil)
     )
 ```
@@ -47,7 +47,7 @@ fun new[t](x: t): [a] RefTo(a, t)
 
 // Function application, but wrap in the allocator at the end
 fun build[a: Alloc, t: Type](x: RefTo(a, t), f: RefTo(a, t) -> t)
-    : RefTo(a, t)
+    : RefTo(a, t) =
 {
     alloc(allocOf(x), f(x))
 }
@@ -57,16 +57,44 @@ fun build[a: Alloc, t: Type](x: RefTo(a, t), f: RefTo(a, t) -> t)
 x: List(t=Int) = new(Nil)
 y: List(t=Int) = build(x) { Cons(3, it) }
 
-// Alternative style - arguably a more natural order
-fun wrap[a: Alloc, t: Type](f: RefTo(a, t) -> t)
-    : RefTo(a, t) -> RefTo(a, t)
-    = {{ alloc(allocOf(it), f(it)) }}
 
-z: List(t=Int) = wrap { Cons(3, it) } (x)
+// Alternate style, arguably neater but requires some extra busywork
+
+type ConsLike(r, t) = [head: t, tail: List(r, t)] Is(Cons(head, tail))
+
+// Would likely be a method of some type
+// '(,..)' denotes partial application
+// (i.e: will fill in the other arguments later)
+fun allocOfCons[a: Alloc, r: RefTo(a,..), t: Type]
+               (x: ConsLike(r, t))
+               : Alloc <== { it ~ a  } =
+{
+    match(x) {
+        Cons(_, tail) -> allocOf(tail)
+    }
+}
+
+fun altBuild[a: Alloc, r: RefTo(a,..), t: Type]
+            (x: ConsLike(r, t)): List(r, t)
+{
+    alloc(allocOfCons(x), x)
+}
+
+z: List(t=Int) = altBuild(Cons(3, x))
 ```
 
 There are some interesting interactions with enforcing code like this: for example, if you have two different lists, potentially created with different allocators, the elements from one allocator must be all copied into the other. Because of this, it is recommended that if an algorithm involves a lot of merging of linked data structures, there is a single allocator created once and all sub-structures are creates with it.
 
 Note that using allocators like this also helps with the variance problem as mentioned above. Allocators in WTy2 are type-aware. Allocators must provide a way of recovering full type information for every value that is stored by them, but to ensure memory is not wasted, elements with common type prefixes are stored together. The exact mechanism for how to find the prefix is WIP but one could imagine, for instance, a binary tree which is traversed based on the reference and stores the common prefixes at the leaves.
 
-The main downside is arguably the unfortunate amount of syntactic noise. It is hoped that as WTy2 matures, common patterns with this sort of code will be discovered and syntax sugar will be created that can abstract some of it away.
+The main downside is arguably the unfortunate amount of syntactic noise (for instance, compared to similar linked data structures in Haskell). Still, this is somewhat to be expected in a more low-level programming language - with the clutter comes flexibility.
+
+A very nice side-effect is that in simple cases, as `r` is not restricted to be matchable (it uses the ordinary function arrow), references can be omitted for known finitely sized structures.
+
+```WTy2
+x: List(r={it}, t=Int) = Cons(1, Cons(2, Cons(3, Nil)))
+```
+
+Note this works because the type of `x` is elaborated with the constraint `x ~ Cons(1, Cons(2, Cons(3, Nil)))` which fixes the size of `x`.
+
+In theory, this means lists with constraints that ensure finite length should also be allowed. In practise, compilers may want to try and detect these cases by iterating through potential inhabiting values. If iterating through all potential inhabiting values takes too long, it is likely that the structure is large enough that it would benefit from being heap allocated anyway. Perhaps it could be made possible (via dependent types) to allow the programmer to write proofs that a constraint implies that the size of the type is bounded.

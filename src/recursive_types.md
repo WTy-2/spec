@@ -13,7 +13,7 @@ type List(t: Type) = [head: t, tail: List(t)]
 
 Unfortunately, there is a bit of an issue with values of this type - they have unbounded size! Specifically, if a function takes a `List(Int)`, for example, the actual list it could receive could have any number of `Cons` nodes.
 
-Furthermore, it is not clear how to implement variance for this type. If we have a `List(Int)`, then ideally at each node we would not store any information informing us that the item is an `Int` (we can know that it could be nothing else from the type signature). However, we would like to be able to pass this into functions accepting say `List(Num)` or `[n: Num] List(n)` (where `n` could be instantiated to `Num`). This would seemingly require creating an entirely new list with the `Int` marker placed on every node.
+Furthermore, it is not clear how to implement variance for this type. If we have a `List(Int)`, then ideally at each node we would not store any information informing us that the item is an `Int` (we can know that it could be nothing else from the type signature). However, we would like to be able to pass this into functions accepting say `List(Num)`, this would seemingly require creating an entirely new list with the `Int` marker placed on every node.
 
 One potential solution is to simply not use recursive types. WTy2 supplies a an array list type that is fast and provides great memory locality. In languages like Haskell and Closure, however, the utility of being able to create many large data structures that share data cannot really be understated. As a functional language with pattern matching, WTy2 really should be able to achieve something similar.
 
@@ -45,7 +45,7 @@ fun new[t](x: t): [a] RefTo(a, t)
 fun build(a: Alloc, x: t): RefTo(a, t)
 
 // We take advantage of partial signatures to not need to specify the allocator
-// In the signatures of 'x' or 'y'
+// in the signatures of 'x' or 'y'
 x: List(t=Int) = new(Nil)
 y: List(t=Int) = build(alloc(x), Cons(3, x))
 ```

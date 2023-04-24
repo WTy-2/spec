@@ -22,9 +22,10 @@ The way we can achieve this is through references, but perhaps in a slightly dif
 ```
 data Cons[r](head: t, tail: List(r, t))
 data Nil
-type List(r: Ref, t: Type) = [head, tail: List(r, t)]
-                             Is(r(Cons(h, t)))
+type List(r: Ref, t: Type) = r(
+    [head, tail: List(r, t)] Is(Cons(h, t))
                            | Is(Nil)
+    )
 ```
 
 The main interesting thing about this definition is that `r`, the type variable that will be instantiated to some sort of reference that will break up the infinite type, is generic. We could instantiate `r` to some owning reference type like `Box` and get a definition similar to what we would achieve in Rust, but we can do better.
@@ -36,18 +37,23 @@ type Alloc = ...
 type RefTo(a: Alloc, t: Type) = ...
 
 // Get the allocator of a reference
-fun alloc[a: Alloc, t: Type](r: RefTo(a, t)): Alloc <== { it ~ a }
+fun allocOf[a: Alloc, t: Type](r: RefTo(a, t)): Alloc <== { it ~ a }
+
+// Would be a method of the 'Alloc' type
+fun alloc(a: Alloc, t: Type): RefTo(a, t)
 
 // Create a new allocator and allocate an expression using it
 fun new[t](x: t): [a] RefTo(a, t)
 
-// Allocate to an existing allocator
-fun build(a: Alloc, x: t): RefTo(a, t)
+// Function application, but wrap in the allocator
+fun build[a: Alloc, t: Type, ref ~ RefTo(a, t)](x: ref, f: ref -> t): ref {
+    alloc(allocOf(x), f(x))
+}
 
 // We take advantage of partial signatures to not need to specify the allocator
 // in the signatures of 'x' or 'y'
 x: List(t=Int) = new(Nil)
-y: List(t=Int) = build(alloc(x), Cons(3, x))
+y: List(t=Int) = build(x) { Cons(3, it) }
 ```
 
 There are some interesting interactions with enforcing code like this: for example, if you have two different lists, potentially created with different allocators, the elements from one allocator must be all copied into the other. Because of this, it is recommended that if an algorithm involves a lot of merging of linked data structures, there is a single allocator created once and all sub-structures are creates with it.

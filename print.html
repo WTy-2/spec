@@ -197,7 +197,7 @@
 <p>Open types can have a number of associated functions that must be defined at instances of that type. In these functions, there is an implicit constant <code>self: Type</code> in scope which refers to the intance head.</p>
 <p>Supertypes of the type are optionally explicitly declared after the <code>{}</code>s with <code>=&gt;</code>.</p>
 <p>As an example, here is the <code>MonadC</code> type, which is similar to a <code>Monad</code> in functional languages like <code>Haskell</code> but is not total (meaning it can support data structures like sets and hashmaps)</p>
-<pre><code class="language-WTy2">type MonadC[c: Type] {
+<pre><code class="language-WTy2">type MonadC(c: Type) {
 
     fun fmap[a: c, b: c](x: self(a), f: a -&gt; b): self(b)
 
@@ -338,6 +338,8 @@ len = vecLen[Bool, erasedLen](vec);
 // From the signature of 'vecLen', `erasedLen ~ len` is in the context
 _: () &lt;== { erasedLen ~ len } = ();
 </code></pre>
+<h2 id="infering-from-return-type"><a class="header" href="#infering-from-return-type">Infering From Return Type</a></h2>
+<p>One unfortunate consequence of handling inference in this way is that inference based on return type is not really possible. This can be a useful feature - for example, in languages like Haskell, all integer literals have type <code>Num a =&gt; a</code>, meaning they can appear in any numeric expression without a need to cast them to the correct numeric type.</p>
 <p><sup class="footnote-reference"><a href="#note">1</a></sup>
 The exact condition with constraint operators which makes it legal for a variable to be erased and inferred is a work-in-progress. In theory we only want to allow erasure if there is a possibility that it can be inferred, but detecting this is potentially non-trivial.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="recursive-types"><a class="header" href="#recursive-types">Recursive Types</a></h1>
@@ -364,14 +366,19 @@ type List(r: Ref, t: Type) = [head, tail: List(r, t)]
 <pre><code>type Alloc = ...
 type RefTo(a: Alloc, t: Type) = ...
 
+// Get the allocator of a reference
+fun alloc[a: Alloc, t: Type](r: RefTo(a, t)): Alloc &lt;== { it ~ a }
+
 // Create a new allocator and allocate an expression using it
 fun new[t](x: t): [a] RefTo(a, t)
 
-// Allocate to an existing (inferred, based on return type) allocator
-fun build[a](x: t): RefTo(a, t)
+// Allocate to an existing allocator
+fun build(a: Alloc, x: t): RefTo(a, t)
 
-[a0] x: List(r=a0, t=Int) = new(Nil)
-y: List(r=a0, t=Int) = build(Cons(3, x))
+// We take advantage of partial signatures to not need to specify the allocator
+// In the signatures of 'x' or 'y'
+x: List(t=Int) = new(Nil)
+y: List(t=Int) = build(alloc(x), Cons(3, x))
 </code></pre>
 <p>There are some interesting interactions with enforcing code like this: for example, if you have two different lists, potentially created with different allocators, the elements from one allocator must be all copied into the other. Because of this, it is recommended that if an algorithm involves a lot of merging of linked data structures, there is a single allocator created once and all sub-structures are creates with it.</p>
 <p>Note that using allocators like this also helps with the variance problem as mentioned above. Allocators in WTy2 are type-aware. Allocators must provide a way of recovering full type information for every value that is stored by them, but to ensure memory is not wasted, elements with common type prefixes are stored together. The exact mechanism for how to find the prefix is WIP but one could imagine, for instance, a binary tree which is traversed based on the reference and stores the common prefixes at the leaves.</p>

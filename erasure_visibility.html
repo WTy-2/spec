@@ -169,6 +169,8 @@ len = vecLen[Bool, erasedLen](vec);
 // From the signature of 'vecLen', `erasedLen ~ len` is in the context
 _: () &lt;== { erasedLen ~ len } = ();
 </code></pre>
+<h2 id="infering-from-return-type"><a class="header" href="#infering-from-return-type">Infering From Return Type</a></h2>
+<p>One unfortunate consequence of handling inference in this way is that inference based on return type is not really possible. This can be a useful feature - for example, in languages like Haskell, all integer literals have type <code>Num a =&gt; a</code>, meaning they can appear in any numeric expression without a need to cast them to the correct numeric type.</p>
 <p><sup class="footnote-reference"><a href="#note">1</a></sup>
 The exact condition with constraint operators which makes it legal for a variable to be erased and inferred is a work-in-progress. In theory we only want to allow erasure if there is a possibility that it can be inferred, but detecting this is potentially non-trivial.</p>
 

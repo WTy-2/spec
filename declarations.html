@@ -159,7 +159,7 @@
 <p>Open types can have a number of associated functions that must be defined at instances of that type. In these functions, there is an implicit constant <code>self: Type</code> in scope which refers to the intance head.</p>
 <p>Supertypes of the type are optionally explicitly declared after the <code>{}</code>s with <code>=&gt;</code>.</p>
 <p>As an example, here is the <code>MonadC</code> type, which is similar to a <code>Monad</code> in functional languages like <code>Haskell</code> but is not total (meaning it can support data structures like sets and hashmaps)</p>
-<pre><code class="language-WTy2">type MonadC[c: Type] {
+<pre><code class="language-WTy2">type MonadC(c: Type) {
 
     fun fmap[a: c, b: c](x: self(a), f: a -&gt; b): self(b)
 

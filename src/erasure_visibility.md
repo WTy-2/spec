@@ -9,9 +9,9 @@ A term can be bound in the erased elements of a record only if it occurs (to the
 An example of erasure being useful is when working with length-indexed vectors:
 
 ```WTy2
-fun vecLen[t: Type, n: Nat](v: Vec(t, n)): Nat <== { it ~ n }
+vecLen[t: Type, n: Nat](v: Vec(t, n)): Nat <== { it ~ n }
 
-fun returnsVecOfUnknownLen(...): [n: Nat](Vec[Bool, n])
+returnsVecOfUnknownLen(...): [n: Nat] Vec[Bool, n]
 ```
 
 In `vecLen`, binding `t` and `n` in the `[]`s allows them to be inferred, and makes it so there is no runtime cost of having to pass the type or length. Note if we had to pass the length explicitly, then the function would be entirely useless: we would need to know the length to calculate it!
@@ -23,7 +23,7 @@ To be concrete, a term being erased means that it cannot be pattern matched on, 
 Unlike constraints in `<==`, erased terms in records can be manually specified at construction or bound when matching.
 
 ```WTy2
-[erasedLen=n](vec) = returnsVecOfUnknownLen(...);
+[erasedLen=n] vec = returnsVecOfUnknownLen(...);
 len = vecLen[Bool, erasedLen](vec);
 
 // From the signature of 'vecLen', `erasedLen ~ len` is in the context

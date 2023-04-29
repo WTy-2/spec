@@ -7,11 +7,10 @@ WTy2 features dependent types through desugaring to a single language construct,
 `<==` is a type operator (it cannot occur at the value level) and has the following type signature:
 
 ```WTy2
->>> :type (<==)
-> (<==) : [a: Type](x: a, f: a -> Constraint) -> Type
+(<==) : [a: Type](x: a, f: a -> Constraint) -> Type
 ```
 
-To construct a value of type `a <== b` from a value of type `a`, `b(a)` must be in the context. Matching on a value of type `a <== b` is equivalent to matching on a value of type `a`, but `b(a)` is added to the context.
+To construct a value of type `a <== b` from a value of type `a`, `b(a)` must be in the context. Matching on a value of type `a <== b` is similar to matching on a value of type `a`, but `b(a)` is added to the context.
 
 This operator has similarities to refinement types (i.e: in Liquid Haskell) and dependent pairs (i.e: in Agda/Idris/Coq/Lean) but is a somewhat unique construct, which is primarily enabled from WTy2's robust support for first-class `Constraint`s and subtyping.
 
@@ -39,23 +38,23 @@ test3 (Mk 2 {f=Refl}) = ()
 test3 (Mk 3 {f=Refl}) = ()
 ```
 
-We can see that althought `foo` only matches on the natural number being `1`, `2` or `3`, the function is still correctly typechecked as `total`, as we must also pass a proof that the `Nat` is in the range `[1-3]`.
+We can see that although `foo` only matches on the natural number being `1`, `2` or `3`, the function is still correctly typechecked as `total`, as we must also pass a proof that the `Nat` is in the range `[1-3]`.
 
-Unfortunately, because of the lack of subtyping, when used in Idris, we must always pattern match on the `Mk` to bring the constraint into scope. In WTy2, both construction and matching is done entirely implicitly.
+Unfortunately, because of the lack of subtyping, when used in Idris, we must always pattern match on the `Mk` to bring the constraint into scope. In WTy2, both construction and matching is done implicitly.
 
 The equivalent WTy2 declaration of `foo` is:
 
 ```WTy2
-fun foo(x: Nat) <== { 1 <= x && x <= 3 ~ True }
+foo(x: Nat) <== { 1 <= x && x <= 3 ~ True }
 ```
 
 This sort of constraint is useful enough that defining a type synonym is probably a good idea.
 
 ```
-trait NatBetween(min: Nat, max: Nat)
-    := Nat <== { min <= it && it <= max ~ True }
+type NatBetween(min: Nat, max: Nat)
+    = Nat <== { min <= it && it <= max ~ True }
 
-fun foo(x: NatBetween(1, 3))
+foo(x: NatBetween(1, 3))
 ```
 
 ### Design Note: Equivalent Constraints
@@ -66,41 +65,41 @@ This is arguably the main pain-point with dependent types - proving that one con
 
 ## Dependent Records / Scoping Rules
 
-Where this gets more interesting is when wanting to describe constraints on one argument in terms of another.
+Where this all gets more interesting is when wanting to constraint one argument in terms of another.
 
 For example, imagine we want to define function `bar` which takes two `Nat`s, `x` and `y`, where `y` must be greater than `x`.
 
 One way to formulate this would be just:
 
 ```
-fun bar(x: Nat, y: Nat) <== { y > x }
+bar(x: Nat, y: Nat) <== { y > x }
 ```
 
 But another way to write this would be:
 
 ```
-trait NatAbove(x: Nat) := Nat <== { it > x }
+type NatAbove(x: Nat) = Nat <== { it > x }
 
-fun bar(x: Nat, y: NatAbove(x))
+bar(x: Nat, y: NatAbove(x))
 ```
 
 `x` is in scope when writing the type of `y`. Cyclic dependencies in these type signatures are also fine:
 
 ```
-trait NatBelow(x: Nat) := Nat <== { it < x }
+type NatBelow(x: Nat) = Nat <== { it < x }
 
-trait NatAbove(x: Nat) := Nat <== { it > x }
+type NatAbove(x: Nat) = Nat <== { it > x }
 
-fun bar(x: NatBelow(y), y: NatAbove(x))
+bar(x: NatBelow(y), y: NatAbove(x))
 ```
 
-One way to view what is happening here is to move all types into a new `<==` constraint.
+One way to view what is happening here is to move all types into a new `<==` constraint (recall `Type => (a -> Constraint) <== { a ~ it }`).
 
 ```
-fun bar(x: ?, y: ?) <== { x: NatBelow(y), y: NatAbove(x) }
+bar(x: ?, y: ?) <== { NatBelow(y)(x), y: NatAbove(x)(y) }
 ```
 
-### Unresolved Question:
+### Unresolved Questions:
 
 `NatBelow`/`NatAbove` require a `Nat` constraint on their argument. These `Nat` constraints can be obtained from looking at what `NatBelow`/`NatAbove` themselves imply, but this is quite a loopy typechecking case. If implementation for checking this proves too hard, or is there is a soundness hole discovered with these sorts of definitions, an alternative desugaring would be:
 

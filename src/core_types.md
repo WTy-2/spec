@@ -8,15 +8,21 @@ WTy2 is a language with subtyping and with first-class types. This has an intere
 
 ## Type
 
-`Type` is the supertype of all "types". This includes anything which can appear to the right of `:`.
+`Type` is the supertype of all "types". This includes anything which can appear on the RHS of a `:` binding.
 
-An automatic instance is derived for every type declaration.
+An automatic instance of `Type` is derived for every type declaration.
 
 ## Constraint
 
 `Constraint` represents "constraints". These sometimes look syntactically similar to bindings, but instead of bringing variables into scope, they constrain existing values.
 
-Constraints can be created with the built-in `<:`, `~` and `=>` operators.
+Constraints can be created with the built-in `~` and `=>` operators. Every type `a` also implements `a -> Constraint`, which is the constraint that there exists an instance of the type for that term. i.e: you can imagine for every type `Foo`:
+
+```WTy2
+instance Foo -> Constraint for Foo {
+    ...
+}
+```
 
 ## Functions
 
@@ -28,12 +34,12 @@ Tuples/records/dependent pairs in WTy2 are surprisingly complicated, and so they
 
 It's worth noting though, that combining the above constructs in tuples typically gives back something that implements the same type.
 
-- Tuple of `Type`s <: `Type` (anonymous tuple type)
-- Tuple of `Constraint`s <: `Constraint` (conjunction)
+- Tuple of `Type`s => `Type` (anonymous tuple type)
+- Tuple of `Constraint`s => `Constraint` (conjunction)
 
 However...
 
-- Tuple of `Bind`ings <: `Type` (record type)
+- Tuple of `Bind`ings => `Type` (record type)
 
 ### Unit ("()")
 

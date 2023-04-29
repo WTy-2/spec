@@ -8,3 +8,4 @@
 - [Recursive Types](./recursive_types.md)
 - [Proofs](./proofs.md)
 - [IO and the Ex Monad](./io_ex.md)
+- [Utilities](./utilities.md)

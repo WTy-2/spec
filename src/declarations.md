@@ -8,9 +8,9 @@ All named declarations can be prefixed with visibility annotations.
 
 Type declarations define "types". Note types in WTy2 are quite different from types in many other languages: for instance, types can be open, allowing instances for the type to be made apart from it's declaration.
 
-Note "type"s in WTy2 were originally named "trait"s for this very reason. I have since decided it makes more sense to just call them "type"s because there is no other construct in the language which fits the role.
+Note "type"s in WTy2 were originally named "trait"s for this very reason. I have since decided it makes more sense to just call them "type"s because there is no other construct in the language which fits the same role.
 
-Open types can have a number of associated functions that must be defined at instances of that type. In these functions, there is an implicit constant `self: Type` in scope which refers to the intance head.
+Open types can have a number of associated functions that must be defined at instances of that type. In these functions, there is an implicit constant `self: Type` in scope which refers to the instance head.
 
 Supertypes of the type are optionally explicitly declared after the `{}`s with `=>`.
 
@@ -19,11 +19,11 @@ As an example, here is the `MonadC` type, which is similar to a `Monad` in funct
 ```WTy2
 type MonadC(c: Type) {
 
-    fun fmap[a: c, b: c](x: self(a), f: a -> b): self(b)
+    fmap[a: c, b: c](x: self(a), f: a -> b): self(b)
 
-    fun pure[a: c](x: a): self(a)
+    pure[a: c](x: a): self(a)
 
-    fun (>>=)[a: c, b: c](x: self(a), f: a -> self(b)): self(b)
+    (>>=)[a: c, b: c](x: self(a), f: a -> self(b)): self(b)
 
 } => c -> Any
 ```
@@ -57,19 +57,19 @@ As coherence rules enforce that instances where the instance head is an open typ
 It is critical to soundess of the WTy2 language that instances do not overlap. The rules for avioding overlap can be summarised as:
 
 - If the instance head is open, that instance must be in the same module as the type declaration and no other instances can be written.
-- If the instance head is closed, either the instance must be in the same module as the type declaration, or all implementing patterns must contain at least one variant tag that was defined in the same module.
+- If the instance head is closed, either the instance must be in the same module as the type declaration, or all implementing patterns must contain at least one variant tag that was defined in the same module (in other words: it must be impossible to write this instance in some other module without importing the one you are writing the instance in).
 
 ### Named Instances
 
 WTy2 supports "named instances" as an alternative to the newtype pattern.
 
-The exact semantics and syntax of this feature are WIP, but the goal is to have something at least as powerful as Haskell's "deriving via" extension: enabling overridable default superclass definitions.
+The exact semantics and syntax of this feature are WIP, but the goal is to have something at least as powerful as Haskell's "deriving via" extension: enabling overridable default superclass instances.
 
 ## Data Declarations
 
 Data declarations define "variants". These appear similar to functions but instead of producing arbitrary values after executing some computation, they create tagged versions of whatever type they are declared to take as parameter.
 
-The suggested implementation is for tags to all share the same 32-bit space of values. If it is possible at compile-time (via types) to know the value of a tag, then it should not be present at runtime.
+The suggested implementation is for tags to all share the same 32-bit space of values. As an optimisation, it is suggested that this tag is elided in cases where it is known at compile-time.
 
 I.e: In the below program
 
@@ -82,25 +82,15 @@ y: Foo = Foo(x)
 
 Both `Foo` and `Bar` should have equivalent runtime representations.
 
-## Function/Constant/Proof Declarations
+Handling variance while ensuring unnecessary tag information is not stored at runtime is not a trivial problem: for how this is solved specifically with regards to recursive types (which is the arguably most awkward one), see the dedicated section.
 
-Ordinary terms can also be defined as top level bindings. They must, however be prefixed with a keyword declaring their purpose.
+## Function/Constant Declarations
 
-### Fun/Const
+Ordinary terms like functions or constants can also be defined as top level bindings. They do not need to be prefixed with any keyword.
 
-Ignoring proofs for the moment, the `fun` keyword must prefix any top level binding which implements `Callable` (a built-in type for any function-like variable). The `const` keyword must prefix any top level binding that is not `Callable`. The purpose of these keywords is entirely for readability: they do not alter syntax or semantics of the binding.
+### Proof Declarations
 
-### Design Note: Breaking Changes
-
-This decision has an arguably non-ideal side effect: Writing new instances of `Callable` for any public type is now a breaking change as downstream modules must replace `const` with `fun`.
-
-On one hand, this could perhaps be justified: making something a function that wasn't previously is quite a significant change; however, it might also turn out that being able to allow existing types be used as functions is very powerful.
-
-Some alternatives might be to have `const`/`fun` be only a syntactic restriction (it matters if the annotated type actually contains an `->`/paramater syntax is used) rather than if an instance exists, or to do away with the `fun`/`const` keywords entirely (are they really necessary?).
-
-### Proof
-
-The `proof` keyword is more interesting. It changes the semantics of the binding, allowing calls to the function to be inserted to aid typechecking, and allows for eliding the function name. See the dedicated section on proofs for more information.
+However, functions can be optionally be prefixed with the `proof` keyword. This changes the semantics of the binding, allowing calls to the function to be inserted automatically to aid typechecking. Proofs my also be anonymous. See the dedicated section on proofs for more information.
 
 [^note]: Note that with function contravariance, we could also have `f: c -> b` in `fmap`, and if `MonadC` itself was contravariant, `x: self(c)` and then no need for `a`. WTy2 currently does not support variance due to added complexity, but code like this shows places where it could be very useful.
 

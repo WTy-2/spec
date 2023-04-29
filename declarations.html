@@ -83,7 +83,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="core_types.html"><strong aria-hidden="true">2.</strong> Core Types</a></li><li class="chapter-item expanded "><a href="declarations.html" class="active"><strong aria-hidden="true">3.</strong> Declarations</a></li><li class="chapter-item expanded "><a href="dependent_types.html"><strong aria-hidden="true">4.</strong> Dependent Types</a></li><li class="chapter-item expanded "><a href="erasure_visibility.html"><strong aria-hidden="true">5.</strong> Erasure and Visibility</a></li><li class="chapter-item expanded "><a href="recursive_types.html"><strong aria-hidden="true">6.</strong> Recursive Types</a></li><li class="chapter-item expanded "><a href="proofs.html"><strong aria-hidden="true">7.</strong> Proofs</a></li><li class="chapter-item expanded "><a href="io_ex.html"><strong aria-hidden="true">8.</strong> IO and the Ex Monad</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="core_types.html"><strong aria-hidden="true">2.</strong> Core Types</a></li><li class="chapter-item expanded "><a href="declarations.html" class="active"><strong aria-hidden="true">3.</strong> Declarations</a></li><li class="chapter-item expanded "><a href="dependent_types.html"><strong aria-hidden="true">4.</strong> Dependent Types</a></li><li class="chapter-item expanded "><a href="erasure_visibility.html"><strong aria-hidden="true">5.</strong> Erasure and Visibility</a></li><li class="chapter-item expanded "><a href="recursive_types.html"><strong aria-hidden="true">6.</strong> Recursive Types</a></li><li class="chapter-item expanded "><a href="proofs.html"><strong aria-hidden="true">7.</strong> Proofs</a></li><li class="chapter-item expanded "><a href="io_ex.html"><strong aria-hidden="true">8.</strong> IO and the Ex Monad</a></li><li class="chapter-item expanded "><a href="utilities.html"><strong aria-hidden="true">9.</strong> Utilities</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -155,17 +155,17 @@
 <p>All named declarations can be prefixed with visibility annotations.</p>
 <h2 id="type-declarations"><a class="header" href="#type-declarations">Type Declarations</a></h2>
 <p>Type declarations define &quot;types&quot;. Note types in WTy2 are quite different from types in many other languages: for instance, types can be open, allowing instances for the type to be made apart from it's declaration.</p>
-<p>Note &quot;type&quot;s in WTy2 were originally named &quot;trait&quot;s for this very reason. I have since decided it makes more sense to just call them &quot;type&quot;s because there is no other construct in the language which fits the role.</p>
-<p>Open types can have a number of associated functions that must be defined at instances of that type. In these functions, there is an implicit constant <code>self: Type</code> in scope which refers to the intance head.</p>
+<p>Note &quot;type&quot;s in WTy2 were originally named &quot;trait&quot;s for this very reason. I have since decided it makes more sense to just call them &quot;type&quot;s because there is no other construct in the language which fits the same role.</p>
+<p>Open types can have a number of associated functions that must be defined at instances of that type. In these functions, there is an implicit constant <code>self: Type</code> in scope which refers to the instance head.</p>
 <p>Supertypes of the type are optionally explicitly declared after the <code>{}</code>s with <code>=&gt;</code>.</p>
 <p>As an example, here is the <code>MonadC</code> type, which is similar to a <code>Monad</code> in functional languages like <code>Haskell</code> but is not total (meaning it can support data structures like sets and hashmaps)</p>
 <pre><code class="language-WTy2">type MonadC(c: Type) {
 
-    fun fmap[a: c, b: c](x: self(a), f: a -&gt; b): self(b)
+    fmap[a: c, b: c](x: self(a), f: a -&gt; b): self(b)
 
-    fun pure[a: c](x: a): self(a)
+    pure[a: c](x: a): self(a)
 
-    fun (&gt;&gt;=)[a: c, b: c](x: self(a), f: a -&gt; self(b)): self(b)
+    (&gt;&gt;=)[a: c, b: c](x: self(a), f: a -&gt; self(b)): self(b)
 
 } =&gt; c -&gt; Any
 </code></pre>
@@ -186,14 +186,14 @@ default instance Alias for Foo
 <p>It is critical to soundess of the WTy2 language that instances do not overlap. The rules for avioding overlap can be summarised as:</p>
 <ul>
 <li>If the instance head is open, that instance must be in the same module as the type declaration and no other instances can be written.</li>
-<li>If the instance head is closed, either the instance must be in the same module as the type declaration, or all implementing patterns must contain at least one variant tag that was defined in the same module.</li>
+<li>If the instance head is closed, either the instance must be in the same module as the type declaration, or all implementing patterns must contain at least one variant tag that was defined in the same module (in other words: it must be impossible to write this instance in some other module without importing the one you are writing the instance in).</li>
 </ul>
 <h3 id="named-instances"><a class="header" href="#named-instances">Named Instances</a></h3>
 <p>WTy2 supports &quot;named instances&quot; as an alternative to the newtype pattern.</p>
-<p>The exact semantics and syntax of this feature are WIP, but the goal is to have something at least as powerful as Haskell's &quot;deriving via&quot; extension: enabling overridable default superclass definitions.</p>
+<p>The exact semantics and syntax of this feature are WIP, but the goal is to have something at least as powerful as Haskell's &quot;deriving via&quot; extension: enabling overridable default superclass instances.</p>
 <h2 id="data-declarations"><a class="header" href="#data-declarations">Data Declarations</a></h2>
 <p>Data declarations define &quot;variants&quot;. These appear similar to functions but instead of producing arbitrary values after executing some computation, they create tagged versions of whatever type they are declared to take as parameter.</p>
-<p>The suggested implementation is for tags to all share the same 32-bit space of values. If it is possible at compile-time (via types) to know the value of a tag, then it should not be present at runtime.</p>
+<p>The suggested implementation is for tags to all share the same 32-bit space of values. As an optimisation, it is suggested that this tag is elided in cases where it is known at compile-time.</p>
 <p>I.e: In the below program</p>
 <pre><code class="language-WTy2">data Foo(Bar)
 
@@ -201,16 +201,11 @@ x: Bar = ...
 y: Foo = Foo(x)
 </code></pre>
 <p>Both <code>Foo</code> and <code>Bar</code> should have equivalent runtime representations.</p>
-<h2 id="functionconstantproof-declarations"><a class="header" href="#functionconstantproof-declarations">Function/Constant/Proof Declarations</a></h2>
-<p>Ordinary terms can also be defined as top level bindings. They must, however be prefixed with a keyword declaring their purpose.</p>
-<h3 id="funconst"><a class="header" href="#funconst">Fun/Const</a></h3>
-<p>Ignoring proofs for the moment, the <code>fun</code> keyword must prefix any top level binding which implements <code>Callable</code> (a built-in type for any function-like variable). The <code>const</code> keyword must prefix any top level binding that is not <code>Callable</code>. The purpose of these keywords is entirely for readability: they do not alter syntax or semantics of the binding.</p>
-<h3 id="design-note-breaking-changes"><a class="header" href="#design-note-breaking-changes">Design Note: Breaking Changes</a></h3>
-<p>This decision has an arguably non-ideal side effect: Writing new instances of <code>Callable</code> for any public type is now a breaking change as downstream modules must replace <code>const</code> with <code>fun</code>.</p>
-<p>On one hand, this could perhaps be justified: making something a function that wasn't previously is quite a significant change; however, it might also turn out that being able to allow existing types be used as functions is very powerful.</p>
-<p>Some alternatives might be to have <code>const</code>/<code>fun</code> be only a syntactic restriction (it matters if the annotated type actually contains an <code>-&gt;</code>/paramater syntax is used) rather than if an instance exists, or to do away with the <code>fun</code>/<code>const</code> keywords entirely (are they really necessary?).</p>
-<h3 id="proof"><a class="header" href="#proof">Proof</a></h3>
-<p>The <code>proof</code> keyword is more interesting. It changes the semantics of the binding, allowing calls to the function to be inserted to aid typechecking, and allows for eliding the function name. See the dedicated section on proofs for more information.</p>
+<p>Handling variance while ensuring unnecessary tag information is not stored at runtime is not a trivial problem: for how this is solved specifically with regards to recursive types (which is the arguably most awkward one), see the dedicated section.</p>
+<h2 id="functionconstant-declarations"><a class="header" href="#functionconstant-declarations">Function/Constant Declarations</a></h2>
+<p>Ordinary terms like functions or constants can also be defined as top level bindings. They do not need to be prefixed with any keyword.</p>
+<h3 id="proof-declarations"><a class="header" href="#proof-declarations">Proof Declarations</a></h3>
+<p>However, functions can be optionally be prefixed with the <code>proof</code> keyword. This changes the semantics of the binding, allowing calls to the function to be inserted automatically to aid typechecking. Proofs my also be anonymous. See the dedicated section on proofs for more information.</p>
 <div class="footnote-definition" id="note"><sup class="footnote-definition-label">1</sup>
 <p>Note that with function contravariance, we could also have <code>f: c -&gt; b</code> in <code>fmap</code>, and if <code>MonadC</code> itself was contravariant, <code>x: self(c)</code> and then no need for <code>a</code>. WTy2 currently does not support variance due to added complexity, but code like this shows places where it could be very useful.</p>
 </div>

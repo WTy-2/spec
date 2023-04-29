@@ -83,7 +83,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="core_types.html" class="active"><strong aria-hidden="true">2.</strong> Core Types</a></li><li class="chapter-item expanded "><a href="declarations.html"><strong aria-hidden="true">3.</strong> Declarations</a></li><li class="chapter-item expanded "><a href="dependent_types.html"><strong aria-hidden="true">4.</strong> Dependent Types</a></li><li class="chapter-item expanded "><a href="erasure_visibility.html"><strong aria-hidden="true">5.</strong> Erasure and Visibility</a></li><li class="chapter-item expanded "><a href="recursive_types.html"><strong aria-hidden="true">6.</strong> Recursive Types</a></li><li class="chapter-item expanded "><a href="proofs.html"><strong aria-hidden="true">7.</strong> Proofs</a></li><li class="chapter-item expanded "><a href="io_ex.html"><strong aria-hidden="true">8.</strong> IO and the Ex Monad</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="core_types.html" class="active"><strong aria-hidden="true">2.</strong> Core Types</a></li><li class="chapter-item expanded "><a href="declarations.html"><strong aria-hidden="true">3.</strong> Declarations</a></li><li class="chapter-item expanded "><a href="dependent_types.html"><strong aria-hidden="true">4.</strong> Dependent Types</a></li><li class="chapter-item expanded "><a href="erasure_visibility.html"><strong aria-hidden="true">5.</strong> Erasure and Visibility</a></li><li class="chapter-item expanded "><a href="recursive_types.html"><strong aria-hidden="true">6.</strong> Recursive Types</a></li><li class="chapter-item expanded "><a href="proofs.html"><strong aria-hidden="true">7.</strong> Proofs</a></li><li class="chapter-item expanded "><a href="io_ex.html"><strong aria-hidden="true">8.</strong> IO and the Ex Monad</a></li><li class="chapter-item expanded "><a href="utilities.html"><strong aria-hidden="true">9.</strong> Utilities</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -155,23 +155,27 @@
 <h2 id="any-"><a class="header" href="#any-">Any (&quot;?&quot;)</a></h2>
 <p><code>?</code> is the supertype of all types.</p>
 <h2 id="type"><a class="header" href="#type">Type</a></h2>
-<p><code>Type</code> is the supertype of all &quot;types&quot;. This includes anything which can appear to the right of <code>:</code>.</p>
-<p>An automatic instance is derived for every type declaration.</p>
+<p><code>Type</code> is the supertype of all &quot;types&quot;. This includes anything which can appear on the RHS of a <code>:</code> binding.</p>
+<p>An automatic instance of <code>Type</code> is derived for every type declaration.</p>
 <h2 id="constraint"><a class="header" href="#constraint">Constraint</a></h2>
 <p><code>Constraint</code> represents &quot;constraints&quot;. These sometimes look syntactically similar to bindings, but instead of bringing variables into scope, they constrain existing values.</p>
-<p>Constraints can be created with the built-in <code>&lt;:</code>, <code>~</code> and <code>=&gt;</code> operators.</p>
+<p>Constraints can be created with the built-in <code>~</code> and <code>=&gt;</code> operators. Every type <code>a</code> also implements <code>a -&gt; Constraint</code>, which is the constraint that there exists an instance of the type for that term. i.e: you can imagine for every type <code>Foo</code>:</p>
+<pre><code class="language-WTy2">instance Foo -&gt; Constraint for Foo {
+    ...
+}
+</code></pre>
 <h2 id="functions"><a class="header" href="#functions">Functions</a></h2>
 <p><code>a -&gt; b</code> is the generic function type.</p>
 <h2 id="tuplesrecordsdependent-pairs"><a class="header" href="#tuplesrecordsdependent-pairs">Tuples/Records/Dependent Pairs</a></h2>
 <p>Tuples/records/dependent pairs in WTy2 are surprisingly complicated, and so they have their own dedicated section in the spec.</p>
 <p>It's worth noting though, that combining the above constructs in tuples typically gives back something that implements the same type.</p>
 <ul>
-<li>Tuple of <code>Type</code>s &lt;: <code>Type</code> (anonymous tuple type)</li>
-<li>Tuple of <code>Constraint</code>s &lt;: <code>Constraint</code> (conjunction)</li>
+<li>Tuple of <code>Type</code>s =&gt; <code>Type</code> (anonymous tuple type)</li>
+<li>Tuple of <code>Constraint</code>s =&gt; <code>Constraint</code> (conjunction)</li>
 </ul>
 <p>However...</p>
 <ul>
-<li>Tuple of <code>Bind</code>ings &lt;: <code>Type</code> (record type)</li>
+<li>Tuple of <code>Bind</code>ings =&gt; <code>Type</code> (record type)</li>
 </ul>
 <h3 id="unit-"><a class="header" href="#unit-">Unit (&quot;()&quot;)</a></h3>
 <p><code>()</code> is the unit tuple. It implements <code>Type</code>, <code>Term</code> AND <code>Constraint</code>.</p>

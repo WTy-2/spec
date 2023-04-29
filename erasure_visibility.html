@@ -83,7 +83,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="core_types.html"><strong aria-hidden="true">2.</strong> Core Types</a></li><li class="chapter-item expanded "><a href="declarations.html"><strong aria-hidden="true">3.</strong> Declarations</a></li><li class="chapter-item expanded "><a href="dependent_types.html"><strong aria-hidden="true">4.</strong> Dependent Types</a></li><li class="chapter-item expanded "><a href="erasure_visibility.html" class="active"><strong aria-hidden="true">5.</strong> Erasure and Visibility</a></li><li class="chapter-item expanded "><a href="recursive_types.html"><strong aria-hidden="true">6.</strong> Recursive Types</a></li><li class="chapter-item expanded "><a href="proofs.html"><strong aria-hidden="true">7.</strong> Proofs</a></li><li class="chapter-item expanded "><a href="io_ex.html"><strong aria-hidden="true">8.</strong> IO and the Ex Monad</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="core_types.html"><strong aria-hidden="true">2.</strong> Core Types</a></li><li class="chapter-item expanded "><a href="declarations.html"><strong aria-hidden="true">3.</strong> Declarations</a></li><li class="chapter-item expanded "><a href="dependent_types.html"><strong aria-hidden="true">4.</strong> Dependent Types</a></li><li class="chapter-item expanded "><a href="erasure_visibility.html" class="active"><strong aria-hidden="true">5.</strong> Erasure and Visibility</a></li><li class="chapter-item expanded "><a href="recursive_types.html"><strong aria-hidden="true">6.</strong> Recursive Types</a></li><li class="chapter-item expanded "><a href="proofs.html"><strong aria-hidden="true">7.</strong> Proofs</a></li><li class="chapter-item expanded "><a href="io_ex.html"><strong aria-hidden="true">8.</strong> IO and the Ex Monad</a></li><li class="chapter-item expanded "><a href="utilities.html"><strong aria-hidden="true">9.</strong> Utilities</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -155,15 +155,15 @@
 <p>A type surrounded in parenthesis can be prefixed with something that looks similar to a record type but the bindings are placed inside brackets (<code>[]</code>) instead of parenthesis.</p>
 <p>A term can be bound in the erased elements of a record only if it occurs (to the right of some constraint operator<sup class="footnote-reference"><a href="#note">1</a></sup>) or <code>:</code> in the non-erased elements.</p>
 <p>An example of erasure being useful is when working with length-indexed vectors:</p>
-<pre><code class="language-WTy2">fun vecLen[t: Type, n: Nat](v: Vec(t, n)): Nat &lt;== { it ~ n }
+<pre><code class="language-WTy2">vecLen[t: Type, n: Nat](v: Vec(t, n)): Nat &lt;== { it ~ n }
 
-fun returnsVecOfUnknownLen(...): [n: Nat](Vec[Bool, n])
+returnsVecOfUnknownLen(...): [n: Nat] Vec[Bool, n]
 </code></pre>
 <p>In <code>vecLen</code>, binding <code>t</code> and <code>n</code> in the <code>[]</code>s allows them to be inferred, and makes it so there is no runtime cost of having to pass the type or length. Note if we had to pass the length explicitly, then the function would be entirely useless: we would need to know the length to calculate it!</p>
 <p>This combines nicely with functions like <code>returnsVecOfUnknownLen</code>. If we ever do actually need to know the length (perhaps to pattern match on it), then we can call <code>vecLen</code> on the result, and this all works out because we still have an erased <code>n: Nat</code> in scope.</p>
 <p>To be concrete, a term being erased means that it cannot be pattern matched on, or passed as an argument to somewhere where a non-erased term is expected.</p>
 <p>Unlike constraints in <code>&lt;==</code>, erased terms in records can be manually specified at construction or bound when matching.</p>
-<pre><code class="language-WTy2">[erasedLen=n](vec) = returnsVecOfUnknownLen(...);
+<pre><code class="language-WTy2">[erasedLen=n] vec = returnsVecOfUnknownLen(...);
 len = vecLen[Bool, erasedLen](vec);
 
 // From the signature of 'vecLen', `erasedLen ~ len` is in the context

@@ -83,7 +83,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="core_types.html"><strong aria-hidden="true">2.</strong> Core Types</a></li><li class="chapter-item expanded "><a href="declarations.html"><strong aria-hidden="true">3.</strong> Declarations</a></li><li class="chapter-item expanded "><a href="dependent_types.html" class="active"><strong aria-hidden="true">4.</strong> Dependent Types</a></li><li class="chapter-item expanded "><a href="erasure_visibility.html"><strong aria-hidden="true">5.</strong> Erasure and Visibility</a></li><li class="chapter-item expanded "><a href="recursive_types.html"><strong aria-hidden="true">6.</strong> Recursive Types</a></li><li class="chapter-item expanded "><a href="proofs.html"><strong aria-hidden="true">7.</strong> Proofs</a></li><li class="chapter-item expanded "><a href="io_ex.html"><strong aria-hidden="true">8.</strong> IO and the Ex Monad</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="core_types.html"><strong aria-hidden="true">2.</strong> Core Types</a></li><li class="chapter-item expanded "><a href="declarations.html"><strong aria-hidden="true">3.</strong> Declarations</a></li><li class="chapter-item expanded "><a href="dependent_types.html" class="active"><strong aria-hidden="true">4.</strong> Dependent Types</a></li><li class="chapter-item expanded "><a href="erasure_visibility.html"><strong aria-hidden="true">5.</strong> Erasure and Visibility</a></li><li class="chapter-item expanded "><a href="recursive_types.html"><strong aria-hidden="true">6.</strong> Recursive Types</a></li><li class="chapter-item expanded "><a href="proofs.html"><strong aria-hidden="true">7.</strong> Proofs</a></li><li class="chapter-item expanded "><a href="io_ex.html"><strong aria-hidden="true">8.</strong> IO and the Ex Monad</a></li><li class="chapter-item expanded "><a href="utilities.html"><strong aria-hidden="true">9.</strong> Utilities</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -154,10 +154,9 @@
 <h2 id="constrained-by-"><a class="header" href="#constrained-by-">Constrained By <code>(&lt;==)</code></a></h2>
 <p>WTy2 features dependent types through desugaring to a single language construct, <code>&lt;==</code> (read as &quot;constrained by&quot;).</p>
 <p><code>&lt;==</code> is a type operator (it cannot occur at the value level) and has the following type signature:</p>
-<pre><code class="language-WTy2">&gt;&gt;&gt; :type (&lt;==)
-&gt; (&lt;==) : [a: Type](x: a, f: a -&gt; Constraint) -&gt; Type
+<pre><code class="language-WTy2">(&lt;==) : [a: Type](x: a, f: a -&gt; Constraint) -&gt; Type
 </code></pre>
-<p>To construct a value of type <code>a &lt;== b</code> from a value of type <code>a</code>, <code>b(a)</code> must be in the context. Matching on a value of type <code>a &lt;== b</code> is equivalent to matching on a value of type <code>a</code>, but <code>b(a)</code> is added to the context.</p>
+<p>To construct a value of type <code>a &lt;== b</code> from a value of type <code>a</code>, <code>b(a)</code> must be in the context. Matching on a value of type <code>a &lt;== b</code> is similar to matching on a value of type <code>a</code>, but <code>b(a)</code> is added to the context.</p>
 <p>This operator has similarities to refinement types (i.e: in Liquid Haskell) and dependent pairs (i.e: in Agda/Idris/Coq/Lean) but is a somewhat unique construct, which is primarily enabled from WTy2's robust support for first-class <code>Constraint</code>s and subtyping.</p>
 <p>An approximation of this operator in Idris could be defined like so:</p>
 <pre><code class="language-idris">Proof : Bool -&gt; Type
@@ -176,42 +175,42 @@ test3 (Mk 1 {f=Refl}) = ()
 test3 (Mk 2 {f=Refl}) = ()
 test3 (Mk 3 {f=Refl}) = ()
 </code></pre>
-<p>We can see that althought <code>foo</code> only matches on the natural number being <code>1</code>, <code>2</code> or <code>3</code>, the function is still correctly typechecked as <code>total</code>, as we must also pass a proof that the <code>Nat</code> is in the range <code>[1-3]</code>.</p>
-<p>Unfortunately, because of the lack of subtyping, when used in Idris, we must always pattern match on the <code>Mk</code> to bring the constraint into scope. In WTy2, both construction and matching is done entirely implicitly.</p>
+<p>We can see that although <code>foo</code> only matches on the natural number being <code>1</code>, <code>2</code> or <code>3</code>, the function is still correctly typechecked as <code>total</code>, as we must also pass a proof that the <code>Nat</code> is in the range <code>[1-3]</code>.</p>
+<p>Unfortunately, because of the lack of subtyping, when used in Idris, we must always pattern match on the <code>Mk</code> to bring the constraint into scope. In WTy2, both construction and matching is done implicitly.</p>
 <p>The equivalent WTy2 declaration of <code>foo</code> is:</p>
-<pre><code class="language-WTy2">fun foo(x: Nat) &lt;== { 1 &lt;= x &amp;&amp; x &lt;= 3 ~ True }
+<pre><code class="language-WTy2">foo(x: Nat) &lt;== { 1 &lt;= x &amp;&amp; x &lt;= 3 ~ True }
 </code></pre>
 <p>This sort of constraint is useful enough that defining a type synonym is probably a good idea.</p>
-<pre><code>trait NatBetween(min: Nat, max: Nat)
-    := Nat &lt;== { min &lt;= it &amp;&amp; it &lt;= max ~ True }
+<pre><code>type NatBetween(min: Nat, max: Nat)
+    = Nat &lt;== { min &lt;= it &amp;&amp; it &lt;= max ~ True }
 
-fun foo(x: NatBetween(1, 3))
+foo(x: NatBetween(1, 3))
 </code></pre>
 <h3 id="design-note-equivalent-constraints"><a class="header" href="#design-note-equivalent-constraints">Design Note: Equivalent Constraints</a></h3>
 <p>You may realise that as constraints can contain arbitrary expressions, we could formulate these constraints in many different ways. For example, we could write <code>{ contains([1, 2, 3], it) }</code>, or even <code>{ max(1, min(3, it)) ~ it }</code>. That these constraints do indeed imply each other though, is not always obvious (expecially to the typechecker).</p>
 <p>This is arguably the main pain-point with dependent types - proving that one constraint implies another can be tiresome and clutter up code significantly. WTy2 attempts to make this slightly less painful through the ability to write implicit <code>proof</code>s.</p>
 <h2 id="dependent-records--scoping-rules"><a class="header" href="#dependent-records--scoping-rules">Dependent Records / Scoping Rules</a></h2>
-<p>Where this gets more interesting is when wanting to describe constraints on one argument in terms of another.</p>
+<p>Where this all gets more interesting is when wanting to constraint one argument in terms of another.</p>
 <p>For example, imagine we want to define function <code>bar</code> which takes two <code>Nat</code>s, <code>x</code> and <code>y</code>, where <code>y</code> must be greater than <code>x</code>.</p>
 <p>One way to formulate this would be just:</p>
-<pre><code>fun bar(x: Nat, y: Nat) &lt;== { y &gt; x }
+<pre><code>bar(x: Nat, y: Nat) &lt;== { y &gt; x }
 </code></pre>
 <p>But another way to write this would be:</p>
-<pre><code>trait NatAbove(x: Nat) := Nat &lt;== { it &gt; x }
+<pre><code>type NatAbove(x: Nat) = Nat &lt;== { it &gt; x }
 
-fun bar(x: Nat, y: NatAbove(x))
+bar(x: Nat, y: NatAbove(x))
 </code></pre>
 <p><code>x</code> is in scope when writing the type of <code>y</code>. Cyclic dependencies in these type signatures are also fine:</p>
-<pre><code>trait NatBelow(x: Nat) := Nat &lt;== { it &lt; x }
+<pre><code>type NatBelow(x: Nat) = Nat &lt;== { it &lt; x }
 
-trait NatAbove(x: Nat) := Nat &lt;== { it &gt; x }
+type NatAbove(x: Nat) = Nat &lt;== { it &gt; x }
 
-fun bar(x: NatBelow(y), y: NatAbove(x))
+bar(x: NatBelow(y), y: NatAbove(x))
 </code></pre>
-<p>One way to view what is happening here is to move all types into a new <code>&lt;==</code> constraint.</p>
-<pre><code>fun bar(x: ?, y: ?) &lt;== { x: NatBelow(y), y: NatAbove(x) }
+<p>One way to view what is happening here is to move all types into a new <code>&lt;==</code> constraint (recall <code>Type =&gt; (a -&gt; Constraint) &lt;== { a ~ it }</code>).</p>
+<pre><code>bar(x: ?, y: ?) &lt;== { NatBelow(y)(x), y: NatAbove(x)(y) }
 </code></pre>
-<h3 id="unresolved-question"><a class="header" href="#unresolved-question">Unresolved Question:</a></h3>
+<h3 id="unresolved-questions"><a class="header" href="#unresolved-questions">Unresolved Questions:</a></h3>
 <p><code>NatBelow</code>/<code>NatAbove</code> require a <code>Nat</code> constraint on their argument. These <code>Nat</code> constraints can be obtained from looking at what <code>NatBelow</code>/<code>NatAbove</code> themselves imply, but this is quite a loopy typechecking case. If implementation for checking this proves too hard, or is there is a soundness hole discovered with these sorts of definitions, an alternative desugaring would be:</p>
 <pre><code>fun bar(x: Nat, y: Nat) &lt;== { x: NatBelow(y), y: NatAbove(x) }
 </code></pre>

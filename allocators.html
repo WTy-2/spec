@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Core Types - The WTy2 Language Specification</title>
+        <title>Type Aware Allocators - The WTy2 Language Specification</title>
 
 
         <!-- Custom HTML head -->
@@ -83,7 +83,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="core_types.html" class="active"><strong aria-hidden="true">2.</strong> Core Types</a></li><li class="chapter-item expanded "><a href="declarations.html"><strong aria-hidden="true">3.</strong> Declarations</a></li><li class="chapter-item expanded "><a href="dependent_types.html"><strong aria-hidden="true">4.</strong> Dependent Types</a></li><li class="chapter-item expanded "><a href="erasure_visibility.html"><strong aria-hidden="true">5.</strong> Erasure and Visibility</a></li><li class="chapter-item expanded "><a href="recursive_types.html"><strong aria-hidden="true">6.</strong> Recursive Types</a></li><li class="chapter-item expanded "><a href="proofs.html"><strong aria-hidden="true">7.</strong> Proofs</a></li><li class="chapter-item expanded "><a href="io_ex.html"><strong aria-hidden="true">8.</strong> IO and the Ex Monad</a></li><li class="chapter-item expanded "><a href="allocators.html"><strong aria-hidden="true">9.</strong> Type Aware Allocators</a></li><li class="chapter-item expanded "><a href="utilities.html"><strong aria-hidden="true">10.</strong> Utilities</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="core_types.html"><strong aria-hidden="true">2.</strong> Core Types</a></li><li class="chapter-item expanded "><a href="declarations.html"><strong aria-hidden="true">3.</strong> Declarations</a></li><li class="chapter-item expanded "><a href="dependent_types.html"><strong aria-hidden="true">4.</strong> Dependent Types</a></li><li class="chapter-item expanded "><a href="erasure_visibility.html"><strong aria-hidden="true">5.</strong> Erasure and Visibility</a></li><li class="chapter-item expanded "><a href="recursive_types.html"><strong aria-hidden="true">6.</strong> Recursive Types</a></li><li class="chapter-item expanded "><a href="proofs.html"><strong aria-hidden="true">7.</strong> Proofs</a></li><li class="chapter-item expanded "><a href="io_ex.html"><strong aria-hidden="true">8.</strong> IO and the Ex Monad</a></li><li class="chapter-item expanded "><a href="allocators.html" class="active"><strong aria-hidden="true">9.</strong> Type Aware Allocators</a></li><li class="chapter-item expanded "><a href="utilities.html"><strong aria-hidden="true">10.</strong> Utilities</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -121,7 +121,7 @@
                         <a href="https://github.com/WTy-2/spec/" title="Git repository" aria-label="Git repository">
                             <i id="git-repository-button" class="fa fa-github"></i>
                         </a>
-                        <a href="https://github.com/WTy-2/spec/edit/main/src/core_types.md" title="Suggest an edit" aria-label="Suggest an edit">
+                        <a href="https://github.com/WTy-2/spec/edit/main/src/allocators.md" title="Suggest an edit" aria-label="Suggest an edit">
                             <i id="git-edit-button" class="fa fa-edit"></i>
                         </a>
 
@@ -150,51 +150,34 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="core-types"><a class="header" href="#core-types">Core Types</a></h1>
-<p>WTy2 is a language with subtyping and with first-class types. This has an interesting consequence: instead of having some sort of &quot;kind&quot; system, the key language constructs in WTy2 simply implement various built-in types.</p>
-<h2 id="any-"><a class="header" href="#any-">Any (&quot;?&quot;)</a></h2>
-<p><code>?</code> is the supertype of all types.</p>
-<h2 id="type"><a class="header" href="#type">Type</a></h2>
-<p><code>Type</code> is the supertype of all &quot;types&quot;. This includes anything which can appear on the RHS of a <code>:</code> binding.</p>
-<p>An automatic instance of <code>Type</code> is derived for every type declaration.</p>
-<h2 id="constraint"><a class="header" href="#constraint">Constraint</a></h2>
-<p><code>Constraint</code> represents &quot;constraints&quot;. These sometimes look syntactically similar to bindings, but instead of bringing variables into scope, they constrain existing values.</p>
-<p>Constraints can be created with the built-in <code>~</code> and <code>=&gt;</code> operators. Every type <code>a</code> also implements <code>a -&gt; Constraint</code>, which is the constraint that there exists an instance of the type for that term. i.e: you can imagine for every type <code>Foo</code>:</p>
-<pre><code class="language-WTy2">instance Foo -&gt; Constraint for Foo {
-    ...
-}
+                        <h1 id="type-aware-allocators"><a class="header" href="#type-aware-allocators">Type Aware Allocators</a></h1>
+<p>A goal of WTy2 is to allow for good performance (especially with regards to memory locality) without much additional work on the part of the programmer/enforcing closed-world assumptions on your code.</p>
+<p>A major part of this is the concept of a type-aware-allocator. WTy2 makes extensive use of allocators (array based and recursive data structures in WTy2 should ideally be generic over the allocation scheme) so by providing tools to create good ones, almost all data structures should benefit.</p>
+<p>As an example for the sort of properties we would like to achieve, suppose our program had a large list of <code>Int</code>s, this was then upcasted into a list of <code>Num</code>s and then many other opaque <code>Num</code>s got added to the list. We then calculate a total sum. Note that this operation does not care about the order in which we iterate over the values - ideally (for cache and memory locality reasons) we should somehow keep all the <code>Int</code>s in their own region of memory and sum these first.</p>
+<p>The rules for performing specialisation with these allocators should use similar (perhaps the same) rules as ordinary function specialisation. i.e: a good heuristic is if we allocate any value with known concrete type, we should specialise for that type.</p>
+<p>A potential path for implementation is &quot;indexed variables&quot;:
+Syntax WIP, but perhaps something like:</p>
+<pre><code class="language-WTy2">strict foo(t :=&gt; Monoid): List(t) = list(100) { mempty(t) }
 </code></pre>
-<h2 id="functions"><a class="header" href="#functions">Functions</a></h2>
-<p><code>a -&gt; b</code> is the generic function type.</p>
-<h2 id="tuplesrecordsdependent-pairs"><a class="header" href="#tuplesrecordsdependent-pairs">Tuples/Records/Dependent Pairs</a></h2>
-<p>Tuples/records/dependent pairs in WTy2 are surprisingly complicated, and so they have their own dedicated section in the spec.</p>
-<p>It's worth noting though, that combining the above constructs in tuples typically gives back something that implements the same type.</p>
-<ul>
-<li>Tuple of <code>Type</code>s =&gt; <code>Type</code> (anonymous tuple type)</li>
-<li>Tuple of <code>Constraint</code>s =&gt; <code>Constraint</code> (conjunction)</li>
-</ul>
-<p>However...</p>
-<ul>
-<li>Tuple of <code>Bind</code>ings =&gt; <code>Type</code> (record type)</li>
-</ul>
-<h3 id="unit-"><a class="header" href="#unit-">Unit (&quot;()&quot;)</a></h3>
-<p><code>()</code> is the unit tuple. It implements <code>Type</code>, <code>Term</code> AND <code>Constraint</code>.</p>
-<h3 id="design-note-singleton-tuples"><a class="header" href="#design-note-singleton-tuples">Design Note: Singleton Tuples</a></h3>
-<p>WTy2 does not contain a built-in singleton tuple (but does contain singleton records). Instead <code>(X)</code> where <code>X</code> does not contain commas is parsed as a parenthesised expression.</p>
-<h3 id="design-note-bindings"><a class="header" href="#design-note-bindings">Design Note: Bindings</a></h3>
-<p>In WTy2, the types of records look almost identical to <code>Bind</code>ings. However, <code>Bind</code>ings are NOT first-class. <code>return (x: Int)</code> returns a <code>Type</code> which is equal to the record type <code>(x: Int)</code>. <code>{x : Int}() = 4</code> is not a valid way to bring <code>x</code> into scope.</p>
-<h2 id="void-"><a class="header" href="#void-">Void (&quot;!&quot;)</a></h2>
-<p><code>!</code> is the subtype of all types. It contains no inhabitants.</p>
+<p>Here, <code>foo</code> should be expanded into a number of variable declarations, using the same rules as function specialisation for how many variables to create.</p>
+<p>i.e: one valid expansion would be</p>
+<pre><code class="language-WTy2">foo_Int: List(Int) = list(100) { mempty(t) };
+foo_Monoid: List(Monoid) = list(100) { mempty(t) };
+</code></pre>
+<p>another is</p>
+<pre><code class="language-WTy2">foo_Monoid: List(Monoid) = list(100) { mempty(t) };
+</code></pre>
+<p>Programs should not rely on a specific number of instances being created.</p>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="introduction.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="io_ex.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
-                            <a rel="next" href="declarations.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next" href="utilities.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
 
@@ -204,11 +187,11 @@
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="introduction.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="io_ex.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
 
-                    <a rel="next" href="declarations.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next" href="utilities.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>

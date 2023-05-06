@@ -10,3 +10,4 @@
 - [IO and the Ex Monad](./io_ex.md)
 - [Type Aware Allocators](./allocators.md)
 - [Utilities](./utilities.md)
+- [Specialisation](./specialisation.md)

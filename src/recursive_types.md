@@ -30,27 +30,24 @@ type List(r: Ref, t: Type) = r(
 
 The main interesting thing about this definition is that `r`, the type variable that will be instantiated to some sort of reference that will break up the infinite type, is generic. We could instantiate `r` to some owning reference type like `Box` and get a definition similar to what we would achieve in Rust, but we can do better.
 
-The problem with `Box` or any other global allocator is that we lose locality. If the elements are added to the list randomly over time, then they will be placed in virtually random locations in memory. What we would like is for every element of the same list to be placed in more-or-less the same location.
+The problem with `Box` or any other global allocator is that we lose locality. If the elements are added to the list randomly over time, then they will be placed in effectively random locations in memory. What we would like is for every element of the same list to be placed in more-or-less the same location (note this idea is similar to that of arenas in Rust).
 
 ```
 type Alloc = ...
 type RefTo(a: Alloc, t: Type) = ...
 
 // Get the allocator of a reference
-fun allocOf[a: Alloc, t: Type](r: RefTo(a, t)): Alloc <== { it ~ a }
+allocOf[a: Alloc, t: Type](r: RefTo(a, t)): Alloc <== { it ~ a }
 
 // Would be a method of the 'Alloc' type
-fun alloc(a: Alloc, t: Type): RefTo(a, t)
+alloc(a: Alloc, t: Type): RefTo(a, t)
 
 // Create a new allocator and allocate an expression using it
-fun new[t](x: t): [a] RefTo(a, t)
+new[t](x: t): [a] RefTo(a, t)
 
 // Function application, but wrap in the allocator at the end
-fun build[a: Alloc, t: Type](x: RefTo(a, t), f: RefTo(a, t) -> t)
-    : RefTo(a, t) =
-{
-    alloc(allocOf(x), f(x))
-}
+build[a: Alloc, t: Type](x: RefTo(a, t), f: RefTo(a, t) -> t)
+    : RefTo(a, t) = alloc(allocOf(x), f(x))
 
 // We take advantage of partial signatures to not need to specify the allocator
 // in the signatures of 'x' or 'y'
@@ -65,20 +62,15 @@ type ConsLike(r, t) = [head: t, tail: List(r, t)] Is(Cons(head, tail))
 // Would likely be a method of some type
 // '(,..)' denotes partial application
 // (i.e: will fill in the other arguments later)
-fun allocOfCons[a: Alloc, r: RefTo(a,..), t: Type]
-               (x: ConsLike(r, t))
-               : Alloc <== { it ~ a  } =
-{
-    match(x) {
-        Cons(_, tail) -> allocOf(tail)
-    }
-}
+allocOfCons[a: Alloc, r: RefTo(a,..), t: Type]
+    (x: ConsLike(r, t)): Alloc <== { it ~ a  }
+    = match(x) case(Cons(_, tail)) -> allocOf(tail)
 
-fun altBuild[a: Alloc, r: RefTo(a,..), t: Type]
-            (x: ConsLike(r, t)): List(r, t)
-{
-    alloc(allocOfCons(x), x)
-}
+
+altBuild[a: Alloc, r: RefTo(a,..), t: Type]
+    (x: ConsLike(r, t)): List(r, t)
+    = alloc(allocOfCons(x), x)
+
 
 z: List(t=Int) = altBuild(Cons(3, x))
 ```

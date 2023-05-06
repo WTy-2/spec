@@ -12,19 +12,19 @@ WTy2 attempts to separate out the these "proof" functions from the code that req
 
 proof(x: Nat, y: Nat) <== { x ~ 2 * y }
     : () <== { even(x) }
-    = { ... }
+    = ...
 
 proof: (x: Nat, y: Nat)  <== { x ~ 2 * y }
     -> () <== { even(x) }
-    = { ... }
+    = ...
 
 proof mulTwoImplesEven(x: Nat, y: Nat) <== { x ~ 2 * y }
     : () <== { even(x) }
-    = { ... }
+    = ...
 
 proof mulTwoImplesEven: (x: Nat, y: Nat) <== { x ~ 2 * y }
     -> () <== { even(x) }
-    = { ... }
+    = ...
 -}
 proofDec :: Parser ProofDec
 proofDec = "proof" *> mkProofDec (optional termIdent)

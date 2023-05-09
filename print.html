@@ -253,14 +253,15 @@ y: Foo = Foo(x)
 </div>
 <p>Also note the the <code>a: c</code> and <code>b: c</code> constraints here are slightly tiresome. Arguably these could be inferred from their use as arguments to <code>self</code>. There has been some research in Haskell on doing this inference https://richarde.dev/papers/2020/partialdata/partialdata.pdf and it appears to be highly effective in practice (though it is unclear how well it will extend to a language with subtyping).</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="dependent-types"><a class="header" href="#dependent-types">Dependent Types</a></h1>
+<p>WTy2 features dependent record and function types.</p>
 <h2 id="constrained-by-"><a class="header" href="#constrained-by-">Constrained By <code>(&lt;==)</code></a></h2>
-<p>WTy2 features dependent types through desugaring to a single language construct, <code>&lt;==</code> (read as &quot;constrained by&quot;).</p>
-<p><code>&lt;==</code> is a type operator (it cannot occur at the value level) and has the following type signature:</p>
-<pre><code class="language-WTy2">(&lt;==) : [a: Type](x: a, f: a -&gt; Constraint) -&gt; Type
+<p>Often, in dependently typed languages, a dependent record only needs to carry evidence of a constraint as the second argument, for the purpose of bringing it into scope as evidence of a predicate. This pattern is made more convenient in WTy2 through the <code>&lt;==</code> operator (read as &quot;constrained by&quot;).</p>
+<p>The <code>&lt;==</code>operator has the following type signature:</p>
+<pre><code class="language-WTy2">(&lt;==) : (a: Type, f: a -&gt; Constraint) -&gt; Type
 </code></pre>
-<p>To construct a value of type <code>a &lt;== b</code> from a value of type <code>a</code>, <code>b(a)</code> must be in the context. Matching on a value of type <code>a &lt;== b</code> is similar to matching on a value of type <code>a</code>, but <code>b(a)</code> is added to the context.</p>
-<p>This operator has similarities to refinement types (i.e: in Liquid Haskell) and dependent pairs (i.e: in Agda/Idris/Coq/Lean) but is a somewhat unique construct, which is primarily enabled from WTy2's robust support for first-class <code>Constraint</code>s and subtyping.</p>
-<p>An approximation of this operator in Idris could be defined like so:</p>
+<p>To construct a value of type <code>a &lt;== b</code> from a value <code>x</code> of type <code>a</code>, <code>b(x)</code> must be in the context. Matching on a value of type <code>(x: a) &lt;== b</code> is similar to matching on a value of type <code>a</code>, but <code>b(x)</code> is added to the context.</p>
+<p>In use, this operator has similarities to refinement types (i.e: in Liquid Haskell) (i.e: in that the constraint evidence is passed entirely implicitly).</p>
+<p>An approximation of this operator in Idris (but for which construction and matching is not implicit) could be defined like so:</p>
 <pre><code class="language-idris">Proof : Bool -&gt; Type
 Proof p = p = True
 
@@ -269,7 +270,7 @@ data (&lt;==) : (a: Type) -&gt; (p: a -&gt; Bool) -&gt; Type where
 
 infix 4 &lt;==
 </code></pre>
-<p>Idris (as far as I am aware) does not have robust support for first-class constraints like WTy2 so we use <code>-&gt; Bool</code> (which can represent an arbitrary predicate) instead.</p>
+<p>Idris (as far as I am aware) does not have an equivalent of equality coercion constraints like WTy2 (or indeed Haskell) so we are forced to use <code>-&gt; Bool</code> and propositional equality <code>=</code> to represent predicates instead.</p>
 <p>An example use would be to restrict the integers received by a function:</p>
 <pre><code class="language-idris">total
 foo : (Nat &lt;== \x =&gt; 1 &lt;= x &amp;&amp; x &lt;= 3) -&gt; ()
@@ -278,7 +279,6 @@ test3 (Mk 2 {f=Refl}) = ()
 test3 (Mk 3 {f=Refl}) = ()
 </code></pre>
 <p>We can see that although <code>foo</code> only matches on the natural number being <code>1</code>, <code>2</code> or <code>3</code>, the function is still correctly typechecked as <code>total</code>, as we must also pass a proof that the <code>Nat</code> is in the range <code>[1-3]</code>.</p>
-<p>Unfortunately, because of the lack of subtyping, when used in Idris, we must always pattern match on the <code>Mk</code> to bring the constraint into scope. In WTy2, both construction and matching is done implicitly.</p>
 <p>The equivalent WTy2 declaration of <code>foo</code> is:</p>
 <pre><code class="language-WTy2">foo(x: Nat) &lt;== { 1 &lt;= x &amp;&amp; x &lt;= 3 ~ True }
 </code></pre>
@@ -288,35 +288,16 @@ test3 (Mk 3 {f=Refl}) = ()
 
 foo(x: NatBetween(1, 3))
 </code></pre>
+<p>As records can have multiple entries we can easily constrain arguments in terms of another. For example, we can define a function <code>bar</code> which takes two <code>Nat</code>s, <code>x</code> and <code>y</code>, where <code>y</code> must be greater than <code>x</code>:</p>
+<pre><code>bar(x: Nat, y: Nat) &lt;== { y &gt; x ~ True }
+</code></pre>
 <h3 id="design-note-equivalent-constraints"><a class="header" href="#design-note-equivalent-constraints">Design Note: Equivalent Constraints</a></h3>
-<p>You may realise that as constraints can contain arbitrary expressions, we could formulate these constraints in many different ways. For example, we could write <code>{ contains([1, 2, 3], it) }</code>, or even <code>{ max(1, min(3, it)) ~ it }</code>. That these constraints do indeed imply each other though, is not always obvious (expecially to the typechecker).</p>
+<p>You may realise that as constraints can contain arbitrary expressions, we could formulate these constraints in many different ways. For example, we could write <code>{ contains([1, 2, 3], it) ~ True }</code>, or even <code>{ max(1, min(3, it)) ~ it }</code>. That these constraints do indeed imply each other though, is not always obvious (expecially to the typechecker).</p>
 <p>This is arguably the main pain-point with dependent types - proving that one constraint implies another can be tiresome and clutter up code significantly. WTy2 attempts to make this slightly less painful through the ability to write implicit <code>proof</code>s.</p>
-<h2 id="dependent-records--scoping-rules"><a class="header" href="#dependent-records--scoping-rules">Dependent Records / Scoping Rules</a></h2>
-<p>Where this all gets more interesting is when wanting to constraint one argument in terms of another.</p>
-<p>For example, imagine we want to define function <code>bar</code> which takes two <code>Nat</code>s, <code>x</code> and <code>y</code>, where <code>y</code> must be greater than <code>x</code>.</p>
-<p>One way to formulate this would be just:</p>
-<pre><code>bar(x: Nat, y: Nat) &lt;== { y &gt; x }
-</code></pre>
-<p>But another way to write this would be:</p>
-<pre><code>type NatAbove(x: Nat) = Nat &lt;== { it &gt; x }
-
-bar(x: Nat, y: NatAbove(x))
-</code></pre>
-<p><code>x</code> is in scope when writing the type of <code>y</code>. Cyclic dependencies in these type signatures are also fine:</p>
-<pre><code>type NatBelow(x: Nat) = Nat &lt;== { it &lt; x }
-
-type NatAbove(x: Nat) = Nat &lt;== { it &gt; x }
-
-bar(x: NatBelow(y), y: NatAbove(x))
-</code></pre>
-<p>One way to view what is happening here is to move all types into a new <code>&lt;==</code> constraint (recall <code>Type =&gt; (a -&gt; Constraint) &lt;== { a ~ it }</code>).</p>
-<pre><code>bar(x: ?, y: ?) &lt;== { NatBelow(y)(x), y: NatAbove(x)(y) }
-</code></pre>
-<h3 id="unresolved-questions"><a class="header" href="#unresolved-questions">Unresolved Questions:</a></h3>
-<p><code>NatBelow</code>/<code>NatAbove</code> require a <code>Nat</code> constraint on their argument. These <code>Nat</code> constraints can be obtained from looking at what <code>NatBelow</code>/<code>NatAbove</code> themselves imply, but this is quite a loopy typechecking case. If implementation for checking this proves too hard, or is there is a soundness hole discovered with these sorts of definitions, an alternative desugaring would be:</p>
-<pre><code>fun bar(x: Nat, y: Nat) &lt;== { x: NatBelow(y), y: NatAbove(x) }
-</code></pre>
-<p>In which case the applications of <code>NatBelow</code> and <code>NatAbove</code> typecheck trivially.</p>
+<h2 id="dependent-function-arrow"><a class="header" href="#dependent-function-arrow">Dependent Function Arrow</a></h2>
+<p>WTy2 also supports dependent function arrows, through a similar mechanism. The argument record to a function is in scope in the return type (including the return constraint), as well as the function body.</p>
+<p>Note this makes <code>&lt;==</code> constraints on return types somewhat ambiguous in that if the return type of the function is a record with identically named fields (or simply the <code>it</code> keyword is used), this could refer to the argument record or the return. WTy2 disambiguates this by treating this case as shadowing. In general, the innermost <code>it</code> (and it's associated record names) shadow the outermost one.</p>
+<p>Currently, there is no mechanism to forcefully disambiguate (though perhaps some syntax to specify de Bruijn indices or similar could work). The field names of the argument or return record must be changed to refer to the argument record fields in the return constraint.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="erasure-and-visibility"><a class="header" href="#erasure-and-visibility">Erasure and Visibility</a></h1>
 <p>In WTy2, erasure and visibility are intrinsically linked. WTy2 will only ever infer values that will be erased at runtime.</p>
 <p>A type surrounded in parenthesis can be prefixed with something that looks similar to a record type but the bindings are placed inside brackets (<code>[]</code>) instead of parenthesis.</p>
@@ -442,10 +423,22 @@ proofDec = &quot;proof&quot; *&gt; mkProofDec (optional termIdent)
 <p>In WTy2, if at any point during typechecking, an expression fails to typecheck, then all in-scope <code>proof</code>s are iterated through. For every <code>proof</code>, all in-scope terms are compared against the arguments, and all compatible argument combinations to perform a call of this <code>proof</code> function are iterated through.</p>
 <p>For every call of the proof function, immediately before the failing to typecheck expression, a call to the function is introduced, discarding the result, but matching on it to bring any constraints into scope. The expression is then re-typechecked, with these constraints in scope. If it fails again, that function call is removed, and the next one is tried.</p>
 <p>If typechecking with any proof call succeeds, then that call to the proof is left in and typechecking proceeds as normal. If all proofs fail, then the type error is outputted as would be expected.</p>
-<p>Importantly, proofs are limited to single function calls. If there is a proof that <code>A =&gt; B</code> and a proof that <code>B =&gt; C</code>, and a proof of <code>A =&gt; C</code> is required, the programmer must explicitly write that proof. This is to ensure typechecking is decidable.</p>
+<p>Importantly, proofs are limited to single function calls. If there is a proof that <code>A =&gt; B</code> and a proof that <code>B =&gt; C</code>, and a proof of <code>A =&gt; C</code> is required, the programmer must explicitly write a new proof of <code>A =&gt; C</code>. This is to prevent typechecking from looping.</p>
+<pre><code class="language-WTy2">proof(Proof(A)): Proof(B)
+
+proof(Proof(B)): Proof(C)
+
+proof(Proof(A)): Proof(C) = do {
+    _: Proof(B) = QED;
+    QED
+}
+</code></pre>
 <h2 id="design-note-transitive-closure-of-proofs"><a class="header" href="#design-note-transitive-closure-of-proofs">Design Note: Transitive Closure of Proofs</a></h2>
-<p>While needing to write transitive proofs might seem slightly painful, note it is NOT intended that every single possible valid proof function is written. First of all, this is likely impossible (for the same reason typechecking would become undecidable: infinite valid proofs can be obtained starting from a finite number), but also, it is unnecessary! Why prove anything that isn't helpful?</p>
-<p>Instead, it is hoped that the WTy2 programmer writes code assuming all obvious implications are known to the typechecker, and then if a type error is found, the programmer writes the proof required for that specific error. Now all future times that same error would appear, the in-scope proof is implicitly called.</p>
+<p>While needing to write transitive proofs might seem slightly painful, note it is NOT intended that every single possible valid proof function is written. First of all, this is likely impossible (for the same reason typechecking would loop: infinite valid proofs can be obtained starting from a finite number), but also, it is unnecessary! Why prove anything that isn't helpful?</p>
+<p>Instead, it is hoped that the WTy2 programmer writes code assuming all obvious implications are known to the typechecker, and then if a type error is encountered, the programmer writes the proof required for that specific error. The nice side-benefit is that now all future times that same error would appear, the in-scope proof is implicitly called.</p>
+<h2 id="design-note-provisional-definitions"><a class="header" href="#design-note-provisional-definitions">Design Note: Provisional Definitions</a></h2>
+<p>Idris has a feature with a similar goal (that of splitting proofs and code relying on them) known as &quot;Provisional Definitions&quot; https://docs.idris-lang.org/en/latest/tutorial/provisional.html. The main disadvantage is that you do not get the reuse of proofs that comes from WTy2 (i.e: proofs must be specifically named based on the function they are required in).</p>
+<p>The obvious benefit here is that the Idris compiler does not have to search through all possible implicit proofs, meaning the impact on typechecking performance is lessened significantly. Right now, it is somewhat unclear how often implicit proofs will be able to be reused, but it is hoped that this will be a quality-of-life benefit for simple programs will be near the scale of much more heavyweight features, say, tactics (the convenience of not needing any explicit user-interaction to satisfy properties like <code>m + n ~ n + m</code>, I think should not be understated).</p>
 <h2 id="implementation-note-typechecking-performance"><a class="header" href="#implementation-note-typechecking-performance">Implementation Note: Typechecking Performance</a></h2>
 <p>A naive implementation of the above algorithm will have a pretty devastating impact on typechecking performance. Hopefully some good method of pruning the search space can be found. It is also suggested that when proofs are successfully found, that information is cached somehow so on future compilation it does not need to be rediscovered.</p>
 <p>Note the process of searching in-scope terms to find something that will allow the program to typecheck is not at all a new idea. Idris, for example, allows for writing explicit &quot;holes&quot; in programs https://docs.idris-lang.org/en/latest/elaboratorReflection/holes.html, where the compiler can automatically search for expressions that fit the desired type signature using functions labelled with <code>#hint</code> pragmas. Compared to this, WTy2 holes are relatively modest: the expressions are limited to single function calls.</p>

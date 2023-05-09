@@ -11,3 +11,6 @@
 - [Type Aware Allocators](./allocators.md)
 - [Utilities](./utilities.md)
 - [Specialisation](./specialisation.md)
+- [Core Subset](./subset.md)
+- [Soundness Holes](./soundness.md)
+- [Arrows](./arrows.md)

@@ -15,11 +15,11 @@ Unfortunately, there is a bit of an issue with values of this type - they have u
 
 Furthermore, it is not clear how to implement variance for this type. If we have a `List(Int)`, then ideally at each node we would not store any information informing us that the item is an `Int` (we can know that it could be nothing else from the type signature). However, we would like to be able to pass this into functions accepting say `List(Num)`, this would seemingly require creating an entirely new list with the `Int` marker placed on every node.
 
-One potential solution is to simply not use recursive types. WTy2 supplies a an array list type that is fast and provides great memory locality. In languages like Haskell and Closure, however, the utility of being able to create many large data structures that share data cannot really be understated. As a functional language with pattern matching, WTy2 really should be able to achieve something similar.
+One potential solution is to simply not use recursive types. WTy2 supplies a an array list type in it's standard library that is fast and provides great memory locality. In functional languages like Haskell and Closure, however, the utility of being able to create large linked data structures that share data cannot really be understated. WTy2 really should be able to achieve something similar.
 
-The way we can achieve this is through references, but perhaps in a slightly different way to what you might imagine coming from languages like Rust.
+The solution is references, but perhaps in a slightly different way to what you might imagine coming from languages like Rust.
 
-```
+```WTy2
 data Cons[r: Ref](head: t, tail: List(r, t))
 data Nil
 type List(r: Ref, t: Type) = r(
@@ -28,11 +28,11 @@ type List(r: Ref, t: Type) = r(
     )
 ```
 
-The main interesting thing about this definition is that `r`, the type variable that will be instantiated to some sort of reference that will break up the infinite type, is generic. We could instantiate `r` to some owning reference type like `Box` and get a definition similar to what we would achieve in Rust, but we can do better.
+The main interesting thing about this definition is that `r`, the type variable that will be instantiated to some sort of reference that will break up the infinite type, is generic. We could instantiate `r` to some owning reference type like `Box` and get a definition similar to what we would achieve in Rust, but we can also do better.
 
-The problem with `Box` or any other global allocator is that we lose locality. If the elements are added to the list randomly over time, then they will be placed in effectively random locations in memory. What we would like is for every element of the same list to be placed in more-or-less the same location (note this idea is similar to that of arenas in Rust).
+The problem with `Box` or any other global allocator is that we lose locality. If the elements are added to the list randomly over time, then they will be placed in effectively random locations in memory. What we would like is for every element of the same list (not even just same type!) to be placed in more-or-less the same location (note this idea is similar to that of arenas in Rust).
 
-```
+```WTy2
 type Alloc = ...
 type RefTo(a: Alloc, t: Type) = ...
 
@@ -75,7 +75,7 @@ altBuild[a: Alloc, r: RefTo(a,..), t: Type]
 z: List(t=Int) = altBuild(Cons(3, x))
 ```
 
-There are some interesting interactions with enforcing code like this: for example, if you have two different lists, potentially created with different allocators, the elements from one allocator must be all copied into the other. Because of this, it is recommended that if an algorithm involves a lot of merging of linked data structures, there is a single allocator created once and all sub-structures are creates with it.
+There are some interesting interactions with enforcing code like this. For example, if you have two different lists, potentially created with different allocators, the elements from one allocator must be all copied into the other. Because of this, it is recommended that if an algorithm involves a lot of merging of linked data structures, there a single allocator is created at the start and all sub-structures are built up with it.
 
 Note that using allocators like this also helps with the variance problem as mentioned above. Allocators in WTy2 are type-aware. Allocators must provide a way of recovering full type information for every value that is stored by them, but to ensure memory is not wasted, elements with common type prefixes are stored together. The exact mechanism for how to find the prefix is WIP but one could imagine, for instance, a binary tree which is traversed based on the reference and stores the common prefixes at the leaves.
 

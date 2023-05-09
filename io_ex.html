@@ -162,16 +162,18 @@ g(x);
 <p>This is transformed into</p>
 <pre><code class="language-WTy2">readBool() &gt;&gt;= { f(it); g(it); }
 </code></pre>
-<p>This allows the compiler to analyse the closure <code>{ f(it); g(it); }</code> and potentially monomorphise it for <code>True</code> and <code>False</code>. This means that if both <code>f</code> and <code>g</code> switch on the boolean, we can compile this into a single switch (without relying on inlining, which while very useful, has limitations with regards to code bloat: if <code>f</code> and <code>g</code> are very large functions, and they were called in many places, it would be much more desirable to compile only two copies of <code>f</code> and <code>g</code> for the <code>True</code> and <code>False</code> cases, instead of a version for every single call).</p>
+<p>This allows the compiler to analyse the closure <code>{ f(it); g(it); }</code> and potentially specialise it for <code>True</code> and <code>False</code>. If both <code>f</code> and <code>g</code> switch on the boolean, we can compile this into a single switch (without relying on inlining, which while very useful, has limitations with regards to code bloat: if <code>f</code> and <code>g</code> are very large functions, and they were called in many places, it would be much more desirable to compile only two copies of <code>f</code> and <code>g</code> for the <code>True</code> and <code>False</code> cases, instead of a version for every single call).</p>
 <p>The <code>Ex</code> monad is used to encourage code of this style, while making it obvious where extra closures are coming from. For example, if we did not have the <code>Ex</code> monad, then it would be very unclear if code like:</p>
 <pre><code>x = readBool();
 f(x);
 g(x);
 </code></pre>
-<p>was compiled into <code>x = readBool(); { f(it); g(it); }(x)</code> or not.</p>
+<p>was compiled into <code>x = readBool(); with(x) { f(it); g(it); }</code> or not.</p>
 <h2 id="parametricity"><a class="header" href="#parametricity">Parametricity</a></h2>
 <p>With <code>Ex</code>, WTy2 also obeys a weakened form a parametricity. In Haskell, a non-partial function with type signature <code>forall t. t -&gt; t -&gt; t</code> can (in the absense of hacks like <code>unsafePeformIO</code>) only have two implementations (return the first element, or return the second).</p>
 <p>In WTy2, a function with type signature <code>[t: Type](a: t, b: t) -&gt; t</code> also can only return the first element or the second, but it may perform other side-effects as well (the return value just cannot be influenced by those side-effects).</p>
+<h2 id="mutability"><a class="header" href="#mutability">Mutability</a></h2>
+<p>The path towards adding mutability into WTy2 is currently unclear. One potential option is to enforce that mutable variables are wrapped in the <code>Ex</code> monad, effectively meaning reading mutable variables is treated as an IO operation that could return any value.</p>
 
                     </main>
 

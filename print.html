@@ -332,18 +332,18 @@ type List(t: Type) = [head: t, tail: List(t)]
 </code></pre>
 <p>Unfortunately, there is a bit of an issue with values of this type - they have unbounded size! Specifically, if a function takes a <code>List(Int)</code>, for example, the actual list it could receive could have any number of <code>Cons</code> nodes.</p>
 <p>Furthermore, it is not clear how to implement variance for this type. If we have a <code>List(Int)</code>, then ideally at each node we would not store any information informing us that the item is an <code>Int</code> (we can know that it could be nothing else from the type signature). However, we would like to be able to pass this into functions accepting say <code>List(Num)</code>, this would seemingly require creating an entirely new list with the <code>Int</code> marker placed on every node.</p>
-<p>One potential solution is to simply not use recursive types. WTy2 supplies a an array list type that is fast and provides great memory locality. In languages like Haskell and Closure, however, the utility of being able to create many large data structures that share data cannot really be understated. As a functional language with pattern matching, WTy2 really should be able to achieve something similar.</p>
-<p>The way we can achieve this is through references, but perhaps in a slightly different way to what you might imagine coming from languages like Rust.</p>
-<pre><code>data Cons[r: Ref](head: t, tail: List(r, t))
+<p>One potential solution is to simply not use recursive types. WTy2 supplies a an array list type in it's standard library that is fast and provides great memory locality. In functional languages like Haskell and Closure, however, the utility of being able to create large linked data structures that share data cannot really be understated. WTy2 really should be able to achieve something similar.</p>
+<p>The solution is references, but perhaps in a slightly different way to what you might imagine coming from languages like Rust.</p>
+<pre><code class="language-WTy2">data Cons[r: Ref](head: t, tail: List(r, t))
 data Nil
 type List(r: Ref, t: Type) = r(
     [head, tail: List(r, t)] Is(Cons(head, tail))
                            | Is(Nil)
     )
 </code></pre>
-<p>The main interesting thing about this definition is that <code>r</code>, the type variable that will be instantiated to some sort of reference that will break up the infinite type, is generic. We could instantiate <code>r</code> to some owning reference type like <code>Box</code> and get a definition similar to what we would achieve in Rust, but we can do better.</p>
-<p>The problem with <code>Box</code> or any other global allocator is that we lose locality. If the elements are added to the list randomly over time, then they will be placed in effectively random locations in memory. What we would like is for every element of the same list to be placed in more-or-less the same location (note this idea is similar to that of arenas in Rust).</p>
-<pre><code>type Alloc = ...
+<p>The main interesting thing about this definition is that <code>r</code>, the type variable that will be instantiated to some sort of reference that will break up the infinite type, is generic. We could instantiate <code>r</code> to some owning reference type like <code>Box</code> and get a definition similar to what we would achieve in Rust, but we can also do better.</p>
+<p>The problem with <code>Box</code> or any other global allocator is that we lose locality. If the elements are added to the list randomly over time, then they will be placed in effectively random locations in memory. What we would like is for every element of the same list (not even just same type!) to be placed in more-or-less the same location (note this idea is similar to that of arenas in Rust).</p>
+<pre><code class="language-WTy2">type Alloc = ...
 type RefTo(a: Alloc, t: Type) = ...
 
 // Get the allocator of a reference
@@ -384,7 +384,7 @@ altBuild[a: Alloc, r: RefTo(a,..), t: Type]
 
 z: List(t=Int) = altBuild(Cons(3, x))
 </code></pre>
-<p>There are some interesting interactions with enforcing code like this: for example, if you have two different lists, potentially created with different allocators, the elements from one allocator must be all copied into the other. Because of this, it is recommended that if an algorithm involves a lot of merging of linked data structures, there is a single allocator created once and all sub-structures are creates with it.</p>
+<p>There are some interesting interactions with enforcing code like this. For example, if you have two different lists, potentially created with different allocators, the elements from one allocator must be all copied into the other. Because of this, it is recommended that if an algorithm involves a lot of merging of linked data structures, there a single allocator is created at the start and all sub-structures are built up with it.</p>
 <p>Note that using allocators like this also helps with the variance problem as mentioned above. Allocators in WTy2 are type-aware. Allocators must provide a way of recovering full type information for every value that is stored by them, but to ensure memory is not wasted, elements with common type prefixes are stored together. The exact mechanism for how to find the prefix is WIP but one could imagine, for instance, a binary tree which is traversed based on the reference and stores the common prefixes at the leaves.</p>
 <p>The main downside is arguably the unfortunate amount of syntactic noise (for instance, compared to similar linked data structures in Haskell). Still, this is somewhat to be expected in a more low-level programming language - with the clutter comes flexibility.</p>
 <p>A very nice side-effect is that in simple cases, as <code>r</code> is not restricted to be matchable (it uses the ordinary function arrow), references can be omitted for known finitely sized structures.</p>
@@ -462,16 +462,18 @@ g(x);
 <p>This is transformed into</p>
 <pre><code class="language-WTy2">readBool() &gt;&gt;= { f(it); g(it); }
 </code></pre>
-<p>This allows the compiler to analyse the closure <code>{ f(it); g(it); }</code> and potentially monomorphise it for <code>True</code> and <code>False</code>. This means that if both <code>f</code> and <code>g</code> switch on the boolean, we can compile this into a single switch (without relying on inlining, which while very useful, has limitations with regards to code bloat: if <code>f</code> and <code>g</code> are very large functions, and they were called in many places, it would be much more desirable to compile only two copies of <code>f</code> and <code>g</code> for the <code>True</code> and <code>False</code> cases, instead of a version for every single call).</p>
+<p>This allows the compiler to analyse the closure <code>{ f(it); g(it); }</code> and potentially specialise it for <code>True</code> and <code>False</code>. If both <code>f</code> and <code>g</code> switch on the boolean, we can compile this into a single switch (without relying on inlining, which while very useful, has limitations with regards to code bloat: if <code>f</code> and <code>g</code> are very large functions, and they were called in many places, it would be much more desirable to compile only two copies of <code>f</code> and <code>g</code> for the <code>True</code> and <code>False</code> cases, instead of a version for every single call).</p>
 <p>The <code>Ex</code> monad is used to encourage code of this style, while making it obvious where extra closures are coming from. For example, if we did not have the <code>Ex</code> monad, then it would be very unclear if code like:</p>
 <pre><code>x = readBool();
 f(x);
 g(x);
 </code></pre>
-<p>was compiled into <code>x = readBool(); { f(it); g(it); }(x)</code> or not.</p>
+<p>was compiled into <code>x = readBool(); with(x) { f(it); g(it); }</code> or not.</p>
 <h2 id="parametricity"><a class="header" href="#parametricity">Parametricity</a></h2>
 <p>With <code>Ex</code>, WTy2 also obeys a weakened form a parametricity. In Haskell, a non-partial function with type signature <code>forall t. t -&gt; t -&gt; t</code> can (in the absense of hacks like <code>unsafePeformIO</code>) only have two implementations (return the first element, or return the second).</p>
 <p>In WTy2, a function with type signature <code>[t: Type](a: t, b: t) -&gt; t</code> also can only return the first element or the second, but it may perform other side-effects as well (the return value just cannot be influenced by those side-effects).</p>
+<h2 id="mutability"><a class="header" href="#mutability">Mutability</a></h2>
+<p>The path towards adding mutability into WTy2 is currently unclear. One potential option is to enforce that mutable variables are wrapped in the <code>Ex</code> monad, effectively meaning reading mutable variables is treated as an IO operation that could return any value.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="type-aware-allocators"><a class="header" href="#type-aware-allocators">Type Aware Allocators</a></h1>
 <p>A goal of WTy2 is to allow for good performance (especially with regards to memory locality) without much additional work on the part of the programmer/enforcing closed-world assumptions on your code.</p>
 <p>A major part of this is the concept of a type-aware-allocator. WTy2 makes extensive use of allocators (array based and recursive data structures in WTy2 should ideally be generic over the allocation scheme) so by providing tools to create good ones, almost all data structures should benefit.</p>
@@ -525,14 +527,15 @@ foo_Monoid: List(Monoid) = list(100) { mempty(t) };
 <h2 id="design-note-loops"><a class="header" href="#design-note-loops">Design Note: Loops</a></h2>
 <p>WTy2 is primarily a functional language and so higher order functions like <code>map</code> are recommended over loop constructs. In fact, the approach for handling side-effects in WTy2 is currently a WIP, and loops are only really useful if side-effects like mutability possible.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="specialisation"><a class="header" href="#specialisation">Specialisation</a></h1>
-<p>WTy2 does NOT currently feature &quot;specialisation&quot; as a high-level language feature (à la Rust), being able to override typeclass instances for specific types. Instead, specialisation, in the context of WTy2 refers to an optimisation strategy that is key to get highly polymorphic WTy2 programs to perform well.</p>
+<p>WTy2 does NOT currently feature &quot;specialisation&quot; as a high-level language feature (à la Rust), being able to override typeclass instances for specific types. Instead, specialisation in the context of WTy2 refers to an optimisation strategy that is key to get highly polymorphic WTy2 programs to perform well.</p>
 <p>Specialisation can be thought of a bit like a &quot;lite&quot; version of monomorphisation. Types can be infinitely large in WTy2, so full monomorphisation as a compilation strategy is infeasible; however, where possible, compiling separate versions of functions for specific argument values (or sets of argument values) and dispatching to those specialised versions can get most of the benefits (the main downside being the compiler now has to decide on a strategy for deciding when to specialise).</p>
-<p>Some possible heuristics for deciding when specialisation might be a good idea:</p>
+<p>Some possible heuristics for deciding when specialisation might be a good idea are:</p>
 <ul>
-<li>A function is explicitly called somewhere in the program with an argument of constant value. For example, if a function takes an arbitrary <code>Num</code> and is called somewhere with the <code>Int</code> literal <code>23</code>, a specialisation for <code>23</code> could be generated.</li>
-<li>One of the function's arguments have a small set of inhabiting values. For example, if a function takes a boolean argument, specialisations for when this boolean is true and false would be ideal.</li>
+<li>A function is explicitly called somewhere in the program with an argument of more constrained type than the function accepts. For example, if a function takes an arbitrary <code>Num</code> and is called somewhere with and <code>Int</code>, a specialisation <code>Int</code>s should probably be generated. If the function is called with a constant <code>23</code>, then a specialisation for this exact integer could be generated (and likely later inlined, but more on that later).</li>
+<li>Note after one function is specialised, function calls in that function's body may now also become candidates for specialisation by the rule above. This transitive specialisation is very powerful, as it can eliminate would might otherwise by a large number of repeated switches.</li>
+<li>One of the function's arguments have a small set of inhabiting values. For example, if a function takes a boolean argument, specialisations for when the boolean is true and false might be a good idea.</li>
 </ul>
-<p>Specialisation is similar to inlining, but it means specialised code can be reused, reducing executable bloat. Prioritising specialisation over inlining seems reasonable as a way to not have overly long compilation times.</p>
+<p>Specialisation is similar to inlining, but generated specialised code can be reused, reducing executable bloat. Prioritising specialisation over inlining seems reasonable as an approach to not have overly long compilation times.</p>
 <h2 id="dispatching-to-specialised-functions"><a class="header" href="#dispatching-to-specialised-functions">Dispatching to Specialised Functions</a></h2>
 <p>Dispatching to specialised functions at runtime rather than compile time would greatly increase the power of this feature. i.e: suppose there is a function <code>foo: [n: Num](n) -&gt; n</code> and with a specialisation for <code>n ~ Int</code>. We would like to ensure that even code like <code>x: Int = 0; y: Num = x; z = foo(y);</code> uses the specialiased version of <code>foo</code>, using the type information (in the form of variant tags) that is kept around at runtime to dispatch appropriately. With this guarantee, it would be feasible to actually allow the programmer to specify alternate code paths for specialisations of functions manually (without inconsistency where upcasting and calling results in different behaviour).</p>
 <div class="footnote-definition" id="note"><sup class="footnote-definition-label">1</sup>

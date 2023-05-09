@@ -40,13 +40,30 @@ For every call of the proof function, immediately before the failing to typechec
 
 If typechecking with any proof call succeeds, then that call to the proof is left in and typechecking proceeds as normal. If all proofs fail, then the type error is outputted as would be expected.
 
-Importantly, proofs are limited to single function calls. If there is a proof that `A => B` and a proof that `B => C`, and a proof of `A => C` is required, the programmer must explicitly write that proof. This is to ensure typechecking is decidable.
+Importantly, proofs are limited to single function calls. If there is a proof that `A => B` and a proof that `B => C`, and a proof of `A => C` is required, the programmer must explicitly write a new proof of `A => C`. This is to prevent typechecking from looping.
+
+```WTy2
+proof(Proof(A)): Proof(B)
+
+proof(Proof(B)): Proof(C)
+
+proof(Proof(A)): Proof(C) = do {
+    _: Proof(B) = QED;
+    QED
+}
+```
 
 ## Design Note: Transitive Closure of Proofs
 
-While needing to write transitive proofs might seem slightly painful, note it is NOT intended that every single possible valid proof function is written. First of all, this is likely impossible (for the same reason typechecking would become undecidable: infinite valid proofs can be obtained starting from a finite number), but also, it is unnecessary! Why prove anything that isn't helpful?
+While needing to write transitive proofs might seem slightly painful, note it is NOT intended that every single possible valid proof function is written. First of all, this is likely impossible (for the same reason typechecking would loop: infinite valid proofs can be obtained starting from a finite number), but also, it is unnecessary! Why prove anything that isn't helpful?
 
-Instead, it is hoped that the WTy2 programmer writes code assuming all obvious implications are known to the typechecker, and then if a type error is found, the programmer writes the proof required for that specific error. Now all future times that same error would appear, the in-scope proof is implicitly called.
+Instead, it is hoped that the WTy2 programmer writes code assuming all obvious implications are known to the typechecker, and then if a type error is encountered, the programmer writes the proof required for that specific error. The nice side-benefit is that now all future times that same error would appear, the in-scope proof is implicitly called.
+
+## Design Note: Provisional Definitions
+
+Idris has a feature with a similar goal (that of splitting proofs and code relying on them) known as "Provisional Definitions" https://docs.idris-lang.org/en/latest/tutorial/provisional.html. The main disadvantage is that you do not get the reuse of proofs that comes from WTy2 (i.e: proofs must be specifically named based on the function they are required in).
+
+The obvious benefit here is that the Idris compiler does not have to search through all possible implicit proofs, meaning the impact on typechecking performance is lessened significantly. Right now, it is somewhat unclear how often implicit proofs will be able to be reused, but it is hoped that this will be a quality-of-life benefit for simple programs will be near the scale of much more heavyweight features, say, tactics (the convenience of not needing any explicit user-interaction to satisfy properties like `m + n ~ n + m`, I think should not be understated).
 
 ## Implementation Note: Typechecking Performance
 

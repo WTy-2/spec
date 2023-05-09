@@ -1,20 +1,22 @@
 # Dependent Types
 
+WTy2 features dependent record and function types.
+
 ## Constrained By `(<==)`
 
-WTy2 features dependent types through desugaring to a single language construct, `<==` (read as "constrained by").
+Often, in dependently typed languages, a dependent record only needs to carry evidence of a constraint as the second argument, for the purpose of bringing it into scope as evidence of a predicate. This pattern is made more convenient in WTy2 through the `<==` operator (read as "constrained by").
 
-`<==` is a type operator (it cannot occur at the value level) and has the following type signature:
+The `<==`operator has the following type signature:
 
 ```WTy2
-(<==) : [a: Type](x: a, f: a -> Constraint) -> Type
+(<==) : (a: Type, f: a -> Constraint) -> Type
 ```
 
-To construct a value of type `a <== b` from a value of type `a`, `b(a)` must be in the context. Matching on a value of type `a <== b` is similar to matching on a value of type `a`, but `b(a)` is added to the context.
+To construct a value of type `a <== b` from a value `x` of type `a`, `b(x)` must be in the context. Matching on a value of type `(x: a) <== b` is similar to matching on a value of type `a`, but `b(x)` is added to the context.
 
-This operator has similarities to refinement types (i.e: in Liquid Haskell) and dependent pairs (i.e: in Agda/Idris/Coq/Lean) but is a somewhat unique construct, which is primarily enabled from WTy2's robust support for first-class `Constraint`s and subtyping.
+In use, this operator has similarities to refinement types (i.e: in Liquid Haskell) (i.e: in that the constraint evidence is passed entirely implicitly).
 
-An approximation of this operator in Idris could be defined like so:
+An approximation of this operator in Idris (but for which construction and matching is not implicit) could be defined like so:
 
 ```idris
 Proof : Bool -> Type
@@ -26,7 +28,7 @@ data (<==) : (a: Type) -> (p: a -> Bool) -> Type where
 infix 4 <==
 ```
 
-Idris (as far as I am aware) does not have robust support for first-class constraints like WTy2 so we use `-> Bool` (which can represent an arbitrary predicate) instead.
+Idris (as far as I am aware) does not have an equivalent of equality coercion constraints like WTy2 (or indeed Haskell) so we are forced to use `-> Bool` and propositional equality `=` to represent predicates instead.
 
 An example use would be to restrict the integers received by a function:
 
@@ -39,8 +41,6 @@ test3 (Mk 3 {f=Refl}) = ()
 ```
 
 We can see that although `foo` only matches on the natural number being `1`, `2` or `3`, the function is still correctly typechecked as `total`, as we must also pass a proof that the `Nat` is in the range `[1-3]`.
-
-Unfortunately, because of the lack of subtyping, when used in Idris, we must always pattern match on the `Mk` to bring the constraint into scope. In WTy2, both construction and matching is done implicitly.
 
 The equivalent WTy2 declaration of `foo` is:
 
@@ -57,54 +57,22 @@ type NatBetween(min: Nat, max: Nat)
 foo(x: NatBetween(1, 3))
 ```
 
+As records can have multiple entries we can easily constrain arguments in terms of another. For example, we can define a function `bar` which takes two `Nat`s, `x` and `y`, where `y` must be greater than `x`:
+
+```
+bar(x: Nat, y: Nat) <== { y > x ~ True }
+```
+
 ### Design Note: Equivalent Constraints
 
-You may realise that as constraints can contain arbitrary expressions, we could formulate these constraints in many different ways. For example, we could write `{ contains([1, 2, 3], it) }`, or even `{ max(1, min(3, it)) ~ it }`. That these constraints do indeed imply each other though, is not always obvious (expecially to the typechecker).
+You may realise that as constraints can contain arbitrary expressions, we could formulate these constraints in many different ways. For example, we could write `{ contains([1, 2, 3], it) ~ True }`, or even `{ max(1, min(3, it)) ~ it }`. That these constraints do indeed imply each other though, is not always obvious (expecially to the typechecker).
 
 This is arguably the main pain-point with dependent types - proving that one constraint implies another can be tiresome and clutter up code significantly. WTy2 attempts to make this slightly less painful through the ability to write implicit `proof`s.
 
-## Dependent Records / Scoping Rules
+## Dependent Function Arrow
 
-Where this all gets more interesting is when wanting to constraint one argument in terms of another.
+WTy2 also supports dependent function arrows, through a similar mechanism. The argument record to a function is in scope in the return type (including the return constraint), as well as the function body.
 
-For example, imagine we want to define function `bar` which takes two `Nat`s, `x` and `y`, where `y` must be greater than `x`.
+Note this makes `<==` constraints on return types somewhat ambiguous in that if the return type of the function is a record with identically named fields (or simply the `it` keyword is used), this could refer to the argument record or the return. WTy2 disambiguates this by treating this case as shadowing. In general, the innermost `it` (and it's associated record names) shadow the outermost one.
 
-One way to formulate this would be just:
-
-```
-bar(x: Nat, y: Nat) <== { y > x }
-```
-
-But another way to write this would be:
-
-```
-type NatAbove(x: Nat) = Nat <== { it > x }
-
-bar(x: Nat, y: NatAbove(x))
-```
-
-`x` is in scope when writing the type of `y`. Cyclic dependencies in these type signatures are also fine:
-
-```
-type NatBelow(x: Nat) = Nat <== { it < x }
-
-type NatAbove(x: Nat) = Nat <== { it > x }
-
-bar(x: NatBelow(y), y: NatAbove(x))
-```
-
-One way to view what is happening here is to move all types into a new `<==` constraint (recall `Type => (a -> Constraint) <== { a ~ it }`).
-
-```
-bar(x: ?, y: ?) <== { NatBelow(y)(x), y: NatAbove(x)(y) }
-```
-
-### Unresolved Questions:
-
-`NatBelow`/`NatAbove` require a `Nat` constraint on their argument. These `Nat` constraints can be obtained from looking at what `NatBelow`/`NatAbove` themselves imply, but this is quite a loopy typechecking case. If implementation for checking this proves too hard, or is there is a soundness hole discovered with these sorts of definitions, an alternative desugaring would be:
-
-```
-fun bar(x: Nat, y: Nat) <== { x: NatBelow(y), y: NatAbove(x) }
-```
-
-In which case the applications of `NatBelow` and `NatAbove` typecheck trivially.
+Currently, there is no mechanism to forcefully disambiguate (though perhaps some syntax to specify de Bruijn indices or similar could work). The field names of the argument or return record must be changed to refer to the argument record fields in the return constraint.

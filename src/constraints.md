@@ -41,14 +41,13 @@ Another interpretation of this operator that might be more intuitive for program
 An approximation of this operator in Idris2 (but for which construction and matching is not implicit) could be defined like so (using boolean predicates lifted to the type level instead of Haskell-style constraints which Idris2 does not really have https://www.idris-lang.org/docs/idris2/current/base_docs/docs/Data.So.html):
 
 ```idris
-
 data (<<=) : (a: Type) -> (p: a -> Bool) -> Type where
   Mk : (x: a) -> (f: So (p x)) -> ((<<=) a p)
 
 infix 4 <<=
 ```
 
-An example use would be to restrict the integers received by a function:
+An example use would be to restrict the integers received by a function: [^note]
 
 ```idris
 total
@@ -57,8 +56,6 @@ foo (Mk 1 {f=Oh}) = ()
 foo (Mk 2 {f=Oh}) = ()
 foo (Mk 3 {f=Oh}) = ()
 ```
-
-[^note]
 
 We can see that although `foo` only matches on the natural number being `1`, `2` or `3`, the function is still correctly checked as `total`, as we must also pass a proof that the `Nat` is in the range `[1-3]`.
 
@@ -83,4 +80,4 @@ You may notice that as constraints can contain arbitrary expressions, we could f
 
 This is arguably the main pain-point with dependent types. Proving that one constraint implies another can be tiresome and clutter up code significantly. Refinement type systems solve this through restricting constraints to those that can be proved with an SMT solver, but this is often overly limiting. WTy2 attempts to provide some of the ergonomics of refinement types without the restrictions through the ability to write and use implicit `proof`s.
 
-[^note] As a side note, on the current Idris2 version 0.6.0, if `x <= 3` is replaced with `x < 4`, the example breaks, saying case `foo (Mk (S (S (S (S _)))) _)` is not covered. This seems like a bug.
+[^note] As a side note, on the current Idris2 version (0.6.0), if `x <= 3` is replaced with `x < 4`, the example breaks, with the compiler protesting that case `foo (Mk (S (S (S (S _)))) _)` is not covered. I suspect this is a bug.

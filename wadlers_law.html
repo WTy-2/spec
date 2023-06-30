@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>IO and the Ex Monad - The WTy2 Language Specification</title>
+        <title>Syntax Debates - The WTy2 Language Specification</title>
 
 
         <!-- Custom HTML head -->
@@ -83,7 +83,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="core_types.html"><strong aria-hidden="true">2.</strong> Core Types</a></li><li class="chapter-item expanded "><a href="declarations.html"><strong aria-hidden="true">3.</strong> Declarations</a></li><li class="chapter-item expanded "><a href="dependent_types.html"><strong aria-hidden="true">4.</strong> Dependent Types</a></li><li class="chapter-item expanded "><a href="erasure_visibility.html"><strong aria-hidden="true">5.</strong> Erasure and Visibility</a></li><li class="chapter-item expanded "><a href="recursive_types.html"><strong aria-hidden="true">6.</strong> Recursive Types</a></li><li class="chapter-item expanded "><a href="proofs.html"><strong aria-hidden="true">7.</strong> Proofs</a></li><li class="chapter-item expanded "><a href="io_ex.html" class="active"><strong aria-hidden="true">8.</strong> IO and the Ex Monad</a></li><li class="chapter-item expanded "><a href="allocators.html"><strong aria-hidden="true">9.</strong> Type Aware Allocators</a></li><li class="chapter-item expanded "><a href="utilities.html"><strong aria-hidden="true">10.</strong> Utilities</a></li><li class="chapter-item expanded "><a href="specialisation.html"><strong aria-hidden="true">11.</strong> Specialisation</a></li><li class="chapter-item expanded "><a href="subset.html"><strong aria-hidden="true">12.</strong> Core Subset</a></li><li class="chapter-item expanded "><a href="soundness.html"><strong aria-hidden="true">13.</strong> Soundness Holes</a></li><li class="chapter-item expanded "><a href="arrows.html"><strong aria-hidden="true">14.</strong> Arrows</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="core_types.html"><strong aria-hidden="true">2.</strong> Core Types</a></li><li class="chapter-item expanded "><a href="declarations.html"><strong aria-hidden="true">3.</strong> Declarations</a></li><li class="chapter-item expanded "><a href="dependent_types.html"><strong aria-hidden="true">4.</strong> Dependent Types</a></li><li class="chapter-item expanded "><a href="erasure_visibility.html"><strong aria-hidden="true">5.</strong> Erasure and Visibility</a></li><li class="chapter-item expanded "><a href="recursive_types.html"><strong aria-hidden="true">6.</strong> Recursive Types</a></li><li class="chapter-item expanded "><a href="proofs.html"><strong aria-hidden="true">7.</strong> Proofs</a></li><li class="chapter-item expanded "><a href="allocators.html"><strong aria-hidden="true">8.</strong> Type Aware Allocators</a></li><li class="chapter-item expanded "><a href="utilities.html"><strong aria-hidden="true">9.</strong> Utilities</a></li><li class="chapter-item expanded "><a href="specialisation.html"><strong aria-hidden="true">10.</strong> Specialisation</a></li><li class="chapter-item expanded "><a href="subset.html"><strong aria-hidden="true">11.</strong> Core Subset</a></li><li class="chapter-item expanded "><a href="soundness.html"><strong aria-hidden="true">12.</strong> Soundness</a></li><li class="chapter-item expanded "><a href="arrows.html"><strong aria-hidden="true">13.</strong> Arrows</a></li><li class="chapter-item expanded "><a href="functions.html"><strong aria-hidden="true">14.</strong> Functions</a></li><li class="chapter-item expanded "><a href="constraints.html"><strong aria-hidden="true">15.</strong> Constraints</a></li><li class="chapter-item expanded "><a href="modes.html"><strong aria-hidden="true">16.</strong> Modes</a></li><li class="chapter-item expanded "><a href="wadlers_law.html" class="active"><strong aria-hidden="true">17.</strong> Syntax Debates</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -121,7 +121,7 @@
                         <a href="https://github.com/WTy-2/spec/" title="Git repository" aria-label="Git repository">
                             <i id="git-repository-button" class="fa fa-github"></i>
                         </a>
-                        <a href="https://github.com/WTy-2/spec/edit/main/src/io_ex.md" title="Suggest an edit" aria-label="Suggest an edit">
+                        <a href="https://github.com/WTy-2/spec/edit/main/src/wadlers_law.md" title="Suggest an edit" aria-label="Suggest an edit">
                             <i id="git-edit-button" class="fa fa-edit"></i>
                         </a>
 
@@ -150,42 +150,68 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="io-and-the-ex-monad"><a class="header" href="#io-and-the-ex-monad">IO and the Ex Monad</a></h1>
-<p>WTy2 is an impure language. Side-effects like printing to the terminal can occur at any time without requiring monads.</p>
-<p>However, if values are read from the outside world, they do need to be wrapped in the <code>Ex</code> monad.</p>
-<p>The purpose of this is twofold: we make explicit the CPS conversion which allows for efficient monomorphisation, and we get some nice properties like parametricity.</p>
-<p>As an explanation on the first point, imagine we have a function <code>readBool() -&gt; Ex(Bool)</code> and then pass the returned integer to functions <code>f</code> and <code>g</code>.</p>
-<pre><code class="language-WTy2">x &lt;- readBool();
-f(x);
-g(x);
+                        <h1 id="syntax-debates"><a class="header" href="#syntax-debates">Syntax Debates</a></h1>
+<p><a href="https://wiki.haskell.org/Wadler&#x27;s_Law">https://wiki.haskell.org/Wadler's_Law</a></p>
+<p>Syntax is hard, and discussions about it generally go nowhere...</p>
+<p>...so let's discuss syntax!</p>
+<h2 id="enforced-capitalisation-convention"><a class="header" href="#enforced-capitalisation-convention">Enforced Capitalisation Convention</a></h2>
+<p>In functional languages, it is often easy to have an ambiguity with infallible pattern matches vs function definitions. Consider in Haskell:</p>
+<pre><code class="language-hs">foo = ...
+  where
+    {- Something -} i = ...
 </code></pre>
-<p>This is transformed into</p>
-<pre><code class="language-WTy2">readBool() &gt;&gt;= { f(it); g(it); }
+<p>Haskell gets around the ambiguity here by enforcing a simple capitalisation convention: constructors must start with a capital letter, and functions must start with a lowercase one.</p>
+<pre><code class="language-hs">foo = ...
+  where
+    Bar i = ... -- Pattern match
+    bar i = ... -- Local function definition
 </code></pre>
-<p>This allows the compiler to analyse the closure <code>{ f(it); g(it); }</code> and potentially specialise it for <code>True</code> and <code>False</code>. If both <code>f</code> and <code>g</code> switch on the boolean, we can compile this into a single switch (without relying on inlining, which while very useful, has limitations with regards to code bloat: if <code>f</code> and <code>g</code> are very large functions, and they were called in many places, it would be much more desirable to compile only two copies of <code>f</code> and <code>g</code> for the <code>True</code> and <code>False</code> cases, instead of a version for every single call).</p>
-<p>The <code>Ex</code> monad is used to encourage code of this style, while making it obvious where extra closures are coming from. For example, if we did not have the <code>Ex</code> monad, then it would be very unclear if code like:</p>
-<pre><code>x = readBool();
-f(x);
-g(x);
+<p>WTy2 has a similar potential ambiguity, and it is even more prevalent, given the rule that <code>f: t -&gt; u</code> can be written as <code>f(t): u</code> (so the ambiguity is possible even inside patterns).</p>
+<p>One obvious solution is to copy Haskell's homework: data constructors are capitalised and variables are not. This rule fits well with WTy2's syntax in general: types should be capitalised, and this makes sense because types, like data constructors, are also matchable.</p>
+<p>However, there are downsides. The most compelling from my perspective is how non-latin alphabets do not necessarily contain capital letters. I do not believe this is quite as significant of an issue as sometimes presented (a convention for code written in those alphabets could easily be created where data constructors/types must start with a latin-alphabet capital letter, say <code>M</code> for <code>matchable</code>) but even so, it is not ideal.</p>
+<p>The alternative is to use some dedicated keyword/symbol to disambuate. Perhaps <code>fn</code> prefixing all functions written in <code>f(t): u</code>-style or <code>match</code> prefixing all infallible pattern matches.</p>
+<p>Using <code>fn</code> keyword on functions</p>
+<pre><code class="language-WTy2">takesFunctionAndMatches(fn foo(Int): Int, Foo(x)) {
+    fn bar(y: Int) = foo(y);
+    Bar(z) = x;
+    ...
+}
 </code></pre>
-<p>was compiled into <code>x = readBool(); with(x) { f(it); g(it); }</code> or not.</p>
-<h2 id="parametricity"><a class="header" href="#parametricity">Parametricity</a></h2>
-<p>With <code>Ex</code>, WTy2 also obeys a weakened form a parametricity. In Haskell, a non-partial function with type signature <code>forall t. t -&gt; t -&gt; t</code> can (in the absense of hacks like <code>unsafePeformIO</code>) only have two implementations (return the first element, or return the second).</p>
-<p>In WTy2, a function with type signature <code>[t: Type](a: t, b: t) -&gt; t</code> also can only return the first element or the second, but it may perform other side-effects as well (the return value just cannot be influenced by those side-effects).</p>
-<h2 id="mutability"><a class="header" href="#mutability">Mutability</a></h2>
-<p>The path towards adding mutability into WTy2 is currently unclear. One potential option is to enforce that mutable variables are wrapped in the <code>Ex</code> monad, effectively meaning reading mutable variables is treated as an IO operation that could return any value.</p>
+<p>Using <code>match</code> keyword on matches</p>
+<pre><code>takesFunctionAndMatches(foo(Int): Int, match Foo(x)) {
+    bar(y: Int) = foo(y);
+    match Bar(z) = x;
+}
+</code></pre>
+<p>Perhaps some compromise is possible: capitalised = assume match, lowercase = assume function but then can use either keyword to override. This might be an overkill solution, but it seems promising.</p>
+<h2 id="bindingconstraint-operators"><a class="header" href="#bindingconstraint-operators">Binding/Constraint Operators</a></h2>
+<p>I have a few alternatives that I don't hate, but nothing I love:</p>
+<h3 id="-instance-head-operator"><a class="header" href="#-instance-head-operator"><code>(&lt;:)</code> Instance Head Operator</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>Binding</th><th>Constraint</th><th>Meaning</th></tr></thead><tbody>
+<tr><td><code>x  : t</code></td><td><code>x :: t</code></td><td><code>x</code> is of type <code>t</code></td></tr>
+<tr><td><code>t &lt;: u</code></td><td><code>t &lt;| u</code>/<code>t &lt;:: u</code></td><td><code>t</code> is an instance head of <code>u</code></td></tr>
+<tr><td><code>x ~: y</code></td><td><code>x ~ y</code></td><td><code>x</code> reduces to <code>y</code></td></tr>
+</tbody></table>
+</div>
+<h3 id="-instance-head-operator-1"><a class="header" href="#-instance-head-operator-1"><code>(:=&gt;)</code> Instance Head Operator</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>Binding</th><th>Constraint</th><th>Meaning</th></tr></thead><tbody>
+<tr><td><code>x :   t</code></td><td><code>x :: t</code></td><td><code>x</code> is of type <code>t</code></td></tr>
+<tr><td><code>t :=&gt; u</code></td><td><code>t |=&gt; u</code></td><td><code>t</code> is an instance head of <code>u</code></td></tr>
+<tr><td><code>x :~  y</code></td><td><code>x ~ y</code></td><td><code>x</code> reduces to <code>y</code></td></tr>
+</tbody></table>
+</div>
+<p><code>(&lt;:)</code> has the advantage of already being a common symbol with a somewhat similar meaning (subtype vs instance head). On the other hand, it not being exactly the same, and WTy2 also having a notion of subtyping could get quite confusing (e.g: <code>Int &lt;: Monoid</code> but we would never have <code>Semigroup &lt;: Monoid</code>).
+<code>(:=&gt;)</code> in my opinion is also slightly confusing though. It looks very similar to implies.</p>
+<p>Another option is to rely on keywords. Perhaps <code>x is t</code> instead of <code>x :: t</code> and <code>instance t for u</code> as the instance-head operator. Note <code>instance ... for</code> already has to be a keyword to actually write instances, but I don't love how this makes the syntax more inconsistent.</p>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="proofs.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="modes.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
-                            <a rel="next" href="allocators.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
-                                <i class="fa fa-angle-right"></i>
-                            </a>
 
                         <div style="clear: both"></div>
                     </nav>
@@ -193,13 +219,10 @@ g(x);
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="proofs.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="modes.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
 
-                    <a rel="next" href="allocators.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
-                        <i class="fa fa-angle-right"></i>
-                    </a>
             </nav>
 
         </div>

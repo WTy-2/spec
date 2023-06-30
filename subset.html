@@ -83,7 +83,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="core_types.html"><strong aria-hidden="true">2.</strong> Core Types</a></li><li class="chapter-item expanded "><a href="declarations.html"><strong aria-hidden="true">3.</strong> Declarations</a></li><li class="chapter-item expanded "><a href="dependent_types.html"><strong aria-hidden="true">4.</strong> Dependent Types</a></li><li class="chapter-item expanded "><a href="erasure_visibility.html"><strong aria-hidden="true">5.</strong> Erasure and Visibility</a></li><li class="chapter-item expanded "><a href="recursive_types.html"><strong aria-hidden="true">6.</strong> Recursive Types</a></li><li class="chapter-item expanded "><a href="proofs.html"><strong aria-hidden="true">7.</strong> Proofs</a></li><li class="chapter-item expanded "><a href="io_ex.html"><strong aria-hidden="true">8.</strong> IO and the Ex Monad</a></li><li class="chapter-item expanded "><a href="allocators.html"><strong aria-hidden="true">9.</strong> Type Aware Allocators</a></li><li class="chapter-item expanded "><a href="utilities.html"><strong aria-hidden="true">10.</strong> Utilities</a></li><li class="chapter-item expanded "><a href="specialisation.html"><strong aria-hidden="true">11.</strong> Specialisation</a></li><li class="chapter-item expanded "><a href="subset.html" class="active"><strong aria-hidden="true">12.</strong> Core Subset</a></li><li class="chapter-item expanded "><a href="soundness.html"><strong aria-hidden="true">13.</strong> Soundness Holes</a></li><li class="chapter-item expanded "><a href="arrows.html"><strong aria-hidden="true">14.</strong> Arrows</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="core_types.html"><strong aria-hidden="true">2.</strong> Core Types</a></li><li class="chapter-item expanded "><a href="declarations.html"><strong aria-hidden="true">3.</strong> Declarations</a></li><li class="chapter-item expanded "><a href="dependent_types.html"><strong aria-hidden="true">4.</strong> Dependent Types</a></li><li class="chapter-item expanded "><a href="erasure_visibility.html"><strong aria-hidden="true">5.</strong> Erasure and Visibility</a></li><li class="chapter-item expanded "><a href="recursive_types.html"><strong aria-hidden="true">6.</strong> Recursive Types</a></li><li class="chapter-item expanded "><a href="proofs.html"><strong aria-hidden="true">7.</strong> Proofs</a></li><li class="chapter-item expanded "><a href="allocators.html"><strong aria-hidden="true">8.</strong> Type Aware Allocators</a></li><li class="chapter-item expanded "><a href="utilities.html"><strong aria-hidden="true">9.</strong> Utilities</a></li><li class="chapter-item expanded "><a href="specialisation.html"><strong aria-hidden="true">10.</strong> Specialisation</a></li><li class="chapter-item expanded "><a href="subset.html" class="active"><strong aria-hidden="true">11.</strong> Core Subset</a></li><li class="chapter-item expanded "><a href="soundness.html"><strong aria-hidden="true">12.</strong> Soundness</a></li><li class="chapter-item expanded "><a href="arrows.html"><strong aria-hidden="true">13.</strong> Arrows</a></li><li class="chapter-item expanded "><a href="functions.html"><strong aria-hidden="true">14.</strong> Functions</a></li><li class="chapter-item expanded "><a href="constraints.html"><strong aria-hidden="true">15.</strong> Constraints</a></li><li class="chapter-item expanded "><a href="modes.html"><strong aria-hidden="true">16.</strong> Modes</a></li><li class="chapter-item expanded "><a href="wadlers_law.html"><strong aria-hidden="true">17.</strong> Syntax Debates</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -150,16 +150,26 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="core-subset"><a class="header" href="#core-subset">Core Subset</a></h1>
-<p>The WTy2 language has now grown to be pretty large. Luckily, many of the features, while they do make the language more expressive and powerful, can in theory be desugared into other constructs. The purpose of this section is to list some of the features that should be prioritised when starting development of a WTy2 compiler:</p>
+                        <h1 id="core-language"><a class="header" href="#core-language">Core Language</a></h1>
+<p>Implementing a typechecker and compiler for the entire WTy2 language at once is likely to prove somewhat challenging. Here, a design for an intermediate, typed core language (inspired by efforts on GHC) is outlined.</p>
+<p>Core-Lang Constructs:</p>
 <ul>
-<li>Core types (records, tuples, functions, unit, never, any)</li>
-<li>Dependent types (dependent records and function arrows)</li>
-<li>Constraints (equality coercions, type relationships, constrained-by operator)</li>
-<li>Variant declarations</li>
-<li>Type declarations, with associated methods and supertypes</li>
+<li>Lambda case expressions (covers lambdas, matches and let bindings)</li>
+<li>Telescopes: A single built-in datatype covering (dependent) tuples and lists</li>
+<li>Dependent function arrows</li>
+<li>Constraints (equality coercions, type membership, quantified constraints)</li>
+<li>Data declarations</li>
+<li>Type declarations, with associated methods and supertype constraints</li>
 <li>Default instance declarations</li>
-<li>Match expressions</li>
+</ul>
+<p>Desugaring:</p>
+<ul>
+<li>WTy2 core does not feature named tuples/records. These are instead desugared into telescopes like ordinary tuples and lists.</li>
+<li>In WTy2 core, all function arrows are dependent, meaning a function that takes and returns an integer would be represented as <code>Int -&gt; { Int }</code></li>
+</ul>
+<p>Unanswered Questions:</p>
+<ul>
+<li>How to represent recursion? Could either use recursive binders or a dedicated fixpoint operator.</li>
 </ul>
 
                     </main>

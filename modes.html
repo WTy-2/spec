@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Arrows - The WTy2 Language Specification</title>
+        <title>Modes - The WTy2 Language Specification</title>
 
 
         <!-- Custom HTML head -->
@@ -83,7 +83,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="core_types.html"><strong aria-hidden="true">2.</strong> Core Types</a></li><li class="chapter-item expanded "><a href="declarations.html"><strong aria-hidden="true">3.</strong> Declarations</a></li><li class="chapter-item expanded "><a href="dependent_types.html"><strong aria-hidden="true">4.</strong> Dependent Types</a></li><li class="chapter-item expanded "><a href="erasure_visibility.html"><strong aria-hidden="true">5.</strong> Erasure and Visibility</a></li><li class="chapter-item expanded "><a href="recursive_types.html"><strong aria-hidden="true">6.</strong> Recursive Types</a></li><li class="chapter-item expanded "><a href="proofs.html"><strong aria-hidden="true">7.</strong> Proofs</a></li><li class="chapter-item expanded "><a href="allocators.html"><strong aria-hidden="true">8.</strong> Type Aware Allocators</a></li><li class="chapter-item expanded "><a href="utilities.html"><strong aria-hidden="true">9.</strong> Utilities</a></li><li class="chapter-item expanded "><a href="specialisation.html"><strong aria-hidden="true">10.</strong> Specialisation</a></li><li class="chapter-item expanded "><a href="subset.html"><strong aria-hidden="true">11.</strong> Core Subset</a></li><li class="chapter-item expanded "><a href="soundness.html"><strong aria-hidden="true">12.</strong> Soundness</a></li><li class="chapter-item expanded "><a href="arrows.html" class="active"><strong aria-hidden="true">13.</strong> Arrows</a></li><li class="chapter-item expanded "><a href="functions.html"><strong aria-hidden="true">14.</strong> Functions</a></li><li class="chapter-item expanded "><a href="constraints.html"><strong aria-hidden="true">15.</strong> Constraints</a></li><li class="chapter-item expanded "><a href="modes.html"><strong aria-hidden="true">16.</strong> Modes</a></li><li class="chapter-item expanded "><a href="wadlers_law.html"><strong aria-hidden="true">17.</strong> Syntax Debates</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="core_types.html"><strong aria-hidden="true">2.</strong> Core Types</a></li><li class="chapter-item expanded "><a href="declarations.html"><strong aria-hidden="true">3.</strong> Declarations</a></li><li class="chapter-item expanded "><a href="dependent_types.html"><strong aria-hidden="true">4.</strong> Dependent Types</a></li><li class="chapter-item expanded "><a href="erasure_visibility.html"><strong aria-hidden="true">5.</strong> Erasure and Visibility</a></li><li class="chapter-item expanded "><a href="recursive_types.html"><strong aria-hidden="true">6.</strong> Recursive Types</a></li><li class="chapter-item expanded "><a href="proofs.html"><strong aria-hidden="true">7.</strong> Proofs</a></li><li class="chapter-item expanded "><a href="allocators.html"><strong aria-hidden="true">8.</strong> Type Aware Allocators</a></li><li class="chapter-item expanded "><a href="utilities.html"><strong aria-hidden="true">9.</strong> Utilities</a></li><li class="chapter-item expanded "><a href="specialisation.html"><strong aria-hidden="true">10.</strong> Specialisation</a></li><li class="chapter-item expanded "><a href="subset.html"><strong aria-hidden="true">11.</strong> Core Subset</a></li><li class="chapter-item expanded "><a href="soundness.html"><strong aria-hidden="true">12.</strong> Soundness</a></li><li class="chapter-item expanded "><a href="arrows.html"><strong aria-hidden="true">13.</strong> Arrows</a></li><li class="chapter-item expanded "><a href="functions.html"><strong aria-hidden="true">14.</strong> Functions</a></li><li class="chapter-item expanded "><a href="constraints.html"><strong aria-hidden="true">15.</strong> Constraints</a></li><li class="chapter-item expanded "><a href="modes.html" class="active"><strong aria-hidden="true">16.</strong> Modes</a></li><li class="chapter-item expanded "><a href="wadlers_law.html"><strong aria-hidden="true">17.</strong> Syntax Debates</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -121,7 +121,7 @@
                         <a href="https://github.com/WTy-2/spec/" title="Git repository" aria-label="Git repository">
                             <i id="git-repository-button" class="fa fa-github"></i>
                         </a>
-                        <a href="https://github.com/WTy-2/spec/edit/main/src/arrows.md" title="Suggest an edit" aria-label="Suggest an edit">
+                        <a href="https://github.com/WTy-2/spec/edit/main/src/modes.md" title="Suggest an edit" aria-label="Suggest an edit">
                             <i id="git-edit-button" class="fa fa-edit"></i>
                         </a>
 
@@ -150,42 +150,59 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="arrows"><a class="header" href="#arrows">Arrows</a></h1>
-<p>WTy2 has a lot of arrows, they are summarised here.</p>
-<h2 id="function--"><a class="header" href="#function--">Function (-&gt;)</a></h2>
-<pre><code class="language-WTy2">(-&gt;): (Type, Type) -&gt; Type
+                        <h1 id="modes"><a class="header" href="#modes">Modes</a></h1>
+<p>WTy2 is designed to be a language which can be implemented very efficiently, and give programmers control over optimisations. To help with this, WTy2 features ownership and borrowing.</p>
+<p>The current design is to follow a strategy similar to the recent developments in OCAML (https://blog.janestreet.com/oxidizing-ocaml-locality/, https://blog.janestreet.com/oxidizing-ocaml-ownership/) avoiding lifetimes.</p>
+<h2 id="map"><a class="header" href="#map">Map</a></h2>
+<pre><code class="language-WTy2">map[a, b](l: List(a), f: a -&gt; b): List(b) = ...
 </code></pre>
-<p>Ordinary function arrow.</p>
-<h2 id="constructor-"><a class="header" href="#constructor-">Constructor (~&gt;)</a></h2>
-<pre><code class="language-WTy2">(~&gt;): (Type, Type) -&gt; Type
+<p>This function maps over a list and creates a new one.
+Ideally, we would like:</p>
+<ul>
+<li>If the list is unique (no other references)
+<ul>
+<li>If list is entirely unboxed (no pointers)
+<ul>
+<li>If <code>a</code> and <code>b</code> are same size
+<ul>
+<li>Update entire list in place</li>
+</ul>
+</li>
+<li>Otherwise create new list and destroy previous</li>
+</ul>
+</li>
+<li>If list is linked by boxing <code>cons</code> nodes
+<ul>
+<li>If <code>a</code> and <code>b</code> are same size
+<ul>
+<li>Update each cons node in place</li>
+</ul>
+</li>
+<li>Otherwise create new cons nodes and destroy previous</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>Note that if each element is boxed, this reduces to the case of <code>a</code> and <code>b</code> being the same size (assuming a reference is constant size).</p>
+<p>The main conclusion from these cases is that we would like to track when something is unique. We would also like to be able to place a constraint that a variable is unique, to get the guarantee that we can perform the in-place map.</p>
+<h2 id="fold"><a class="header" href="#fold">Fold</a></h2>
+<pre><code class="language-WTy2">foldl[a, b](l: List(a), u: b, f: (a, b) -&gt; b): b = ...
 </code></pre>
-<p>Similar to function arrow, but must be &quot;matchable&quot;. i.e: <code>[x: a, y: a] Proof(f(x) ~ g(y) ==&gt; f ~ g /\ a ~ b)</code> is in scope.</p>
-<h2 id="constrained-by-"><a class="header" href="#constrained-by-">Constrained By (&lt;&lt;=)</a></h2>
-<pre><code class="language-WTy2">(&lt;&lt;=): (t: Type, p: t -&gt; Constraint) -&gt; Type
-</code></pre>
-<p>Narrows a type, requiring the constraint to be true on the value for it to a member of the new type. When pattern matching on members of the type, the constraint is brought into scope.</p>
-<h2 id="supertype-"><a class="header" href="#supertype-">Supertype (&lt;:)</a></h2>
-<pre><code class="language-WTy2">(&lt;:): (Type, Type) -&gt; Constraint
-</code></pre>
-<p>Values of the LHS type can be upcast into ones of the RHS type.</p>
-<h2 id="implies-"><a class="header" href="#implies-">Implies (=&gt;)</a></h2>
-<pre><code class="language-WTy2">(=&gt;): (Constraint, Constraint) -&gt; Constraint
-</code></pre>
-<p>The RHS constraint can be obtained from the LHS constraint.</p>
-<h2 id="entails--"><a class="header" href="#entails--">Entails (|-)</a></h2>
-<pre><code class="language-WTy2">(|-): (Type, Constraint) -&gt; Type
-a |- r = a -&gt; Proof(r)
-</code></pre>
+<p>Ideas:</p>
+<p>Variables in WTy2 are by default owning, meaning if we pass <code>x: a</code>, <code>x</code> in unique.
+References can be created by borrowing. Instead of lifetimes, borrows last until
+Like Rust, copies are explicit, unless the variable has a <code>Clone</code> instance.</p>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="soundness.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="constraints.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
-                            <a rel="next" href="functions.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next" href="wadlers_law.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
 
@@ -195,11 +212,11 @@ a |- r = a -&gt; Proof(r)
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="soundness.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="constraints.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
 
-                    <a rel="next" href="functions.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next" href="wadlers_law.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>

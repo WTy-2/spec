@@ -1,11 +1,22 @@
-# Core Subset
+# Core Language
 
-The WTy2 language has now grown to be pretty large. Luckily, many of the features, while they do make the language more expressive and powerful, can in theory be desugared into other constructs. The purpose of this section is to list some of the features that should be prioritised when starting development of a WTy2 compiler:
+Implementing a typechecker and compiler for the entire WTy2 language at once is likely to prove somewhat challenging. Here, a design for an intermediate, typed core language (inspired by efforts on GHC) is outlined.
 
-- Core types (records, tuples, functions, unit, never, any)
-- Dependent types (dependent records and function arrows)
-- Constraints (equality coercions, type relationships, constrained-by operator)
-- Variant declarations
-- Type declarations, with associated methods and supertypes
+Core-Lang Constructs:
+
+- Lambda case expressions (covers lambdas, matches and let bindings)
+- Telescopes: A single built-in datatype covering (dependent) tuples and lists
+- Dependent function arrows
+- Constraints (equality coercions, type membership, quantified constraints)
+- Data declarations
+- Type declarations, with associated methods and supertype constraints
 - Default instance declarations
-- Match expressions
+
+Desugaring:
+
+- WTy2 core does not feature named tuples/records. These are instead desugared into telescopes like ordinary tuples and lists.
+- In WTy2 core, all function arrows are dependent, meaning a function that takes and returns an integer would be represented as `Int -> { Int }`
+
+Unanswered Questions:
+
+- How to represent recursion? Could either use recursive binders or a dedicated fixpoint operator.

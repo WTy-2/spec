@@ -39,7 +39,7 @@ Type synonyms can be alternatively written by simply declaring a type with the a
 ```WTy2
 type Alias {} => Foo
 
-default instance Alias for Foo
+instance Alias for Foo
 ```
 
 Because this pattern is so common, WTy2 provides syntax sugar for it:

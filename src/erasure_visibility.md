@@ -1,15 +1,26 @@
 # Erasure and Visibility
 
-In WTy2, erasure and visibility are intrinsically linked. WTy2 will only ever infer values that will be erased at runtime.
+# Runtime Relevance of Types and Constraints
+
+In Haskell, runtime relevance can effectively be summarised as: types are erased, constraints are not. Even equality constraints like `a ~ b` which don't contain any fields often do not get fully optimised away as `Constraint` is lifted and so could point to a bottoming value (see discussion at https://github.com/ghc-proposals/ghc-proposals/pull/547).
+
+In WTy2, we take the opposite approach: constraints are erased but types are not. To perform dispatch, implementations will in all likelyhood need to implement some sort of runtime.
+
+# Erasure and Visibility in Types and Values
+
+Even though values and types must in general be kept around at runtime, in many specific cases, this is not necessary (consider a generic function which takes both a type `t :|=> Animal` and an argument `a: t` - `t` can be recovered entirely from `a`). The key observation made here is that arguments we would like the typechecker infer for convenience generally correspond with ones recover.
 
 A type surrounded in parenthesis can be prefixed with something that looks similar to a record type but the bindings are placed inside brackets (`[]`) instead of parenthesis.
 
-A term can be bound in the erased elements of a record only if it occurs (to the right of some constraint operator[^note]) or `:` in the non-erased elements.
+A variable can be bound in the erased elements of a record only if:
+
+- It occurs by itself in a matchable function application (i.e: as an argument or the function itself) to the right of a member constraint and the type (i.e: RHS object of member constraint) is `Closed` (the `Closed` constraint is inferred if the use of `[]`s require it, similar to definedness constraints which arise from function applications in types). [^note]
+- It is on the RHS of an equality constraint with a non-erased element (unclear if this is actually useful).
 
 An example of erasure being useful is when working with length-indexed vectors:
 
 ```WTy2
-vecLen[t: Type, n: Nat](v: Vec(t, n)): Nat <== { it ~ n }
+vecLen[t: Type, n: Nat](v: Vec(t, n)): Nat <<= { it ~ n }
 
 returnsVecOfUnknownLen(...): [n: Nat] Vec[Bool, n]
 ```
@@ -20,19 +31,18 @@ This combines nicely with functions like `returnsVecOfUnknownLen`. If we ever do
 
 To be concrete, a term being erased means that it cannot be pattern matched on, or passed as an argument to somewhere where a non-erased term is expected.
 
-Unlike constraints in `<==`, erased terms in records can be manually specified at construction or bound when matching.
+Unlike constraints in `<<=`, erased terms in records can be manually specified at construction or bound when matching.
 
 ```WTy2
 [erasedLen=n] vec = returnsVecOfUnknownLen(...);
 len = vecLen[Bool, erasedLen](vec);
 
 // From the signature of 'vecLen', `erasedLen ~ len` is in the context
-_: () <== { erasedLen ~ len } = ();
+_: () <<= { erasedLen ~ len } = ();
 ```
 
-## Infering From Return Type
+## Bidirectional Type Inference
 
-One unfortunate consequence of handling inference in this way is that inference based on return type is not really possible. This can be a useful feature - for example, in languages like Haskell, all integer literals have type `Num a => a`, meaning they can appear in any numeric expression without a need to cast them to the correct numeric type.
+One unfortunate consequence of handling inference in this way is that setting up constraints based on the desired return type (bidirectional type inference) is not really possible. This can be a useful feature - for example, in languages like Haskell, numeric expressions can stay entirely in terms of `Num a => a` until finally being instantiated to a specific numeric type at call-site, but it also leads to many cases of potential ambiguity and arguably makes code harder to reason about.
 
-[^note]
-The exact condition with constraint operators which makes it legal for a variable to be erased and inferred is a work-in-progress. In theory we only want to allow erasure if there is a possibility that it can be inferred, but detecting this is potentially non-trivial.
+[^note] Note this is less restrictive than it might initially sound. If we have `x: Animal` and a function `id[t: Type](x: t): t`, `id(x)` does indeed typecheck, with `t` instantiated to `x.head(Animal)`.

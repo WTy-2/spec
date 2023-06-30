@@ -1,6 +1,6 @@
 # Utilities
 
-WTy2's syntax is very flexible, which allows for functions to take the role of what are typically built-in language constructs in other languages. Below are a few examples:
+WTy2's syntax is designed for allowing defining functions that appear similar to built-in language constructsof other languages. Below are a few examples:
 
 ## Do
 
@@ -13,15 +13,17 @@ do(f: () -> t): t = f()
 ## If-Else
 
 ```WTy2
-if[t: Type](c: Bool, e: () -> t): Maybe(t) = match(c)
-    case(False) = Nothing
-    case(True)  = Just(e())
+if[t: Type](c: Bool, e: () -> t): Maybe(t) = with(c) {
+    | False -> Nothing
+    | True  -> Just(e())
+}
 ```
 
 ```WTy2
-else[t: Type](x: Maybe(t), e: () -> t): t = match(x)
-    case(Just(y)) = y
-    case(Nothing) = e()
+else[t: Type](x: Maybe(t), e: () -> t): t = with(x) {
+    | Just(y) -> y,
+    | Nothing -> e()
+}
 ```
 
 ## Fun
@@ -32,12 +34,20 @@ Inspired by Kotlin
 fun[r: Type](t: Type, f: t -> r): t -> r = f
 ```
 
+## Lazy
+
+Note this does not perform any memoisation (call-by-need). This would require some form of mutability to implement.
+
+```WTy2
+lazy[t: Type](f: () -> t): () -> t = f
+```
+
 ## The
 
 Inspired by Idris
 
 ```
-the(t: Type, x: t): t = x
+the(x: t, t: Type): t = x
 ```
 
 ## With and Also

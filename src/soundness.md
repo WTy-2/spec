@@ -1,4 +1,4 @@
-# Soundness Holes
+# Soundness
 
 WTy2 claims is a programming language with dependent types first and foremost, NOT a theorem prover.
 
@@ -14,47 +14,44 @@ foo() = foo()
 
 ## Russel's Paradox - DANGER!!
 
-The fact code like the below seems reasonable is _slightly_ worrying. Haskell can bypass this by it's typeclasses having type (`-> Constraint`) and so being parameterised by the type of values that inhabit it. In WTy2, this is currently not the case (and even doing this naively would not help - `Type(Any)` would have the same issue).
+WTy2's type system implemented naively, due to subtyping, does not prevent
+types being members of themselves. This can lead to Russel style paradoxes.
 
 ```WTy2
-type Russel = (t: Type) <== { t => ! }
+-- `t => Void` is equivalent to `t @ t ==> t @ Void`
+type Russel = (t: Type) <== { t => Void }
 
-ohDear(): ! = do {
+ohDear(): Void {
     _: Proof(Russel: Russel) = QED;
-    x: ! = Russel;
-    return x;
+    _: Proof(Russel: Void) = QED;
+    Russel
 }
 ```
 
-Luckily, I think a reasonable implementation of a WTy2 constraint solver (inspired by Haskell's) will loop infinitely in this case (see below).
+The constraint solver would attempt to solve this like so:
 
-Solver for first proof:
+```WTy2CoSo
+[G1] (Russel(t), t(t)) ==> Void(t)
+[G2] (t(t) ==> Void(t)) ==> Russel(t)
 
-```
-[G1] forall t: Type. (t: Russel) => (t => !) [from Russel's supertype constraint]
-[G2] forall t: Type. (t => !) => (t: Russel) [from Russel's instance]
+[W1] Russel : Russel
 
-[W1] Russel: Russel
-```
+# Head of G2 matches, instantiate LHS with t=Russel
 
-Head of G2 matches W1, so replace W1 with W2, instantiating `t` with `Russel`
+[W2] Russel(Russel) ==> Void(Russel)
 
-```
-[G1] forall t: Type. (t: Russel) => (t => !)
-[G2] forall t: Type. (t => !) => (t: Russel)
+# Wanted is an implication, so assume LHS
 
-[W2] Russel => !
-```
+[G3] Russel(Russel)
 
-Head of G1 matches W2, so replace W2 with W3, instantiating `t` with `Russel`
+[W3] Void(Russel)
 
-```
-[G1] forall t: Type. (t: Russel) => (t => !)
-[G2] forall t: Type. (t => !) => (t: Russel)
+# Head of G1 matches, instantiate LHS with t=Russel
 
-[W3] Russel: Russel
+[W4] (Russel(Russel), Russel(Russel))
+
+# Solve trivially via G3
 ```
 
-and so on...
-
-Still, there is a danger here. If WTy2 was given an equivalent of the law of excluded middle, then `!` could be produced in both branches trivially.
+So can conclude `Russel : Russel`
+Oh dear!

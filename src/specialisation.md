@@ -1,6 +1,6 @@
 # Specialisation
 
-WTy2 does NOT currently feature "specialisation" as a high-level language feature (à la Rust), being able to override typeclass instances for specific types. Instead, specialisation in the context of WTy2 refers to an optimisation strategy that is key to get highly polymorphic WTy2 programs to perform well.
+WTy2 does NOT currently feature "specialisation" as a high-level language feature (à la Rust [^note]), being able to override typeclass instances for specific types. Instead, specialisation in the context of WTy2 refers to an optimisation strategy that is key to get highly polymorphic WTy2 programs to perform well [^note].
 
 Specialisation can be thought of a bit like a "lite" version of monomorphisation. Types can be infinitely large in WTy2, so full monomorphisation as a compilation strategy is infeasible; however, where possible, compiling separate versions of functions for specific argument values (or sets of argument values) and dispatching to those specialised versions can get most of the benefits (the main downside being the compiler now has to decide on a strategy for deciding when to specialise).
 
@@ -14,6 +14,7 @@ Specialisation is similar to inlining, but generated specialised code can be reu
 
 ## Dispatching to Specialised Functions
 
-Dispatching to specialised functions at runtime rather than compile time would greatly increase the power of this feature. i.e: suppose there is a function `foo: [n: Num](n) -> n` and with a specialisation for `n ~ Int`. We would like to ensure that even code like `x: Int = 0; y: Num = x; z = foo(y);` uses the specialiased version of `foo`, using the type information (in the form of variant tags) that is kept around at runtime to dispatch appropriately. With this guarantee, it would be feasible to actually allow the programmer to specify alternate code paths for specialisations of functions manually (without inconsistency where upcasting and calling results in different behaviour).
+Dispatching to specialised functions at runtime rather than compile time would greatly increase the power of this optimisation. i.e: suppose there is a function `foo: [n <: Num](n) -> n` and with a much faster specialisation for `n ~ Int`. We would like to ensure that even code like `x: Int = 0; y: Num = x; z = foo(y);` uses the specialiased version of `foo`, using the type information (in the form of variant tags) that is kept around at runtime to dispatch appropriately (assuming the savings from running the specialised version are worth it over the cost of dispatching appropriately). Exactly how feasible this is will likely have to be reassessed after the design for open types/intsances is finalised.
 
+[^note]: The writer of the specification personally considers this form of specialisation as a misfeature and so would be hesitent to work on it, even if there was a feasible implementation strategy for it in WTy2.
 [^note]: À la Haskell - https://wiki.haskell.org/Inlining_and_Specialisation#What_is_specialisation.3F

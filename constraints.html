@@ -84,7 +84,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="core_types.html"><strong aria-hidden="true">2.</strong> Core Types</a></li><li class="chapter-item expanded "><a href="declarations.html"><strong aria-hidden="true">3.</strong> Declarations</a></li><li class="chapter-item expanded "><a href="dependent_types.html"><strong aria-hidden="true">4.</strong> Dependent Types</a></li><li class="chapter-item expanded "><a href="erasure_visibility.html"><strong aria-hidden="true">5.</strong> Erasure and Visibility</a></li><li class="chapter-item expanded "><a href="recursive_types.html"><strong aria-hidden="true">6.</strong> Recursive Types</a></li><li class="chapter-item expanded "><a href="proofs.html"><strong aria-hidden="true">7.</strong> Proofs</a></li><li class="chapter-item expanded "><a href="allocators.html"><strong aria-hidden="true">8.</strong> Type Aware Allocators</a></li><li class="chapter-item expanded "><a href="utilities.html"><strong aria-hidden="true">9.</strong> Utilities</a></li><li class="chapter-item expanded "><a href="specialisation.html"><strong aria-hidden="true">10.</strong> Specialisation</a></li><li class="chapter-item expanded "><a href="subset.html"><strong aria-hidden="true">11.</strong> Core Subset</a></li><li class="chapter-item expanded "><a href="soundness.html"><strong aria-hidden="true">12.</strong> Soundness</a></li><li class="chapter-item expanded "><a href="arrows.html"><strong aria-hidden="true">13.</strong> Arrows</a></li><li class="chapter-item expanded "><a href="functions.html"><strong aria-hidden="true">14.</strong> Functions</a></li><li class="chapter-item expanded "><a href="constraints.html" class="active"><strong aria-hidden="true">15.</strong> Constraints</a></li><li class="chapter-item expanded "><a href="modes.html"><strong aria-hidden="true">16.</strong> Modes</a></li><li class="chapter-item expanded "><a href="wadlers_law.html"><strong aria-hidden="true">17.</strong> Syntax Debates</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded affix "><li class="part-title">Basic Concepts</li><li class="chapter-item expanded "><a href="core_types.html"><strong aria-hidden="true">2.</strong> Core Types</a></li><li class="chapter-item expanded "><a href="functions.html"><strong aria-hidden="true">3.</strong> Functions</a></li><li class="chapter-item expanded "><a href="declarations.html"><strong aria-hidden="true">4.</strong> Declarations</a></li><li class="chapter-item expanded "><a href="erasure_visibility.html"><strong aria-hidden="true">5.</strong> Erasure and Visibility</a></li><li class="chapter-item expanded "><a href="arrows.html"><strong aria-hidden="true">6.</strong> Arrows</a></li><li class="chapter-item expanded affix "><li class="part-title">Extra</li><li class="chapter-item expanded "><a href="utilities.html"><strong aria-hidden="true">7.</strong> Utilities</a></li><li class="chapter-item expanded affix "><li class="part-title">Dependent Types</li><li class="chapter-item expanded "><a href="constraints.html" class="active"><strong aria-hidden="true">8.</strong> Constraints</a></li><li class="chapter-item expanded "><a href="proofs.html"><strong aria-hidden="true">9.</strong> Proofs</a></li><li class="chapter-item expanded "><a href="dependent_types.html"><strong aria-hidden="true">10.</strong> Dependent Types</a></li><li class="chapter-item expanded affix "><li class="part-title">Implementation/Low-Level Features</li><li class="chapter-item expanded "><a href="subset.html"><strong aria-hidden="true">11.</strong> Core Subset</a></li><li class="chapter-item expanded "><a href="recursive_types.html"><strong aria-hidden="true">12.</strong> Recursive Types</a></li><li class="chapter-item expanded "><a href="specialisation.html"><strong aria-hidden="true">13.</strong> Specialisation</a></li><li class="chapter-item expanded "><a href="allocators.html"><strong aria-hidden="true">14.</strong> Type Aware Allocators</a></li><li class="chapter-item expanded affix "><li class="part-title">Design</li><li class="chapter-item expanded "><a href="soundness.html"><strong aria-hidden="true">15.</strong> Soundness</a></li><li class="chapter-item expanded "><a href="wadlers_law.html"><strong aria-hidden="true">16.</strong> Syntax Debates</a></li><li class="chapter-item expanded affix "><li class="part-title">TODO</li><li class="chapter-item expanded "><a href="modes.html"><strong aria-hidden="true">17.</strong> Modes</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -191,20 +191,18 @@ Indeed given current design for overlap of instances, dispatch can reqire arbitr
 <p>To construct a value of type <code>a &lt;&lt;= b</code> from a value <code>x</code> of type <code>a</code>, <code>b(x)</code> must be in the context. Matching on a value of type <code>(x: a) &lt;&lt;= b</code> is similar to matching on a value of type <code>a</code>, but <code>b(x)</code> is added to the context.</p>
 <p>Another interpretation of this operator that might be more intuitive for programmers who have used languages with dependent types before is as a more limited version of a dependent pair, where the second element must be an erased constraint.</p>
 <p>An approximation of this operator in Idris2 (but for which construction and matching is not implicit) could be defined like so (using boolean predicates lifted to the type level instead of Haskell-style constraints which Idris2 does not really have https://www.idris-lang.org/docs/idris2/current/base_docs/docs/Data.So.html):</p>
-<pre><code class="language-idris">
-data (&lt;&lt;=) : (a: Type) -&gt; (p: a -&gt; Bool) -&gt; Type where
+<pre><code class="language-idris">data (&lt;&lt;=) : (a: Type) -&gt; (p: a -&gt; Bool) -&gt; Type where
   Mk : (x: a) -&gt; (f: So (p x)) -&gt; ((&lt;&lt;=) a p)
 
 infix 4 &lt;&lt;=
 </code></pre>
-<p>An example use would be to restrict the integers received by a function:</p>
+<p>An example use would be to restrict the integers received by a function: <sup class="footnote-reference"><a href="#note">1</a></sup></p>
 <pre><code class="language-idris">total
 foo : (Nat &lt;&lt;= \x =&gt; 1 &lt;= x &amp;&amp; x &lt;= 3) -&gt; ()
 foo (Mk 1 {f=Oh}) = ()
 foo (Mk 2 {f=Oh}) = ()
 foo (Mk 3 {f=Oh}) = ()
 </code></pre>
-<p><sup class="footnote-reference"><a href="#note">1</a></sup></p>
 <p>We can see that although <code>foo</code> only matches on the natural number being <code>1</code>, <code>2</code> or <code>3</code>, the function is still correctly checked as <code>total</code>, as we must also pass a proof that the <code>Nat</code> is in the range <code>[1-3]</code>.</p>
 <p>The equivalent WTy2 declaration of <code>foo</code> is:</p>
 <pre><code class="language-WTy2">foo(x: Nat) &lt;&lt;= { 1 &lt;= x &amp;&amp; x &lt;= 3 ~ True }
@@ -218,17 +216,17 @@ foo(x: NatBetween(1, 3))
 <h3 id="design-note-equivalent-constraints"><a class="header" href="#design-note-equivalent-constraints">Design Note: Equivalent Constraints</a></h3>
 <p>You may notice that as constraints can contain arbitrary expressions, we could formulate semantically-equivalent constraints in many different ways. For example, we could write <code>{ contains([1, 2, 3], it) ~ True }</code>, or even <code>{ max(1, min(3, it)) ~ it }</code>. That these constraints do indeed imply each other though, is not always obvious (expecially to the typechecker).</p>
 <p>This is arguably the main pain-point with dependent types. Proving that one constraint implies another can be tiresome and clutter up code significantly. Refinement type systems solve this through restricting constraints to those that can be proved with an SMT solver, but this is often overly limiting. WTy2 attempts to provide some of the ergonomics of refinement types without the restrictions through the ability to write and use implicit <code>proof</code>s.</p>
-<p><sup class="footnote-reference"><a href="#note">1</a></sup> As a side note, on the current Idris2 version 0.6.0, if <code>x &lt;= 3</code> is replaced with <code>x &lt; 4</code>, the example breaks, saying case <code>foo (Mk (S (S (S (S _)))) _)</code> is not covered. This seems like a bug.</p>
+<p><sup class="footnote-reference"><a href="#note">1</a></sup> As a side note, on the current Idris2 version (0.6.0), if <code>x &lt;= 3</code> is replaced with <code>x &lt; 4</code>, the example breaks, with the compiler protesting that case <code>foo (Mk (S (S (S (S _)))) _)</code> is not covered. I suspect this is a bug.</p>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="functions.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="utilities.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
-                            <a rel="next" href="modes.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next" href="proofs.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
 
@@ -238,11 +236,11 @@ foo(x: NatBetween(1, 3))
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="functions.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="utilities.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
 
-                    <a rel="next" href="modes.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next" href="proofs.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>

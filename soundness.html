@@ -84,7 +84,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="core_types.html"><strong aria-hidden="true">2.</strong> Core Types</a></li><li class="chapter-item expanded "><a href="declarations.html"><strong aria-hidden="true">3.</strong> Declarations</a></li><li class="chapter-item expanded "><a href="dependent_types.html"><strong aria-hidden="true">4.</strong> Dependent Types</a></li><li class="chapter-item expanded "><a href="erasure_visibility.html"><strong aria-hidden="true">5.</strong> Erasure and Visibility</a></li><li class="chapter-item expanded "><a href="recursive_types.html"><strong aria-hidden="true">6.</strong> Recursive Types</a></li><li class="chapter-item expanded "><a href="proofs.html"><strong aria-hidden="true">7.</strong> Proofs</a></li><li class="chapter-item expanded "><a href="allocators.html"><strong aria-hidden="true">8.</strong> Type Aware Allocators</a></li><li class="chapter-item expanded "><a href="utilities.html"><strong aria-hidden="true">9.</strong> Utilities</a></li><li class="chapter-item expanded "><a href="specialisation.html"><strong aria-hidden="true">10.</strong> Specialisation</a></li><li class="chapter-item expanded "><a href="subset.html"><strong aria-hidden="true">11.</strong> Core Subset</a></li><li class="chapter-item expanded "><a href="soundness.html" class="active"><strong aria-hidden="true">12.</strong> Soundness</a></li><li class="chapter-item expanded "><a href="arrows.html"><strong aria-hidden="true">13.</strong> Arrows</a></li><li class="chapter-item expanded "><a href="functions.html"><strong aria-hidden="true">14.</strong> Functions</a></li><li class="chapter-item expanded "><a href="constraints.html"><strong aria-hidden="true">15.</strong> Constraints</a></li><li class="chapter-item expanded "><a href="modes.html"><strong aria-hidden="true">16.</strong> Modes</a></li><li class="chapter-item expanded "><a href="wadlers_law.html"><strong aria-hidden="true">17.</strong> Syntax Debates</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded affix "><li class="part-title">Basic Concepts</li><li class="chapter-item expanded "><a href="core_types.html"><strong aria-hidden="true">2.</strong> Core Types</a></li><li class="chapter-item expanded "><a href="functions.html"><strong aria-hidden="true">3.</strong> Functions</a></li><li class="chapter-item expanded "><a href="declarations.html"><strong aria-hidden="true">4.</strong> Declarations</a></li><li class="chapter-item expanded "><a href="erasure_visibility.html"><strong aria-hidden="true">5.</strong> Erasure and Visibility</a></li><li class="chapter-item expanded "><a href="arrows.html"><strong aria-hidden="true">6.</strong> Arrows</a></li><li class="chapter-item expanded affix "><li class="part-title">Extra</li><li class="chapter-item expanded "><a href="utilities.html"><strong aria-hidden="true">7.</strong> Utilities</a></li><li class="chapter-item expanded affix "><li class="part-title">Dependent Types</li><li class="chapter-item expanded "><a href="constraints.html"><strong aria-hidden="true">8.</strong> Constraints</a></li><li class="chapter-item expanded "><a href="proofs.html"><strong aria-hidden="true">9.</strong> Proofs</a></li><li class="chapter-item expanded "><a href="dependent_types.html"><strong aria-hidden="true">10.</strong> Dependent Types</a></li><li class="chapter-item expanded affix "><li class="part-title">Implementation/Low-Level Features</li><li class="chapter-item expanded "><a href="subset.html"><strong aria-hidden="true">11.</strong> Core Subset</a></li><li class="chapter-item expanded "><a href="recursive_types.html"><strong aria-hidden="true">12.</strong> Recursive Types</a></li><li class="chapter-item expanded "><a href="specialisation.html"><strong aria-hidden="true">13.</strong> Specialisation</a></li><li class="chapter-item expanded "><a href="allocators.html"><strong aria-hidden="true">14.</strong> Type Aware Allocators</a></li><li class="chapter-item expanded affix "><li class="part-title">Design</li><li class="chapter-item expanded "><a href="soundness.html" class="active"><strong aria-hidden="true">15.</strong> Soundness</a></li><li class="chapter-item expanded "><a href="wadlers_law.html"><strong aria-hidden="true">16.</strong> Syntax Debates</a></li><li class="chapter-item expanded affix "><li class="part-title">TODO</li><li class="chapter-item expanded "><a href="modes.html"><strong aria-hidden="true">17.</strong> Modes</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -154,56 +154,69 @@
                         <h1 id="soundness"><a class="header" href="#soundness">Soundness</a></h1>
 <p>WTy2 claims is a programming language with dependent types first and foremost, NOT a theorem prover.</p>
 <p>In fact, WTy2 as it currently exists is highly inconsistent, it is easy to prove bottom and from there anything. The only guarantee making this somewhat palatable is that these are all cases where the program will loop at runtime. WTy2 (when programs are ran in debug mode) will never actually create values of bottom type.</p>
-<p>This is useful for programming (proving termination is tiresome and sometimes even impossible) but makes WTy2 effectively useless for theorem proving. In the far future if these holes were to be closed (probably with some sort of compiler flag, <code>safe</code>), then this would no longer be the case, and hence these holes are documented below:</p>
-<h2 id="non-termination-recursion"><a class="header" href="#non-termination-recursion">Non-termination Recursion</a></h2>
+<p>This is useful for programming (proving termination is tiresome and sometimes even impossible) but makes WTy2 effectively useless for theorem proving. In the far future if these holes were to be closed (likely opt-in with some sort of compiler pragma or flag, <code>safe</code>), then this would no longer be the case, and hence these holes are documented below:</p>
+<h2 id="non-terminating-recursive-functions"><a class="header" href="#non-terminating-recursive-functions">Non-terminating Recursive Functions</a></h2>
 <pre><code class="language-WTy2">foo() = foo()
 </code></pre>
+<h2 id="type-in-type"><a class="header" href="#type-in-type">Type in Type</a></h2>
+<p>Similar to Haskell, WTy2 has the axiom <code>Type : Type</code>. Girard's paradox <sup class="footnote-reference"><a href="#note">1</a></sup> is almost certainly derivable from this.</p>
 <h2 id="russels-paradox---danger"><a class="header" href="#russels-paradox---danger">Russel's Paradox - DANGER!!</a></h2>
-<p>WTy2's type system implemented naively, due to subtyping, does not prevent
-types being members of themselves. This can lead to Russel style paradoxes.</p>
-<pre><code class="language-WTy2">-- `t =&gt; Void` is equivalent to `t @ t ==&gt; t @ Void`
-type Russel = (t: Type) &lt;== { t =&gt; Void }
+<p>Unfortunately, WTy2 as currently designed has a much larger soundness hole than either of the above problems (both of which, while limiting it's capabilities as a theorem prover, still <em>probably</em> still have the guarantee that if the program manages to execute the assignment of a variable, it's value is of the correct type - i.e: the program will either loop infinitely or produce bottom before executing any unsound code).</p>
+<p>Due to the way subtyping and constraints work, Russel's paradox can be encoded surprisingly easily, with bottom appearing to be derivable without the program even <em>doing</em> anything.</p>
+<pre><code class="language-WTy2">type Russel = (t: Type) &lt;&lt;= { t :: t =&gt; t :: Void }
 
-ohDear(): Void {
-    _: Proof(Russel: Russel) = QED;
-    _: Proof(Russel: Void) = QED;
-    Russel
-}
+ohDear(): Void = Russel;
 </code></pre>
-<p>The constraint solver would attempt to solve this like so:</p>
-<pre><code class="language-WTy2CoSo">[G1] (Russel(t), t(t)) ==&gt; Void(t)
-[G2] (t(t) ==&gt; Void(t)) ==&gt; Russel(t)
+<p>Luckily this is definable (and rejected) by Haskell!</p>
+<p>An informal sketch of how a constraint solver might check (and approve!) this is outlined below:</p>
+<p>Constraints are written in almost identical syntax to ordinary WTy2, but we elide types of <code>for</code> bound variables, instead prefering to write them as implications where necessary.</p>
+<pre><code class="language-WTy2CoSo"># From definition of Russel
 
-[W1] Russel : Russel
+[G1] for(t) { t :: Russel /\ t :: t =&gt; t :: Void }
+[G2] for(t) { (t :: t =&gt; t :: Void) =&gt; t :: Russel }
 
-# Head of G2 matches, instantiate LHS with t=Russel
+[W1] Russel :: Void
 
-[W2] Russel(Russel) ==&gt; Void(Russel)
+# Head of G1 matches, instantiate with t = Russel
 
-# Wanted is an implication, so assume LHS
+[W2] Russel :: Russel /\ Russel :: Russel
 
-[G3] Russel(Russel)
+# Simplify
 
-[W3] Void(Russel)
+[W3] Russel :: Russel
 
-# Head of G1 matches, instantiate LHS with t=Russel
+# Head of G2 matches, instantiate LHS with t = Russel
 
-[W4] (Russel(Russel), Russel(Russel))
+[W4] Russel :: Russel =&gt; Russel :: Void
 
-# Solve trivially via G3
+# Wanted is an implication, so assume LHS and try to reach RHS
+# This is arguably the point where everything goes wrong!!
+
+[G3] Russel :: Russel
+
+[W5] Russel :: Void
+
+# Interesting to note we have reached the same wanted that we
+# started with, but we have made progress: we now have G3!
+
+# Head of G1 matches, again, so instantiate LHS with t = Russel
+
+[W6] Russel :: Russel /\ Russel :: Russel
+
+# Solve with G3
 </code></pre>
-<p>So can conclude <code>Russel : Russel</code>
-Oh dear!</p>
+<p>And so we conclude by deriving <code>Russel :: Void</code>, which is clearly unsound.</p>
+<p><sup class="footnote-reference"><a href="#note">1</a></sup> See http://liamoc.net/posts/2015-09-10-girards-paradox.html for a nice walkthrough of how to derive this in Agda.</p>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="subset.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="allocators.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
-                            <a rel="next" href="arrows.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next" href="wadlers_law.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
 
@@ -213,11 +226,11 @@ Oh dear!</p>
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="subset.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="allocators.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
 
-                    <a rel="next" href="arrows.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next" href="wadlers_law.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>

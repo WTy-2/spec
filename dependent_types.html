@@ -84,7 +84,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="core_types.html"><strong aria-hidden="true">2.</strong> Core Types</a></li><li class="chapter-item expanded "><a href="declarations.html"><strong aria-hidden="true">3.</strong> Declarations</a></li><li class="chapter-item expanded "><a href="dependent_types.html" class="active"><strong aria-hidden="true">4.</strong> Dependent Types</a></li><li class="chapter-item expanded "><a href="erasure_visibility.html"><strong aria-hidden="true">5.</strong> Erasure and Visibility</a></li><li class="chapter-item expanded "><a href="recursive_types.html"><strong aria-hidden="true">6.</strong> Recursive Types</a></li><li class="chapter-item expanded "><a href="proofs.html"><strong aria-hidden="true">7.</strong> Proofs</a></li><li class="chapter-item expanded "><a href="allocators.html"><strong aria-hidden="true">8.</strong> Type Aware Allocators</a></li><li class="chapter-item expanded "><a href="utilities.html"><strong aria-hidden="true">9.</strong> Utilities</a></li><li class="chapter-item expanded "><a href="specialisation.html"><strong aria-hidden="true">10.</strong> Specialisation</a></li><li class="chapter-item expanded "><a href="subset.html"><strong aria-hidden="true">11.</strong> Core Subset</a></li><li class="chapter-item expanded "><a href="soundness.html"><strong aria-hidden="true">12.</strong> Soundness</a></li><li class="chapter-item expanded "><a href="arrows.html"><strong aria-hidden="true">13.</strong> Arrows</a></li><li class="chapter-item expanded "><a href="functions.html"><strong aria-hidden="true">14.</strong> Functions</a></li><li class="chapter-item expanded "><a href="constraints.html"><strong aria-hidden="true">15.</strong> Constraints</a></li><li class="chapter-item expanded "><a href="modes.html"><strong aria-hidden="true">16.</strong> Modes</a></li><li class="chapter-item expanded "><a href="wadlers_law.html"><strong aria-hidden="true">17.</strong> Syntax Debates</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded affix "><li class="part-title">Basic Concepts</li><li class="chapter-item expanded "><a href="core_types.html"><strong aria-hidden="true">2.</strong> Core Types</a></li><li class="chapter-item expanded "><a href="functions.html"><strong aria-hidden="true">3.</strong> Functions</a></li><li class="chapter-item expanded "><a href="declarations.html"><strong aria-hidden="true">4.</strong> Declarations</a></li><li class="chapter-item expanded "><a href="erasure_visibility.html"><strong aria-hidden="true">5.</strong> Erasure and Visibility</a></li><li class="chapter-item expanded "><a href="arrows.html"><strong aria-hidden="true">6.</strong> Arrows</a></li><li class="chapter-item expanded affix "><li class="part-title">Extra</li><li class="chapter-item expanded "><a href="utilities.html"><strong aria-hidden="true">7.</strong> Utilities</a></li><li class="chapter-item expanded affix "><li class="part-title">Dependent Types</li><li class="chapter-item expanded "><a href="constraints.html"><strong aria-hidden="true">8.</strong> Constraints</a></li><li class="chapter-item expanded "><a href="proofs.html"><strong aria-hidden="true">9.</strong> Proofs</a></li><li class="chapter-item expanded "><a href="dependent_types.html" class="active"><strong aria-hidden="true">10.</strong> Dependent Types</a></li><li class="chapter-item expanded affix "><li class="part-title">Implementation/Low-Level Features</li><li class="chapter-item expanded "><a href="subset.html"><strong aria-hidden="true">11.</strong> Core Subset</a></li><li class="chapter-item expanded "><a href="recursive_types.html"><strong aria-hidden="true">12.</strong> Recursive Types</a></li><li class="chapter-item expanded "><a href="specialisation.html"><strong aria-hidden="true">13.</strong> Specialisation</a></li><li class="chapter-item expanded "><a href="allocators.html"><strong aria-hidden="true">14.</strong> Type Aware Allocators</a></li><li class="chapter-item expanded affix "><li class="part-title">Design</li><li class="chapter-item expanded "><a href="soundness.html"><strong aria-hidden="true">15.</strong> Soundness</a></li><li class="chapter-item expanded "><a href="wadlers_law.html"><strong aria-hidden="true">16.</strong> Syntax Debates</a></li><li class="chapter-item expanded affix "><li class="part-title">TODO</li><li class="chapter-item expanded "><a href="modes.html"><strong aria-hidden="true">17.</strong> Modes</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -153,46 +153,6 @@
                     <main>
                         <h1 id="dependent-types"><a class="header" href="#dependent-types">Dependent Types</a></h1>
 <p>WTy2 features dependent record and function types.</p>
-<h2 id="constrained-by-"><a class="header" href="#constrained-by-">Constrained By <code>(&lt;==)</code></a></h2>
-<p>Often, in dependently typed languages, a dependent record only needs to carry evidence of a constraint as the second argument, for the purpose of bringing it into scope as evidence of a predicate. This pattern is made more convenient in WTy2 through the <code>&lt;==</code> operator (read as &quot;constrained by&quot;).</p>
-<p>The <code>&lt;==</code>operator has the following type signature:</p>
-<pre><code class="language-WTy2">(&lt;==) : (a: Type, f: a -&gt; Constraint) -&gt; Type
-</code></pre>
-<p>To construct a value of type <code>a &lt;== b</code> from a value <code>x</code> of type <code>a</code>, <code>b(x)</code> must be in the context. Matching on a value of type <code>(x: a) &lt;== b</code> is similar to matching on a value of type <code>a</code>, but <code>b(x)</code> is added to the context.</p>
-<p>In use, this operator has similarities to refinement types (i.e: in Liquid Haskell) (i.e: in that the constraint evidence is passed entirely implicitly).</p>
-<p>An approximation of this operator in Idris (but for which construction and matching is not implicit) could be defined like so:</p>
-<pre><code class="language-idris">Proof : Bool -&gt; Type
-Proof p = p = True
-
-data (&lt;==) : (a: Type) -&gt; (p: a -&gt; Bool) -&gt; Type where
-  Mk : (x: a) -&gt; (f: Proof (p x)) -&gt; ((&lt;==) a p)
-
-infix 4 &lt;==
-</code></pre>
-<p>Idris (as far as I am aware) does not have an equivalent of equality coercion constraints like WTy2 (or indeed Haskell) so we are forced to use <code>-&gt; Bool</code> and propositional equality <code>=</code> to represent predicates instead.</p>
-<p>An example use would be to restrict the integers received by a function:</p>
-<pre><code class="language-idris">total
-foo : (Nat &lt;== \x =&gt; 1 &lt;= x &amp;&amp; x &lt;= 3) -&gt; ()
-test3 (Mk 1 {f=Refl}) = ()
-test3 (Mk 2 {f=Refl}) = ()
-test3 (Mk 3 {f=Refl}) = ()
-</code></pre>
-<p>We can see that although <code>foo</code> only matches on the natural number being <code>1</code>, <code>2</code> or <code>3</code>, the function is still correctly typechecked as <code>total</code>, as we must also pass a proof that the <code>Nat</code> is in the range <code>[1-3]</code>.</p>
-<p>The equivalent WTy2 declaration of <code>foo</code> is:</p>
-<pre><code class="language-WTy2">foo(x: Nat) &lt;== { 1 &lt;= x &amp;&amp; x &lt;= 3 ~ True }
-</code></pre>
-<p>This sort of constraint is useful enough that defining a type synonym is probably a good idea.</p>
-<pre><code>type NatBetween(min: Nat, max: Nat)
-    = Nat &lt;== { min &lt;= it &amp;&amp; it &lt;= max ~ True }
-
-foo(x: NatBetween(1, 3))
-</code></pre>
-<p>As records can have multiple entries we can easily constrain arguments in terms of another. For example, we can define a function <code>bar</code> which takes two <code>Nat</code>s, <code>x</code> and <code>y</code>, where <code>y</code> must be greater than <code>x</code>:</p>
-<pre><code>bar(x: Nat, y: Nat) &lt;== { y &gt; x ~ True }
-</code></pre>
-<h3 id="design-note-equivalent-constraints"><a class="header" href="#design-note-equivalent-constraints">Design Note: Equivalent Constraints</a></h3>
-<p>You may realise that as constraints can contain arbitrary expressions, we could formulate these constraints in many different ways. For example, we could write <code>{ contains([1, 2, 3], it) ~ True }</code>, or even <code>{ max(1, min(3, it)) ~ it }</code>. That these constraints do indeed imply each other though, is not always obvious (expecially to the typechecker).</p>
-<p>This is arguably the main pain-point with dependent types - proving that one constraint implies another can be tiresome and clutter up code significantly. WTy2 attempts to make this slightly less painful through the ability to write implicit <code>proof</code>s.</p>
 <h2 id="dependent-function-arrow"><a class="header" href="#dependent-function-arrow">Dependent Function Arrow</a></h2>
 <p>WTy2 also supports dependent function arrows, through a similar mechanism. The argument record to a function is in scope in the return type (including the return constraint), as well as the function body.</p>
 <p>Note this makes <code>&lt;==</code> constraints on return types somewhat ambiguous in that if the return type of the function is a record with identically named fields (or simply the <code>it</code> keyword is used), this could refer to the argument record or the return. WTy2 disambiguates this by treating this case as shadowing. In general, the innermost <code>it</code> (and it's associated record names) shadow the outermost one.</p>
@@ -202,11 +162,11 @@ foo(x: NatBetween(1, 3))
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="declarations.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="proofs.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
-                            <a rel="next" href="erasure_visibility.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next" href="subset.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
 
@@ -216,11 +176,11 @@ foo(x: NatBetween(1, 3))
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="declarations.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="proofs.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
 
-                    <a rel="next" href="erasure_visibility.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next" href="subset.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>

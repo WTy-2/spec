@@ -1,15 +1,17 @@
 @font-face {
-  font-family: "Fira Code";
-  src: url("../FiraCode/FiraCode-Regular.woff2") format("woff2");
+  font-family: "Fira Code Custom";
+  src: url("../FiraCode/FiraCode-VF.ttf") format("ttf");
   font-weight: 400;
   font-style: normal;
 }
 
 code {
-  font-family: "Fira Code", var(--mono-font) !important;
-  /* I would like to control the ligatures used. 
-     Unfortunately, this setting does not appear to work.
-     Luckily the defaults are pretty reasonable */
+  font-family: "Fira Code Custom", var(--mono-font) !important;
+  /* I would like to control the ligatures used via CSS. 
+     Unfortunately, this setting does not appear to work...
+     For now, I have just built a custom version of the font with the
+     below ligature settings, but this will make it a bit of pain to
+     change them later. */
   /* font-variant-ligatures: "'ss09', 'ss05', 'ss03', 'cv16'"; */
   font-size: var(--code-font-size);
 }

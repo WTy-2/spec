@@ -155,7 +155,7 @@
 <p>Syntax is hard, and discussions about it generally go nowhere...</p>
 <p>...so let's discuss syntax!</p>
 <h2 id="enforced-capitalisation-convention"><a class="header" href="#enforced-capitalisation-convention">Enforced Capitalisation Convention</a></h2>
-<p>In functional languages, it is often easy to have an ambiguity with infallible pattern matches vs function definitions. Consider in Haskell:</p>
+<p>In functional languages, it is often easy to have an ambiguity with irrefutable pattern matches vs function definitions. Consider in Haskell:</p>
 <pre><code class="language-hs">foo = ...
   where
     {- Something -} i = ...
@@ -169,7 +169,7 @@
 <p>WTy2 has a similar potential ambiguity, and it is even more prevalent, given the rule that <code>f: t -&gt; u</code> can be written as <code>f(t): u</code> (so the ambiguity is possible even inside patterns).</p>
 <p>One obvious solution is to copy Haskell's homework: data constructors are capitalised and variables are not. This rule fits well with WTy2's syntax in general: types should be capitalised, and this makes sense because types, like data constructors, are also matchable.</p>
 <p>However, there are downsides. The most compelling from my perspective is how non-latin alphabets do not necessarily contain capital letters. I do not believe this is quite as significant of an issue as sometimes presented (a convention for code written in those alphabets could easily be created where data constructors/types must start with a latin-alphabet capital letter, say <code>M</code> for <code>matchable</code>) but even so, it is not ideal.</p>
-<p>The alternative is to use some dedicated keyword/symbol to disambuate. Perhaps <code>fn</code> prefixing all functions written in <code>f(t): u</code>-style or <code>match</code> prefixing all infallible pattern matches.</p>
+<p>The alternative is to use some dedicated keyword/symbol to disambuate. Perhaps <code>fn</code> prefixing all functions written in <code>f(t): u</code>-style or <code>match</code> prefixing all irrefutable pattern matches.</p>
 <p>Using <code>fn</code> keyword on functions</p>
 <pre><code class="language-WTy2">takesFunctionAndMatches(fn foo(Int): Int, Foo(x)) {
     fn bar(y: Int) = foo(y);
@@ -185,24 +185,27 @@
 </code></pre>
 <p>Perhaps some compromise is possible: capitalised = assume match, lowercase = assume function but then can use either keyword to override. This might be an overkill solution, but it seems promising.</p>
 <h2 id="bindingconstraint-operators"><a class="header" href="#bindingconstraint-operators">Binding/Constraint Operators</a></h2>
-<p>I have a few alternatives that I don't hate, but nothing I love:</p>
-<h3 id="-instance-head-operator"><a class="header" href="#-instance-head-operator"><code>(&lt;:)</code> Instance Head Operator</a></h3>
+<p>Currently, I am liking:</p>
 <div class="table-wrapper"><table><thead><tr><th>Binding</th><th>Constraint</th><th>Meaning</th></tr></thead><tbody>
-<tr><td><code>x  : t</code></td><td><code>x :: t</code></td><td><code>x</code> is of type <code>t</code></td></tr>
-<tr><td><code>t &lt;: u</code></td><td><code>t &lt;| u</code>/<code>t &lt;:: u</code></td><td><code>t</code> is an instance head of <code>u</code></td></tr>
+<tr><td><code>x : t</code></td><td><code>x :: t</code></td><td><code>x</code> is of type <code>t</code></td></tr>
+<tr><td><code>t &lt;=: u</code></td><td><code>t &lt;=| u</code></td><td><code>t</code> is an instance head of <code>u</code></td></tr>
+<tr><td><code>t &lt;: u</code></td><td><code>t &lt;| </code></td><td><code>t</code> is a subtype of <code>u</code></td></tr>
 <tr><td><code>x ~: y</code></td><td><code>x ~ y</code></td><td><code>x</code> reduces to <code>y</code></td></tr>
 </tbody></table>
 </div>
-<h3 id="-instance-head-operator-1"><a class="header" href="#-instance-head-operator-1"><code>(:=&gt;)</code> Instance Head Operator</a></h3>
-<div class="table-wrapper"><table><thead><tr><th>Binding</th><th>Constraint</th><th>Meaning</th></tr></thead><tbody>
-<tr><td><code>x :   t</code></td><td><code>x :: t</code></td><td><code>x</code> is of type <code>t</code></td></tr>
-<tr><td><code>t :=&gt; u</code></td><td><code>t |=&gt; u</code></td><td><code>t</code> is an instance head of <code>u</code></td></tr>
-<tr><td><code>x :~  y</code></td><td><code>x ~ y</code></td><td><code>x</code> reduces to <code>y</code></td></tr>
-</tbody></table>
-</div>
-<p><code>(&lt;:)</code> has the advantage of already being a common symbol with a somewhat similar meaning (subtype vs instance head). On the other hand, it not being exactly the same, and WTy2 also having a notion of subtyping could get quite confusing (e.g: <code>Int &lt;: Monoid</code> but we would never have <code>Semigroup &lt;: Monoid</code>).
-<code>(:=&gt;)</code> in my opinion is also slightly confusing though. It looks very similar to implies.</p>
-<p>Another option is to rely on keywords. Perhaps <code>x is t</code> instead of <code>x :: t</code> and <code>instance t for u</code> as the instance-head operator. Note <code>instance ... for</code> already has to be a keyword to actually write instances, but I don't love how this makes the syntax more inconsistent.</p>
+<p>But it has a few problems:</p>
+<ul>
+<li><code>(&lt;=:)</code>/<code>(&lt;=|)</code> can easily look either like a combo of less-than-equal <code>(&lt;=)</code> and <code>(:)</code>/<code>(|)</code>, which with the context of subtyping being a combo of <code>(&lt;)</code> and <code>(:)</code>/<code>(|)</code> doesn't make much sense (instance head is a MORE restrictive relation, not more!) Alternatively they look a bit like a reversed implies <code>(=&gt;)</code> which they are ALSO unrelated to!</li>
+<li>The instance head operator <code>(&lt;=:)</code> is more characters than subtyping <code>(&lt;:)</code>, but will likely be used MORE in practice.</li>
+<li>With <code>(:)</code>, <code>(::)</code>, and <code>(&lt;:)</code> taken, what should cons be? <code>(:&gt;)</code> could very easily be misinterpreted as a flipped version of <code>(&lt;:)</code>.</li>
+<li>Less important, but <code>(~:)</code> looks ugly IMO.</li>
+</ul>
+<p>And there are a LOT of alternatives:</p>
+<ul>
+<li>Use keywords/infix functions instead of operators. E.g: <code>x is t</code> instead of <code>x :: t</code>, or <code>instance t for u</code> instead of <code>t &lt;=: u</code>.</li>
+<li>Make the common pattern for constraint (except for <code>(~)</code>) be to add a second colon. E.g: <code>(&lt;::)</code>, <code>(&lt;=::)</code> (note Firacode ligatures does not display the latter as intended though!)</li>
+<li>Instead of <code>(::)</code>, all types types implement <code>Any -&gt; Constraint</code> so instead of <code>x :: Int</code> you would write <code>Int(x)</code>.</li>
+</ul>
 
                     </main>
 

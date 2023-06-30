@@ -159,7 +159,7 @@
 <h2 id="constructor-"><a class="header" href="#constructor-">Constructor (~&gt;)</a></h2>
 <pre><code class="language-WTy2">(~&gt;): (Type, Type) -&gt; Type
 </code></pre>
-<p>Similar to function arrow, but must be &quot;matchable&quot;. i.e: <code>[x: a, y: a] Proof(f(x) ~ g(y) ==&gt; f ~ g /\ a ~ b)</code> is in scope.</p>
+<p>Similar to function arrow, but must be &quot;matchable&quot;. i.e: <code>(x: a, y: a, f: a -&gt; b, g: a -&gt; b) &lt;&lt;= f(x) ~ g(y) |- f ~ g /\ a ~ b</code> is in scope.</p>
 <h2 id="constrained-by-"><a class="header" href="#constrained-by-">Constrained By (&lt;&lt;=)</a></h2>
 <pre><code class="language-WTy2">(&lt;&lt;=): (t: Type, p: t -&gt; Constraint) -&gt; Type
 </code></pre>

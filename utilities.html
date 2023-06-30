@@ -156,40 +156,73 @@
 <p>Inspired by Haskell</p>
 <pre><code class="language-WTy2">do(f: () -&gt; t): t = f()
 </code></pre>
-<h2 id="if-else"><a class="header" href="#if-else">If-Else</a></h2>
+<p>This is primarily useful when defining functions in <code>f(x: t): u = ...</code>-style where you still want to use a block to define locals or use <code>do</code>-notation sugar <sup class="footnote-reference"><a href="#note">1</a></sup>. E.g:</p>
+<pre><code class="language-WTy2">foo(x: Int, y: Int): Int = do {
+    z = x * 3;
+    w = y - 2;
+    (z * z + w) / (x + w)
+}
+</code></pre>
+<h2 id="if-elif-else"><a class="header" href="#if-elif-else">If-Elif-Else</a></h2>
+<p>Inspired by oh-so-many programming languages, maybe Algol 58 was first?</p>
 <pre><code class="language-WTy2">if[t: Type](c: Bool, e: () -&gt; t): Maybe(t) = with(c) {
-    | False -&gt; Nothing
-    | True  -&gt; Just(e())
+| True  -&gt; Just(e()),
+| False -&gt; Nothing
+}
+</code></pre>
+<pre><code>elif[t: Type](x: Maybe(t), c: Bool, e: () -&gt; t): Maybe(t) = with(x, c) {
+| (Just(y), _) -&gt; x,
+| (Nothing, True) -&gt; Just(e()),
+| (Nothing, False) -&gt; Nothing,
 }
 </code></pre>
 <pre><code class="language-WTy2">else[t: Type](x: Maybe(t), e: () -&gt; t): t = with(x) {
-    | Just(y) -&gt; y,
-    | Nothing -&gt; e()
+| Just(y) -&gt; y,
+| Nothing -&gt; e()
 }
 </code></pre>
-<h2 id="fun"><a class="header" href="#fun">Fun</a></h2>
-<p>Inspired by Kotlin</p>
-<pre><code class="language-WTy2">fun[r: Type](t: Type, f: t -&gt; r): t -&gt; r = f
+<p>E.g:</p>
+<pre><code class="language-WTy2">if(True) {
+    &quot;Case one!&quot;
+}.elif(False) {
+    &quot;Case two!&quot;
+}.else {
+    &quot;Case three!&quot;
+}
+```
+
+## Fun
+
+Inspired by Kotlin
+
+```WTy2
+fun[r: Type](t: Type, f: t -&gt; r): t -&gt; r = f
 </code></pre>
+<p>In WTy2, serves to annotate the argument type of a function without having to use arrow-lambda syntax.</p>
 <h2 id="lazy"><a class="header" href="#lazy">Lazy</a></h2>
-<p>Note this does not perform any memoisation (call-by-need). This would require some form of mutability to implement.</p>
+<p>Inspired by Scala</p>
 <pre><code class="language-WTy2">lazy[t: Type](f: () -&gt; t): () -&gt; t = f
 </code></pre>
+<p>Note this does not perform any memoisation (call-by-need). This would require some form of mutability to implement.</p>
 <h2 id="the"><a class="header" href="#the">The</a></h2>
 <p>Inspired by Idris</p>
 <pre><code>the(x: t, t: Type): t = x
 </code></pre>
+<p>Annotates the type of <code>x</code>.</p>
 <h2 id="with-and-also"><a class="header" href="#with-and-also">With and Also</a></h2>
 <p>Inspired by Kotlin</p>
 <pre><code class="language-WTy2">with[t: Type, r: Type](x: t, f: t -&gt; r): r = f(x)
 </code></pre>
-<pre><code class="language-WTy2">also[t: Type](x: t, f: t -&gt; ()): t = do {
-    f(x);
-    x
+<pre><code class="language-WTy2">also[t: Type, m: Applicative](x: t, f: t -&gt; m()): m(t) = f(x) $&gt; x
+</code></pre>
+<p><code>with</code> fits really well with lambda-case syntax as a way to pattern match on a variable. E.g:</p>
+<pre><code class="language-WTy2">with(x) {
+| 0 -&gt; &quot;Zero!&quot;,
+| 1 -&gt; &quot;One!&quot;,
+| _ -&gt; &quot;Other!&quot;
 }
 </code></pre>
-<h2 id="design-note-loops"><a class="header" href="#design-note-loops">Design Note: Loops</a></h2>
-<p>WTy2 is primarily a functional language and so higher order functions like <code>map</code> are recommended over loop constructs. In fact, the approach for handling side-effects in WTy2 is currently a WIP, and loops are only really useful if side-effects like mutability possible.</p>
+<p><sup class="footnote-reference"><a href="#note">1</a></sup> Of course in WTy2, <code>do</code>-notation is not really related to the <code>do</code> utility defined here; it can be used in any block... But hey, I didn't name it!</p>
 
                     </main>
 

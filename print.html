@@ -471,40 +471,73 @@ foo_Monoid: List(Monoid) = list(100) { mempty(t) };
 <p>Inspired by Haskell</p>
 <pre><code class="language-WTy2">do(f: () -&gt; t): t = f()
 </code></pre>
-<h2 id="if-else"><a class="header" href="#if-else">If-Else</a></h2>
+<p>This is primarily useful when defining functions in <code>f(x: t): u = ...</code>-style where you still want to use a block to define locals or use <code>do</code>-notation sugar <sup class="footnote-reference"><a href="#note">1</a></sup>. E.g:</p>
+<pre><code class="language-WTy2">foo(x: Int, y: Int): Int = do {
+    z = x * 3;
+    w = y - 2;
+    (z * z + w) / (x + w)
+}
+</code></pre>
+<h2 id="if-elif-else"><a class="header" href="#if-elif-else">If-Elif-Else</a></h2>
+<p>Inspired by oh-so-many programming languages, maybe Algol 58 was first?</p>
 <pre><code class="language-WTy2">if[t: Type](c: Bool, e: () -&gt; t): Maybe(t) = with(c) {
-    | False -&gt; Nothing
-    | True  -&gt; Just(e())
+| True  -&gt; Just(e()),
+| False -&gt; Nothing
+}
+</code></pre>
+<pre><code>elif[t: Type](x: Maybe(t), c: Bool, e: () -&gt; t): Maybe(t) = with(x, c) {
+| (Just(y), _) -&gt; x,
+| (Nothing, True) -&gt; Just(e()),
+| (Nothing, False) -&gt; Nothing,
 }
 </code></pre>
 <pre><code class="language-WTy2">else[t: Type](x: Maybe(t), e: () -&gt; t): t = with(x) {
-    | Just(y) -&gt; y,
-    | Nothing -&gt; e()
+| Just(y) -&gt; y,
+| Nothing -&gt; e()
 }
 </code></pre>
-<h2 id="fun"><a class="header" href="#fun">Fun</a></h2>
-<p>Inspired by Kotlin</p>
-<pre><code class="language-WTy2">fun[r: Type](t: Type, f: t -&gt; r): t -&gt; r = f
+<p>E.g:</p>
+<pre><code class="language-WTy2">if(True) {
+    &quot;Case one!&quot;
+}.elif(False) {
+    &quot;Case two!&quot;
+}.else {
+    &quot;Case three!&quot;
+}
+```
+
+## Fun
+
+Inspired by Kotlin
+
+```WTy2
+fun[r: Type](t: Type, f: t -&gt; r): t -&gt; r = f
 </code></pre>
+<p>In WTy2, serves to annotate the argument type of a function without having to use arrow-lambda syntax.</p>
 <h2 id="lazy"><a class="header" href="#lazy">Lazy</a></h2>
-<p>Note this does not perform any memoisation (call-by-need). This would require some form of mutability to implement.</p>
+<p>Inspired by Scala</p>
 <pre><code class="language-WTy2">lazy[t: Type](f: () -&gt; t): () -&gt; t = f
 </code></pre>
+<p>Note this does not perform any memoisation (call-by-need). This would require some form of mutability to implement.</p>
 <h2 id="the"><a class="header" href="#the">The</a></h2>
 <p>Inspired by Idris</p>
 <pre><code>the(x: t, t: Type): t = x
 </code></pre>
+<p>Annotates the type of <code>x</code>.</p>
 <h2 id="with-and-also"><a class="header" href="#with-and-also">With and Also</a></h2>
 <p>Inspired by Kotlin</p>
 <pre><code class="language-WTy2">with[t: Type, r: Type](x: t, f: t -&gt; r): r = f(x)
 </code></pre>
-<pre><code class="language-WTy2">also[t: Type](x: t, f: t -&gt; ()): t = do {
-    f(x);
-    x
+<pre><code class="language-WTy2">also[t: Type, m: Applicative](x: t, f: t -&gt; m()): m(t) = f(x) $&gt; x
+</code></pre>
+<p><code>with</code> fits really well with lambda-case syntax as a way to pattern match on a variable. E.g:</p>
+<pre><code class="language-WTy2">with(x) {
+| 0 -&gt; &quot;Zero!&quot;,
+| 1 -&gt; &quot;One!&quot;,
+| _ -&gt; &quot;Other!&quot;
 }
 </code></pre>
-<h2 id="design-note-loops"><a class="header" href="#design-note-loops">Design Note: Loops</a></h2>
-<p>WTy2 is primarily a functional language and so higher order functions like <code>map</code> are recommended over loop constructs. In fact, the approach for handling side-effects in WTy2 is currently a WIP, and loops are only really useful if side-effects like mutability possible.</p>
+<p><sup class="footnote-reference"><a href="#note">1</a></sup> Of course in WTy2, <code>do</code>-notation is not really related to the <code>do</code> utility defined here; it can be used in any block... But hey, I didn't name it!</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="specialisation"><a class="header" href="#specialisation">Specialisation</a></h1>
 <p>WTy2 does NOT currently feature &quot;specialisation&quot; as a high-level language feature (à la Rust <sup class="footnote-reference"><a href="#note">1</a></sup>), being able to override typeclass instances for specific types. Instead, specialisation in the context of WTy2 refers to an optimisation strategy that is key to get highly polymorphic WTy2 programs to perform well <sup class="footnote-reference"><a href="#note">1</a></sup>.</p>
 <p>Specialisation can be thought of a bit like a &quot;lite&quot; version of monomorphisation. Types can be infinitely large in WTy2, so full monomorphisation as a compilation strategy is infeasible; however, where possible, compiling separate versions of functions for specific argument values (or sets of argument values) and dispatching to those specialised versions can get most of the benefits (the main downside being the compiler now has to decide on a strategy for deciding when to specialise).</p>
@@ -594,7 +627,7 @@ Oh dear!</p>
 <h2 id="constructor-"><a class="header" href="#constructor-">Constructor (~&gt;)</a></h2>
 <pre><code class="language-WTy2">(~&gt;): (Type, Type) -&gt; Type
 </code></pre>
-<p>Similar to function arrow, but must be &quot;matchable&quot;. i.e: <code>[x: a, y: a] Proof(f(x) ~ g(y) ==&gt; f ~ g /\ a ~ b)</code> is in scope.</p>
+<p>Similar to function arrow, but must be &quot;matchable&quot;. i.e: <code>(x: a, y: a, f: a -&gt; b, g: a -&gt; b) &lt;&lt;= f(x) ~ g(y) |- f ~ g /\ a ~ b</code> is in scope.</p>
 <h2 id="constrained-by--1"><a class="header" href="#constrained-by--1">Constrained By (&lt;&lt;=)</a></h2>
 <pre><code class="language-WTy2">(&lt;&lt;=): (t: Type, p: t -&gt; Constraint) -&gt; Type
 </code></pre>
@@ -616,10 +649,41 @@ a |- r = a -&gt; Proof(r)
 <h2 id="lambda-blocks"><a class="header" href="#lambda-blocks">Lambda-Blocks</a></h2>
 <p>In WTy2, braces (<code>{}</code>) are used to denote a lambda. Inside the braces, there can be:</p>
 <ul>
-<li>Just an expression (in this case the argument type is inferred, and can be referred to in the expression as <code>it</code>)</li>
+<li>Just an expression. In this case the argument type is inferred, and can be referred to in the expression as <code>it</code>. The really powerful part here is that variables <code>varName</code> are attempted to be resolved as fields of <code>it</code> first (as in <code>it.varName</code>). This is similar to <code>this</code> being in scope allowing access to fields and methods of the class without needing to specify the receiver in OOP languages.</li>
 <li>A &quot;<code>\</code>&quot; followed by an irrefutable pattern which is bound to by the argument, an <code>-&gt;</code> and the return expression.</li>
 <li>Multiple <code>|</code>s, each followed by a pattern, a <code>-&gt;</code> and a return expression for if that match succeeds.</li>
 </ul>
+<h2 id="function-definitions"><a class="header" href="#function-definitions">Function Definitions</a></h2>
+<p>WTy2 is a functional programming language, meaning functions are first class and can be bound to variables. Using only existing introduced syntax, a function that adds three integers can be defined like so:</p>
+<pre><code class="language-wty2">addThree: (Int, Int, Int) -&gt; Int = { \(x, y, z) -&gt; x + y + z };
+</code></pre>
+<p>Using record syntax, we can achieve this in a slightly cleaner way as</p>
+<pre><code class="language-wty2">addThree: (x: Int, y: Int, z: Int) -&gt; Int = { x + y + z };
+</code></pre>
+<p>WTy2 introduces an additional way to define functions, which looks closer to imperative programming languages:</p>
+<pre><code class="language-wty2">addThree(x: Int, y: Int, z: Int): Int = x + y + z;
+</code></pre>
+<p>In general <code>f(t): u</code> can be used anywhere <code>f: t -&gt; u</code> would also fit, with one small difference. If it is the LHS of an assignment (like above, then the braces around the RHS expression are implicit).</p>
+<h2 id="recursion"><a class="header" href="#recursion">Recursion</a></h2>
+<p>In WTy2, the source syntax allows functions to recursively call themselves or others defined in the same scope freely, making this simple for the programmer.</p>
+<p>Functions in WTy2 are both unboxed and capturing by default, so implementing recursion is not quite as simple as one might assume. Consider in Rust how closures cannot refer to themselves. This can be worked around with a few patterns, such as creating a non-capturing recursive <code>fn</code> item inside the closure and passing in the enviroment, but this is quite clunky.</p>
+<pre><code class="language-rs">let step = 1;
+let foo = |x| {
+    fn foo_rec(step: i32, x: i32) -&gt; i32 {
+        if (x &lt;= 0) { 0 } else { x + foo_rec(step, x-step) }
+    }
+    foo_rec(step, x)
+};
+println!(&quot;{}&quot;, foo(10));
+</code></pre>
+<p>In WTy2, the source syntax allows functions to recursively call themselves or others defined in the same scope freely, making this simple for the programmer. The interesting part is the compilation strategy:</p>
+<p>Functions that just call themselves are easy. As functions are compiled into structures with a <code>(-&gt;)</code> instance, the <code>call</code> method can just recursively call itself.</p>
+<p>Mutually recursive functions are more challenging. A naive approach would be to include each</p>
+<p>First, functions are placed into recursive groups by forming a graph of which call each other.</p>
+<p>n the back-end</p>
+<p>In principle, this</p>
+<p>What is happening here is that</p>
+<p>In WTy2 recursion is simple! Functions can refer to themselves or other functions in the same or above scope in their bodies. There is no dedicated <code>letrec</code> binding or similar: all function bindings are recursive. Variables that are not functions (RHS is not surrounded by - possibly implicit - braces)</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="constraints"><a class="header" href="#constraints">Constraints</a></h1>
 <p>Constraints in WTy2 are used to pass evidence of equality or type membership. As WTy2 retains full information on the constructors used to create a value via the tags, they can be entirely erased at runtime (i.e: Haskell-style dictionary-passing is unnecessary) but implementation strategy is still a work in progress.
 Indeed given current design for overlap of instances, dispatch can reqire arbitrary computation, meaning dictionary-passing could turn out to be a major optimisation.</p>
@@ -689,54 +753,14 @@ foo(x: NatBetween(1, 3))
 <p>This is arguably the main pain-point with dependent types. Proving that one constraint implies another can be tiresome and clutter up code significantly. Refinement type systems solve this through restricting constraints to those that can be proved with an SMT solver, but this is often overly limiting. WTy2 attempts to provide some of the ergonomics of refinement types without the restrictions through the ability to write and use implicit <code>proof</code>s.</p>
 <p><sup class="footnote-reference"><a href="#note">1</a></sup> As a side note, on the current Idris2 version 0.6.0, if <code>x &lt;= 3</code> is replaced with <code>x &lt; 4</code>, the example breaks, saying case <code>foo (Mk (S (S (S (S _)))) _)</code> is not covered. This seems like a bug.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="modes"><a class="header" href="#modes">Modes</a></h1>
-<p>WTy2 is designed to be a language which can be implemented very efficiently, and give programmers control over optimisations. To help with this, WTy2 features ownership and borrowing.</p>
-<p>The current design is to follow a strategy similar to the recent developments in OCAML (https://blog.janestreet.com/oxidizing-ocaml-locality/, https://blog.janestreet.com/oxidizing-ocaml-ownership/) avoiding lifetimes.</p>
-<h2 id="map"><a class="header" href="#map">Map</a></h2>
-<pre><code class="language-WTy2">map[a, b](l: List(a), f: a -&gt; b): List(b) = ...
-</code></pre>
-<p>This function maps over a list and creates a new one.
-Ideally, we would like:</p>
-<ul>
-<li>If the list is unique (no other references)
-<ul>
-<li>If list is entirely unboxed (no pointers)
-<ul>
-<li>If <code>a</code> and <code>b</code> are same size
-<ul>
-<li>Update entire list in place</li>
-</ul>
-</li>
-<li>Otherwise create new list and destroy previous</li>
-</ul>
-</li>
-<li>If list is linked by boxing <code>cons</code> nodes
-<ul>
-<li>If <code>a</code> and <code>b</code> are same size
-<ul>
-<li>Update each cons node in place</li>
-</ul>
-</li>
-<li>Otherwise create new cons nodes and destroy previous</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-<p>Note that if each element is boxed, this reduces to the case of <code>a</code> and <code>b</code> being the same size (assuming a reference is constant size).</p>
-<p>The main conclusion from these cases is that we would like to track when something is unique. We would also like to be able to place a constraint that a variable is unique, to get the guarantee that we can perform the in-place map.</p>
-<h2 id="fold"><a class="header" href="#fold">Fold</a></h2>
-<pre><code class="language-WTy2">foldl[a, b](l: List(a), u: b, f: (a, b) -&gt; b): b = ...
-</code></pre>
-<p>Ideas:</p>
-<p>Variables in WTy2 are by default owning, meaning if we pass <code>x: a</code>, <code>x</code> in unique.
-References can be created by borrowing. Instead of lifetimes, borrows last until
-Like Rust, copies are explicit, unless the variable has a <code>Clone</code> instance.</p>
+<p>WTy2 is designed to be a language which can be implemented very efficiently, and give programmers control over performance. At the same time, WTy2 is not Rust: implementing a full-on borrow checker and requiring all references to track lifetimes in WTy2 programs seems excessive. To try and strike a middle-ground, WTy2 takes inspiration from some of the recent work Jane Street has done with OCAML <a href="https://blog.janestreet.com/oxidizing-ocaml-locality/">https://blog.janestreet.com/oxidizing-ocaml-locality/</a>, <a href="https://blog.janestreet.com/oxidizing-ocaml-ownership/">https://blog.janestreet.com/oxidizing-ocaml-ownership/</a>.</p>
+<p>TODO...</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="syntax-debates"><a class="header" href="#syntax-debates">Syntax Debates</a></h1>
 <p><a href="https://wiki.haskell.org/Wadler&#x27;s_Law">https://wiki.haskell.org/Wadler's_Law</a></p>
 <p>Syntax is hard, and discussions about it generally go nowhere...</p>
 <p>...so let's discuss syntax!</p>
 <h2 id="enforced-capitalisation-convention"><a class="header" href="#enforced-capitalisation-convention">Enforced Capitalisation Convention</a></h2>
-<p>In functional languages, it is often easy to have an ambiguity with infallible pattern matches vs function definitions. Consider in Haskell:</p>
+<p>In functional languages, it is often easy to have an ambiguity with irrefutable pattern matches vs function definitions. Consider in Haskell:</p>
 <pre><code class="language-hs">foo = ...
   where
     {- Something -} i = ...
@@ -750,7 +774,7 @@ Like Rust, copies are explicit, unless the variable has a <code>Clone</code> ins
 <p>WTy2 has a similar potential ambiguity, and it is even more prevalent, given the rule that <code>f: t -&gt; u</code> can be written as <code>f(t): u</code> (so the ambiguity is possible even inside patterns).</p>
 <p>One obvious solution is to copy Haskell's homework: data constructors are capitalised and variables are not. This rule fits well with WTy2's syntax in general: types should be capitalised, and this makes sense because types, like data constructors, are also matchable.</p>
 <p>However, there are downsides. The most compelling from my perspective is how non-latin alphabets do not necessarily contain capital letters. I do not believe this is quite as significant of an issue as sometimes presented (a convention for code written in those alphabets could easily be created where data constructors/types must start with a latin-alphabet capital letter, say <code>M</code> for <code>matchable</code>) but even so, it is not ideal.</p>
-<p>The alternative is to use some dedicated keyword/symbol to disambuate. Perhaps <code>fn</code> prefixing all functions written in <code>f(t): u</code>-style or <code>match</code> prefixing all infallible pattern matches.</p>
+<p>The alternative is to use some dedicated keyword/symbol to disambuate. Perhaps <code>fn</code> prefixing all functions written in <code>f(t): u</code>-style or <code>match</code> prefixing all irrefutable pattern matches.</p>
 <p>Using <code>fn</code> keyword on functions</p>
 <pre><code class="language-WTy2">takesFunctionAndMatches(fn foo(Int): Int, Foo(x)) {
     fn bar(y: Int) = foo(y);
@@ -766,24 +790,27 @@ Like Rust, copies are explicit, unless the variable has a <code>Clone</code> ins
 </code></pre>
 <p>Perhaps some compromise is possible: capitalised = assume match, lowercase = assume function but then can use either keyword to override. This might be an overkill solution, but it seems promising.</p>
 <h2 id="bindingconstraint-operators"><a class="header" href="#bindingconstraint-operators">Binding/Constraint Operators</a></h2>
-<p>I have a few alternatives that I don't hate, but nothing I love:</p>
-<h3 id="-instance-head-operator"><a class="header" href="#-instance-head-operator"><code>(&lt;:)</code> Instance Head Operator</a></h3>
+<p>Currently, I am liking:</p>
 <div class="table-wrapper"><table><thead><tr><th>Binding</th><th>Constraint</th><th>Meaning</th></tr></thead><tbody>
-<tr><td><code>x  : t</code></td><td><code>x :: t</code></td><td><code>x</code> is of type <code>t</code></td></tr>
-<tr><td><code>t &lt;: u</code></td><td><code>t &lt;| u</code>/<code>t &lt;:: u</code></td><td><code>t</code> is an instance head of <code>u</code></td></tr>
+<tr><td><code>x : t</code></td><td><code>x :: t</code></td><td><code>x</code> is of type <code>t</code></td></tr>
+<tr><td><code>t &lt;=: u</code></td><td><code>t &lt;=| u</code></td><td><code>t</code> is an instance head of <code>u</code></td></tr>
+<tr><td><code>t &lt;: u</code></td><td><code>t &lt;| </code></td><td><code>t</code> is a subtype of <code>u</code></td></tr>
 <tr><td><code>x ~: y</code></td><td><code>x ~ y</code></td><td><code>x</code> reduces to <code>y</code></td></tr>
 </tbody></table>
 </div>
-<h3 id="-instance-head-operator-1"><a class="header" href="#-instance-head-operator-1"><code>(:=&gt;)</code> Instance Head Operator</a></h3>
-<div class="table-wrapper"><table><thead><tr><th>Binding</th><th>Constraint</th><th>Meaning</th></tr></thead><tbody>
-<tr><td><code>x :   t</code></td><td><code>x :: t</code></td><td><code>x</code> is of type <code>t</code></td></tr>
-<tr><td><code>t :=&gt; u</code></td><td><code>t |=&gt; u</code></td><td><code>t</code> is an instance head of <code>u</code></td></tr>
-<tr><td><code>x :~  y</code></td><td><code>x ~ y</code></td><td><code>x</code> reduces to <code>y</code></td></tr>
-</tbody></table>
-</div>
-<p><code>(&lt;:)</code> has the advantage of already being a common symbol with a somewhat similar meaning (subtype vs instance head). On the other hand, it not being exactly the same, and WTy2 also having a notion of subtyping could get quite confusing (e.g: <code>Int &lt;: Monoid</code> but we would never have <code>Semigroup &lt;: Monoid</code>).
-<code>(:=&gt;)</code> in my opinion is also slightly confusing though. It looks very similar to implies.</p>
-<p>Another option is to rely on keywords. Perhaps <code>x is t</code> instead of <code>x :: t</code> and <code>instance t for u</code> as the instance-head operator. Note <code>instance ... for</code> already has to be a keyword to actually write instances, but I don't love how this makes the syntax more inconsistent.</p>
+<p>But it has a few problems:</p>
+<ul>
+<li><code>(&lt;=:)</code>/<code>(&lt;=|)</code> can easily look either like a combo of less-than-equal <code>(&lt;=)</code> and <code>(:)</code>/<code>(|)</code>, which with the context of subtyping being a combo of <code>(&lt;)</code> and <code>(:)</code>/<code>(|)</code> doesn't make much sense (instance head is a MORE restrictive relation, not more!) Alternatively they look a bit like a reversed implies <code>(=&gt;)</code> which they are ALSO unrelated to!</li>
+<li>The instance head operator <code>(&lt;=:)</code> is more characters than subtyping <code>(&lt;:)</code>, but will likely be used MORE in practice.</li>
+<li>With <code>(:)</code>, <code>(::)</code>, and <code>(&lt;:)</code> taken, what should cons be? <code>(:&gt;)</code> could very easily be misinterpreted as a flipped version of <code>(&lt;:)</code>.</li>
+<li>Less important, but <code>(~:)</code> looks ugly IMO.</li>
+</ul>
+<p>And there are a LOT of alternatives:</p>
+<ul>
+<li>Use keywords/infix functions instead of operators. E.g: <code>x is t</code> instead of <code>x :: t</code>, or <code>instance t for u</code> instead of <code>t &lt;=: u</code>.</li>
+<li>Make the common pattern for constraint (except for <code>(~)</code>) be to add a second colon. E.g: <code>(&lt;::)</code>, <code>(&lt;=::)</code> (note Firacode ligatures does not display the latter as intended though!)</li>
+<li>Instead of <code>(::)</code>, all types types implement <code>Any -&gt; Constraint</code> so instead of <code>x :: Int</code> you would write <code>Int(x)</code>.</li>
+</ul>
 
                     </main>
 

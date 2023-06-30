@@ -1,0 +1,15 @@
+@font-face {
+  font-family: "Fira Code";
+  src: url("../FiraCode/FiraCode-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+}
+
+code {
+  font-family: "Fira Code", var(--mono-font) !important;
+  /* I would like to control the ligatures used. 
+     Unfortunately, this setting does not appear to work.
+     Luckily the defaults are pretty reasonable */
+  /* font-variant-ligatures: "'ss09', 'ss05', 'ss03', 'cv16'"; */
+  font-size: var(--code-font-size);
+}

@@ -8,7 +8,7 @@ Syntax is hard, and discussions about it generally go nowhere...
 
 ## Enforced Capitalisation Convention
 
-In functional languages, it is often easy to have an ambiguity with infallible pattern matches vs function definitions. Consider in Haskell:
+In functional languages, it is often easy to have an ambiguity with irrefutable pattern matches vs function definitions. Consider in Haskell:
 
 ```hs
 foo = ...
@@ -31,7 +31,7 @@ One obvious solution is to copy Haskell's homework: data constructors are capita
 
 However, there are downsides. The most compelling from my perspective is how non-latin alphabets do not necessarily contain capital letters. I do not believe this is quite as significant of an issue as sometimes presented (a convention for code written in those alphabets could easily be created where data constructors/types must start with a latin-alphabet capital letter, say `M` for `matchable`) but even so, it is not ideal.
 
-The alternative is to use some dedicated keyword/symbol to disambuate. Perhaps `fn` prefixing all functions written in `f(t): u`-style or `match` prefixing all infallible pattern matches.
+The alternative is to use some dedicated keyword/symbol to disambuate. Perhaps `fn` prefixing all functions written in `f(t): u`-style or `match` prefixing all irrefutable pattern matches.
 
 Using `fn` keyword on functions
 
@@ -56,25 +56,24 @@ Perhaps some compromise is possible: capitalised = assume match, lowercase = ass
 
 ## Binding/Constraint Operators
 
-I have a few alternatives that I don't hate, but nothing I love:
-
-### `(<:)` Instance Head Operator
-
-| Binding  | Constraint                     | Meaning                        |
-| -------- | ------------------------------ | ------------------------------ |
-| `x  : t` | `x :: t`                       | `x` is of type `t`             |
-| `t <: u` | <code>t <\| u</code>/`t <:: u` | `t` is an instance head of `u` |
-| `x ~: y` | `x ~ y`                        | `x` reduces to `y`             |
-
-### `(:=>)` Instance Head Operator
+Currently, I am liking:
 
 | Binding   | Constraint            | Meaning                        |
 | --------- | --------------------- | ------------------------------ |
-| `x :   t` | `x :: t`              | `x` is of type `t`             |
-| `t :=> u` | <code>t \|=> u</code> | `t` is an instance head of `u` |
-| `x :~  y` | `x ~ y`               | `x` reduces to `y`             |
+| `x : t`   | `x :: t`              | `x` is of type `t`             |
+| `t <=: u` | <code>t <=\| u</code> | `t` is an instance head of `u` |
+| `t <: u`  | <code>t <\| </code>   | `t` is a subtype of `u`        |
+| `x ~: y`  | `x ~ y`               | `x` reduces to `y`             |
 
-`(<:)` has the advantage of already being a common symbol with a somewhat similar meaning (subtype vs instance head). On the other hand, it not being exactly the same, and WTy2 also having a notion of subtyping could get quite confusing (e.g: `Int <: Monoid` but we would never have `Semigroup <: Monoid`).
-`(:=>)` in my opinion is also slightly confusing though. It looks very similar to implies.
+But it has a few problems:
 
-Another option is to rely on keywords. Perhaps `x is t` instead of `x :: t` and `instance t for u` as the instance-head operator. Note `instance ... for` already has to be a keyword to actually write instances, but I don't love how this makes the syntax more inconsistent.
+- `(<=:)`/`(<=|)` can easily look either like a combo of less-than-equal `(<=)` and `(:)`/`(|)`, which with the context of subtyping being a combo of `(<)` and `(:)`/`(|)` doesn't make much sense (instance head is a MORE restrictive relation, not more!) Alternatively they look a bit like a reversed implies `(=>)` which they are ALSO unrelated to!
+- The instance head operator `(<=:)` is more characters than subtyping `(<:)`, but will likely be used MORE in practice.
+- With `(:)`, `(::)`, and `(<:)` taken, what should cons be? `(:>)` could very easily be misinterpreted as a flipped version of `(<:)`.
+- Less important, but `(~:)` looks ugly IMO.
+
+And there are a LOT of alternatives:
+
+- Use keywords/infix functions instead of operators. E.g: `x is t` instead of `x :: t`, or `instance t for u` instead of `t <=: u`.
+- Make the common pattern for constraint (except for `(~)`) be to add a second colon. E.g: `(<::)`, `(<=::)` (note Firacode ligatures does not display the latter as intended though!)
+- Instead of `(::)`, all types types implement `Any -> Constraint` so instead of `x :: Int` you would write `Int(x)`.

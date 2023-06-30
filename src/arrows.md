@@ -16,7 +16,7 @@ Ordinary function arrow.
 (~>): (Type, Type) -> Type
 ```
 
-Similar to function arrow, but must be "matchable". i.e: `[x: a, y: a] Proof(f(x) ~ g(y) ==> f ~ g /\ a ~ b)` is in scope.
+Similar to function arrow, but must be "matchable". i.e: `(x: a, y: a, f: a -> b, g: a -> b) <<= f(x) ~ g(y) |- f ~ g /\ a ~ b` is in scope.
 
 ## Constrained By (<<=)
 

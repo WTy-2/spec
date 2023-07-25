@@ -18,21 +18,19 @@ Similar to Haskell, WTy2 has the axiom `Type : Type`. Girard's paradox [^note] i
 
 ## Russel's Paradox - DANGER!!
 
-Unfortunately, WTy2 as currently designed has a much larger soundness hole than either of the above problems (both of which, while limiting it's capabilities as a theorem prover, still _probably_ still have the guarantee that if the program manages to execute the assignment of a variable, it's value is of the correct type - i.e: the program will either loop infinitely or produce bottom before executing any unsound code).
+Unfortunately, WTy2 as currently designed has a much larger soundness hole than either of the above problems (both of which, while limiting its capabilities as a theorem prover, still _probably_ still have the guarantee that if the program manages to execute the assignment of a variable, it's value is of the correct type - i.e: the program will either loop infinitely or produce bottom before executing any unsound code).
 
-Due to the way subtyping and constraints work, Russel's paradox can be encoded surprisingly easily, with bottom appearing to be derivable without the program even _doing_ anything.
+Due to the way subtyping and constraints work however, Russel's paradox can be encoded surprisingly easily, with bottom appearing to be derivable without the program even _doing_ anything.
 
 ```WTy2
-type Russel = (t: Type) <<= { t :: t => t :: Void }
+type Russel = (t: Type) <<= { t :: t => t :: Void };
 
-ohDear(): Void = Russel;
+ohDear: Void = Russel;
 ```
-
-Luckily this is definable (and rejected) by Haskell!
 
 An informal sketch of how a constraint solver might check (and approve!) this is outlined below:
 
-Constraints are written in almost identical syntax to ordinary WTy2, but we elide types of `for` bound variables, instead prefering to write them as implications where necessary.
+Constraints are written in almost identical syntax to ordinary WTy2 source, but we elide types of `for` bound variables, instead prefering to write them as implications where necessary.
 
 ```WTy2CoSo
 # From definition of Russel

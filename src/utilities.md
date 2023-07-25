@@ -14,15 +14,15 @@ This is primarily useful when defining functions in `f(x: t): u = ...`-style whe
 
 ```WTy2
 foo(x: Int, y: Int): Int = do {
-    z = x * 3;
-    w = y - 2;
+    z := x * 3;
+    w := y - 2;
     (z * z + w) / (x + w)
 }
 ```
 
 ## If-Elif-Else
 
-Inspired by oh-so-many programming languages, maybe Algol 58 was first?
+Inspired by oh-so-many programming languages, maybe Algol 60 was first?
 
 ```WTy2
 if[t: Type](c: Bool, e: () -> t): Maybe(t) = with(c) {
@@ -33,8 +33,8 @@ if[t: Type](c: Bool, e: () -> t): Maybe(t) = with(c) {
 
 ```
 elif[t: Type](x: Maybe(t), c: Bool, e: () -> t): Maybe(t) = with(x, c) {
-| (Just(y), _) -> x,
-| (Nothing, True) -> Just(e()),
+| (Just(y), _)     -> x,
+| (Nothing, True)  -> Just(e()),
 | (Nothing, False) -> Nothing,
 }
 ```
@@ -49,7 +49,7 @@ else[t: Type](x: Maybe(t), e: () -> t): t = with(x) {
 E.g:
 
 ````WTy2
-if(True) {
+_ := if(True) {
     "Case one!"
 }.elif(False) {
     "Case two!"
@@ -103,7 +103,7 @@ also[t: Type, m: Applicative](x: t, f: t -> m()): m(t) = f(x) $> x
 `with` fits really well with lambda-case syntax as a way to pattern match on a variable. E.g:
 
 ```WTy2
-with(x) {
+_ := with(x) {
 | 0 -> "Zero!",
 | 1 -> "One!",
 | _ -> "Other!"

@@ -1,3 +1,4 @@
+// Simple utility function for logging
 const inlineLog = (x) => {
   console.log(x);
   return x;
@@ -8,6 +9,8 @@ const buttonText = () =>
 
 let ligatures_enabled = true;
 
+// Nest a span element inside every code block to allow for configuring the
+// style
 Array.from(document.getElementsByTagName("code")).forEach((code_block) => {
   let span = document.createElement("span");
   span.innerText = code_block.innerText;
@@ -20,15 +23,10 @@ button.innerText = buttonText();
 button.addEventListener("click", () => {
   ligatures_enabled = !ligatures_enabled;
   button.innerText = buttonText();
-
-  if (ligatures_enabled == false) {
-    Array.from(document.getElementsByTagName("code")).forEach((code_block) => {
-      code_block.children[0].style.fontFamily = "Fira Mono Google";
-    });
-  } else {
-    Array.from(document.getElementsByTagName("code")).forEach((code_block) => {
-      code_block.children[0].style.fontFamily = "";
-    });
-  }
+  Array.from(document.getElementsByTagName("code")).forEach((code_block) => {
+    code_block.children[0].style.fontFamily = ligatures_enabled
+      ? ""
+      : "Fira Mono Google";
+  });
 });
 document.getElementsByClassName("left-buttons")[0].appendChild(button);

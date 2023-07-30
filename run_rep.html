@@ -174,16 +174,16 @@
                 <div id="content" class="content">
                     <main>
                         <h1 id="runtime-representation"><a class="header" href="#runtime-representation">Runtime Representation</a></h1>
-<p>Every WTy2 value has an associated &quot;full&quot; representation, which is unique. In practice, values are known to be members of types, which constrains the possible values, and so can be smaller.</p>
-<p>Every tag is 32 bits.</p>
+<p>WTy2 values are effectively just linked lists <sup class="footnote-reference"><a href="#note">1</a></sup> of tags, where every tag is 32 bits. Every value has an associated &quot;full&quot; representation, which is unique. In practice, though values are known to be members of types, which constrains the possible values, and so can be smaller.</p>
+<p>How these lists of tags work is probably best illustrated with examples...</p>
 <h2 id="examples"><a class="header" href="#examples">Examples</a></h2>
 <pre><code class="language-WTy2">datatype Bool = True | False;
 
 datatype Nat = 0 | 1 | 2 | 3 | ...;
 
 // Note this is probably not a great choice for representation of `Int` in
-// WTy2 base given it means all 32-bit integers are now 64-bits even in compact
-// form (and we have negative zero!!). It is just an example.
+// WTy2 base given it means all 32-bit integers are now at least 64-bits in
+// (and we have negative zero!!). It is just an example.
 datatype Sign = Positive | Negative;
 
 datatype Int = MkInt(Sign, Nat);
@@ -199,70 +199,28 @@ instance C for Int &lt;&lt;= { holds(it &lt; -1) }
 </code></pre>
 <div class="table-wrapper"><table><thead><tr><th>Variable</th><th>Full Repr</th><th>Compact Repr</th></tr></thead><tbody>
 <tr><td>x: Bool = True</td><td><code>TBool, TTrue</code></td><td><code>TTrue</code></td></tr>
-<tr><td>x: Nat = 3</td><td><code>MkInt, T3</code></td><td><code>T3</code></td></tr>
-<tr><td>x: Int = 3</td><td><code>MkInt, TSign, TPositive, TNat T3</code></td><td><code>TPositive, T3</code></td></tr>
-<tr><td>x: Int = -3</td><td><code>MkInt, TSign, TNegative, TNat T3</code></td><td><code>TNegative, T3</code></td></tr>
+<tr><td>x: Nat = 3</td><td><code>TMkInt, T3</code></td><td><code>T3</code></td></tr>
+<tr><td>x: Int = 3</td><td><code>TMkInt, TSign, TPositive, TNat T3</code></td><td><code>TPositive, T3</code></td></tr>
+<tr><td>x: Int = -3</td><td><code>TMkInt, TSign, TNegative, TNat T3</code></td><td><code>TNegative, T3</code></td></tr>
 <tr><td>x: Num = 3</td><td><code>TNum, TNumIntDict, MkInt, T3</code></td><td><code>TNum, MkInt, T3</code></td></tr>
 <tr><td>x: C = 3</td><td><code>TC, TCIntDict0, MkInt, T3</code></td><td><code>TC, TCIntDict0, T3</code></td></tr>
 </tbody></table>
 </div>
-<p>Subtyping</p>
-<p>There are actually two possible strategies for combining this scheme with subtyping:</p>
+<h2 id="subtyping"><a class="header" href="#subtyping">Subtyping</a></h2>
+<p>There are two possible strategies I can think of for combining this scheme with subtyping:</p>
 <ul>
 <li>
-<p>Make subtyping coercive by adding/removing tags implicitly where necessary. This limits sharing significantly.</p>
+<p>Make subtyping coercive by copying and adding/removing where necessary. This limits sharing significantly.</p>
 </li>
 <li>
 <p>Still point to the original data but ALSO include the type (recall types are first-class values). This makes pattern matching on values of these supertypes much more complicated.</p>
 </li>
 </ul>
-<h2 id="comparison-of-subtyping-approaches"><a class="header" href="#comparison-of-subtyping-approaches">Comparison of Subtyping Approaches:</a></h2>
-<pre><code class="language-WTy2">data Foo;
-datatype B = Bar | Baz;
-data Car;
-data Coo;
-
-type C = B | 'Foo | 'Car | 'Coo;
-
-type C_Alias = C;
+<div class="footnote-definition" id="note"><sup class="footnote-definition-label">1</sup>
+<pre><code>I think packing tags in memory might actually be possible if we added a special tag denoting a reference which could appear in any place in a value, but I need to think this over more.
+In any case, this packing definitely would make implementation much more complicated, and for an initial compiler I really want something easy and consistent, not necessarily fast.
 </code></pre>
-<pre><code class="language-WTy2">foo: C -&gt; ...;
-
-x: ??? = Baz;
-foo(x); // How is x passed to foo?
-</code></pre>
-<p><code>x</code> is a unique stack allocated <code>C</code> (<code>C : Sized</code> so this is possible)
-<code>[TB, TBaz]</code>
-<code>x</code> is a reference to a <code>C</code>
-<code>[TRef, &amp;[TB, TBaz]]</code>
-<code>x</code> is a reference to a B (TRefCo = Covariant Reference)
-<code>[TRefCo, &amp;[TB], &amp;[TBaz]]</code>
-<code>x</code> is a reference to C_Alias (i.e: if can prove representation is same, then don't need to use TRefCo)
-<code>[TRef, &amp;[TBaz]]</code></p>
-<p>Costs (i.e: additional allocation on top of the referenced value):</p>
-<ol>
-<li>None</li>
-<li>One 8 byte stack allocation</li>
-<li>One 4 byte heap allocation and one 12 byte stack allocation</li>
-<li>One 8 byte stack allocation</li>
-</ol>
-<p>x is a unique stack allocated C (C : Sized so this is possible)
-<code>[TB, TBaz]</code>
-x is a reference to a C
-<code>[TB, TBaz]</code>
-x is a reference to a B (TRefCo = Covariant Reference)
-<code>[TB, TBaz], [TBaz]</code>
-x is a reference to C_Alias (i.e: if can prove representation is same, then don't need to use TRefCo)
-<code>[TBaz]</code></p>
-<p>Costs:</p>
-<ol>
-<li>None</li>
-<li>None</li>
-<li>One <code>size(TBaz) + TB</code> stack allocation</li>
-<li>None</li>
-</ol>
-<p>Conclusions:</p>
-<p>The important difference here is the third case: a heap allocation (of the type, which must be unsized) vs a copy of the value (which can be done on the stack).</p>
+</div>
 
                     </main>
 

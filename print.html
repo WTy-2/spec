@@ -680,11 +680,11 @@ Further, when references become pervasive in a language with subtyping, consider
 <p>Simultaneously, when types are viewed as sets of values, monomorphisation starts to look insane - it's entirely predicated on the idea that the number of sets of values considered by a program is vastly smaller than the number of values it deals with (for one, the number of those sets must be finite or your executable must become infinitely large). This simply isn't the case when subtyping, fancy-typing, let alone dependent typing are added to the mix. Plus as a dual to the predictability you get as a programmer, the compilation strategy reveals implementation details, requiring consideration on whether to suffer executable bloat or dynamic dispatch cost.</p>
 </li>
 <li>
-<p><strong>Unboxed Types</strong> - I already rejected the duplication of code associated with linearity-without-polymorphism so that I similarly reject it in the context of (un)boxing should come as no surprise - and polymorphism over unboxed values relies on full monomorphisation. Further, in giving control over exactly the representation of data inherently leaks implementation details - forcing decisions based on the actual size of values that occupy a type onto the programmer.</p>
-<p>It is unfortunate that this is probably the feature least compatible with WTy2 and yet is one with potentially the highest impact (zero-cost FP via unboxed closures is very enticing). My hope is that a compiler doing extensive cross-module specialisation might be able to automatically unbox, but this is only something that should be considered far down the line.</p>
+<p><strong>Unboxed Types</strong> - I already rejected the duplication of code associated with linearity-without-polymorphism so that I similarly reject it in the context of (un)boxing should come as no surprise - and polymorphism over unboxed values relies on full monomorphisation. Further, giving control over exactly the representation of data inherently leaks implementation details (e.g: the decision of whether to pass by reference or value based on the size a type vs a pointer) to the programmer.</p>
+<p>It is unfortunate that this is probably the feature least compatible with WTy2 and yet is one with potentially the highest impact (zero-cost FP via unboxed closures is very enticing). My hope is that a compiler doing extensive cross-module specialisation might be able to automatically unbox, but this is something that should be explored far down the line.</p>
 </li>
 </ul>
-<p>There are really two main aspects of implementation that these features are focussed on: memory management and runtime representation of values/dispatch strategy. For the former, WTy2 will take inspiration from Lean and Koka ( similarly functional, pure, strict programming languages with rich type systems) and adopt a form of reference counting. What's especially nice about this approach is that it combines well with the lower-level type system features that might be added later (in-place updates for values with a refcount of one is just a runtime version of in-place updating of uniques, borrows can skip the refcount increment/decrement etc...). For the latter, in the best case specialising functions for specific sets of values is likely to be a significant optimisation, but the baseline strategy must support WTy2's infinitely large types, existential types etc... - a uniform runtime representation of values is required. See the dedicated section for the current design.</p>
+<p>I argue there are really two main aspects of implementation that these features are focussed on: memory management and runtime representation of values/dispatch strategy. For the former, WTy2 will take inspiration from Lean and Koka (similarly functional, pure, strict programming languages with rich type systems) and adopt a form of reference counting. What's especially nice about this approach is that it combines well with the lower-level type system features that might be added later (in-place updates for values with a refcount of one is just a runtime version of in-place updating of uniques, borrows can skip the refcount increment/decrement etc...). For the latter, in the best case specialising functions for specific sets of values is likely to be a significant optimisation, but the baseline strategy must support WTy2's infinitely large types, existential types etc... - a uniform runtime representation of values is required. See the dedicated section for the current design.</p>
 <div class="footnote-definition" id="note"><sup class="footnote-definition-label">1</sup>
 <p>For the curious reader, here were my two main ideas, which I still think are potentially cool, but simply do not fit with WTy2 whatsoever.</p>
 </div>
@@ -693,16 +693,16 @@ Further, when references become pervasive in a language with subtyping, consider
 <li>Allow variables to be generic (take a type parameter), allowing first-class higher-rank polymorphic functions, and also, perhaps more interestingly, super efficient heterogeneous unordered collections (data-oriented programming without the hassle).</li>
 </ul>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="runtime-representation"><a class="header" href="#runtime-representation">Runtime Representation</a></h1>
-<p>Every WTy2 value has an associated &quot;full&quot; representation, which is unique. In practice, values are known to be members of types, which constrains the possible values, and so can be smaller.</p>
-<p>Every tag is 32 bits.</p>
+<p>WTy2 values are effectively just linked lists <sup class="footnote-reference"><a href="#note">1</a></sup> of tags, where every tag is 32 bits. Every value has an associated &quot;full&quot; representation, which is unique. In practice, though values are known to be members of types, which constrains the possible values, and so can be smaller.</p>
+<p>How these lists of tags work is probably best illustrated with examples...</p>
 <h2 id="examples"><a class="header" href="#examples">Examples</a></h2>
 <pre><code class="language-WTy2">datatype Bool = True | False;
 
 datatype Nat = 0 | 1 | 2 | 3 | ...;
 
 // Note this is probably not a great choice for representation of `Int` in
-// WTy2 base given it means all 32-bit integers are now 64-bits even in compact
-// form (and we have negative zero!!). It is just an example.
+// WTy2 base given it means all 32-bit integers are now at least 64-bits in
+// (and we have negative zero!!). It is just an example.
 datatype Sign = Positive | Negative;
 
 datatype Int = MkInt(Sign, Nat);
@@ -718,70 +718,28 @@ instance C for Int &lt;&lt;= { holds(it &lt; -1) }
 </code></pre>
 <div class="table-wrapper"><table><thead><tr><th>Variable</th><th>Full Repr</th><th>Compact Repr</th></tr></thead><tbody>
 <tr><td>x: Bool = True</td><td><code>TBool, TTrue</code></td><td><code>TTrue</code></td></tr>
-<tr><td>x: Nat = 3</td><td><code>MkInt, T3</code></td><td><code>T3</code></td></tr>
-<tr><td>x: Int = 3</td><td><code>MkInt, TSign, TPositive, TNat T3</code></td><td><code>TPositive, T3</code></td></tr>
-<tr><td>x: Int = -3</td><td><code>MkInt, TSign, TNegative, TNat T3</code></td><td><code>TNegative, T3</code></td></tr>
+<tr><td>x: Nat = 3</td><td><code>TMkInt, T3</code></td><td><code>T3</code></td></tr>
+<tr><td>x: Int = 3</td><td><code>TMkInt, TSign, TPositive, TNat T3</code></td><td><code>TPositive, T3</code></td></tr>
+<tr><td>x: Int = -3</td><td><code>TMkInt, TSign, TNegative, TNat T3</code></td><td><code>TNegative, T3</code></td></tr>
 <tr><td>x: Num = 3</td><td><code>TNum, TNumIntDict, MkInt, T3</code></td><td><code>TNum, MkInt, T3</code></td></tr>
 <tr><td>x: C = 3</td><td><code>TC, TCIntDict0, MkInt, T3</code></td><td><code>TC, TCIntDict0, T3</code></td></tr>
 </tbody></table>
 </div>
-<p>Subtyping</p>
-<p>There are actually two possible strategies for combining this scheme with subtyping:</p>
+<h2 id="subtyping"><a class="header" href="#subtyping">Subtyping</a></h2>
+<p>There are two possible strategies I can think of for combining this scheme with subtyping:</p>
 <ul>
 <li>
-<p>Make subtyping coercive by adding/removing tags implicitly where necessary. This limits sharing significantly.</p>
+<p>Make subtyping coercive by copying and adding/removing where necessary. This limits sharing significantly.</p>
 </li>
 <li>
 <p>Still point to the original data but ALSO include the type (recall types are first-class values). This makes pattern matching on values of these supertypes much more complicated.</p>
 </li>
 </ul>
-<h2 id="comparison-of-subtyping-approaches"><a class="header" href="#comparison-of-subtyping-approaches">Comparison of Subtyping Approaches:</a></h2>
-<pre><code class="language-WTy2">data Foo;
-datatype B = Bar | Baz;
-data Car;
-data Coo;
-
-type C = B | 'Foo | 'Car | 'Coo;
-
-type C_Alias = C;
+<div class="footnote-definition" id="note"><sup class="footnote-definition-label">1</sup>
+<pre><code>I think packing tags in memory might actually be possible if we added a special tag denoting a reference which could appear in any place in a value, but I need to think this over more.
+In any case, this packing definitely would make implementation much more complicated, and for an initial compiler I really want something easy and consistent, not necessarily fast.
 </code></pre>
-<pre><code class="language-WTy2">foo: C -&gt; ...;
-
-x: ??? = Baz;
-foo(x); // How is x passed to foo?
-</code></pre>
-<p><code>x</code> is a unique stack allocated <code>C</code> (<code>C : Sized</code> so this is possible)
-<code>[TB, TBaz]</code>
-<code>x</code> is a reference to a <code>C</code>
-<code>[TRef, &amp;[TB, TBaz]]</code>
-<code>x</code> is a reference to a B (TRefCo = Covariant Reference)
-<code>[TRefCo, &amp;[TB], &amp;[TBaz]]</code>
-<code>x</code> is a reference to C_Alias (i.e: if can prove representation is same, then don't need to use TRefCo)
-<code>[TRef, &amp;[TBaz]]</code></p>
-<p>Costs (i.e: additional allocation on top of the referenced value):</p>
-<ol>
-<li>None</li>
-<li>One 8 byte stack allocation</li>
-<li>One 4 byte heap allocation and one 12 byte stack allocation</li>
-<li>One 8 byte stack allocation</li>
-</ol>
-<p>x is a unique stack allocated C (C : Sized so this is possible)
-<code>[TB, TBaz]</code>
-x is a reference to a C
-<code>[TB, TBaz]</code>
-x is a reference to a B (TRefCo = Covariant Reference)
-<code>[TB, TBaz], [TBaz]</code>
-x is a reference to C_Alias (i.e: if can prove representation is same, then don't need to use TRefCo)
-<code>[TBaz]</code></p>
-<p>Costs:</p>
-<ol>
-<li>None</li>
-<li>None</li>
-<li>One <code>size(TBaz) + TB</code> stack allocation</li>
-<li>None</li>
-</ol>
-<p>Conclusions:</p>
-<p>The important difference here is the third case: a heap allocation (of the type, which must be unsized) vs a copy of the value (which can be done on the stack).</p>
+</div>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="core-language"><a class="header" href="#core-language">Core Language</a></h1>
 <p>Implementing a typechecker and compiler for the entire WTy2 language at once is likely to prove somewhat challenging. Here, a design for an intermediate, typed core language (inspired by efforts on GHC) is outlined.</p>
 <p>Core-Lang Constructs:</p>

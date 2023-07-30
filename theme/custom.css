@@ -5,8 +5,29 @@
   font-style: normal;
 }
 
+/* Google's preset appears to be pretty similar to mine.
+   TODO: Consider adding multiple font families to support full unicode range 
+   (Greek + Cyrillic - see https://fonts.googleapis.com/css?family=Fira%20Mono) 
+*/
+
+@font-face {
+  font-family: "Fira Code Google";
+  font-style: normal;
+  font-weight: 400;
+  src: url(https://fonts.gstatic.com/s/firacode/v21/uU9eCBsR6Z2vfE9aq3bL0fxyUs4tcw4W_D1sJVD7Ng.woff2)
+    format("woff2");
+}
+
+@font-face {
+  font-family: "Fira Mono Google";
+  font-style: normal;
+  font-weight: 400;
+  src: url(https://fonts.gstatic.com/s/firamono/v14/N0bX2SlFPv1weGeLZDtgJv7S.woff2)
+    format("woff2");
+}
+
 code {
-  font-family: "Fira Code Custom", var(--mono-font) !important;
+  font-family: "Fira Code Custom", "Fira Code Google", monospace !important;
   /* I would like to control the ligatures used via CSS. 
      Unfortunately, this setting does not appear to work...
      For now, I have just built a custom version of the font with the

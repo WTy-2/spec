@@ -1,6 +1,6 @@
 # Core Types
 
-WTy2 is a language with subtyping and with first-class types. This has an interesting consequence: instead of having some sort of "kind" system, the key language constructs in WTy2 simply implement various built-in types.
+WTy2 is a language with subtyping and with first-class types. This has an interesting consequence: instead of having a "kind" system, different language constructs are simply members of different types.
 
 ## Any
 
@@ -20,15 +20,51 @@ Constraints can be created with the built-in `~`, `::` and `<::` operators.
 
 ## Functions
 
-`a -> b` is the generic function type. Function arrows in WTy2 are dependent, but to avoid always having to write non-dependent arrows as `a -> { b }`, WTy2 features some syntax sugar which automatically inserts braces.
+See [Core Type Operators](./arrows.md)
 
-## Tuples/Records/Dependent Pairs/Lists/Telescopes
+## Tuples/Records/Dependent Pairs/Lists and Telescopes
 
-Yep, Tuples, Records, Dependent Pairs, Lists and Telescopes in WTy2 are all supported via the same built-in datatype (somewhat similarly to how TypeScript supports tuple-like syntax with it's arrays, but in a dependent setting). This datatype and associated sugar in WTy2 becomes a little complicated, and so it has it's own dedicated section in the spec.
+In WTy2, the built-in tuples, records, dependent pairs, lists etc... all desugar down to the same datatype - a dependent inductively-defined tuple:
 
-### Unit ("()")
+```WTy2
+datatype DepTup(tele: Tele) where
+  (:.) : [ty, rest] (head: ty, tail: rest(head))
+       -> DepTup(ty .- rest)
+  Nil  : DepTup(NilTele);
+```
 
-`()` is the unit tuple. It implements `Type`, `Constraint` AND `()` (i.e: itself)
+Where `Tele` is another built-in datatype, a telescope:
+
+```WTy2
+datatype Tele
+  = (.-)    : (ty: Type, rest: t -> Type) -> Tele
+  | NilTele : Tele;
+```
+
+Ordinary lists and tuples can be defined from this pretty trivially:
+
+```
+type List(ty: Type)
+  = [head: ty, tail: List(ty)]
+    '(head :. tail)
+  | 'Nil;
+
+type Tuple(tys: List(ty))
+  = [ty, rest, head: ty, tail: Tuple(rest)]
+    '(head :. tail) <<= { tys ~ ty :. rest }
+  | 'Nil;
+```
+
+More convenient to use list/tuple syntax and records are implemented as syntax-sugar on top of these datatypes (i.e: `(0, 1, 2)` becomes `0 :. 1 :. 2 :. Nil`). Following the structure of how `DepTup` is defined, fields in dependent records can only depend on fields to the left of them.
+
+### Unit (`()`)
+
+The unit type is also defined in terms of `DepTup`, with `()` being a valid identifier:
+
+```
+pattern () = Nil;
+type Unit = '();
+```
 
 ### Design Note: Singleton Tuples
 

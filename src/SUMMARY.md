@@ -5,12 +5,11 @@
 # Basic Concepts
 
 - [Core Types](./core_types.md)
-- [Builtins](./builtins.md)
+- [Core Type Operators](./arrows.md)
 - [Functions](./functions.md)
 - [Declarations](./declarations.md)
 - [Erasure and Visibility](./erasure_visibility.md)
-- [Arrows](./arrows.md)
-- [Instances and Overlap](./instances.md)
+- [Coherence](./coherence.md)
 
 # Extra
 

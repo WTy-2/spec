@@ -63,17 +63,17 @@ Currently, I am liking:
 | `x : t`   | `x :: t`              | `x` is of type `t`             |
 | `t <=: u` | <code>t <=\| u</code> | `t` is an instance head of `u` |
 | `t <: u`  | <code>t <\| </code>   | `t` is a subtype of `u`        |
-| `x ~: y`  | `x ~ y`               | `x` reduces to `y`             |
+| `x : 'y`  | `x ~ y`               | `x` reduces to `y`             |
 
 But it has a few problems:
 
 - `(<=:)`/`(<=|)` can easily look either like a combo of less-than-equal `(<=)` and `(:)`/`(|)`, which with the context of subtyping being a combo of `(<)` and `(:)`/`(|)` doesn't make much sense (instance head is a MORE restrictive relation, not more!) Alternatively they look a bit like a reversed implies `(=>)` which they are ALSO unrelated to!
-- The instance head operator `(<=:)` is more characters than subtyping `(<:)`, but will likely be used MORE in practice.
-- With `(:)`, `(::)`, and `(<:)` taken, what should cons be? `(:>)` could very easily be misinterpreted as a flipped version of `(<:)`.
-- Less important, but `(~:)` looks ugly IMO.
+- The instance head operator `(<=:)` is longer (in terms of characters) than subtyping `(<:)`, but it will likely be used MORE in practice.
+- With `(:)`, `(::)`, and `(<:)` taken, what should cons be? `(:>)` could very easily be misinterpreted as a flipped version of `(<:)`. Perhaps `(:;)` or `(:.)`?
 
 And there are a LOT of alternatives:
 
 - Use keywords/infix functions instead of operators. E.g: `x is t` instead of `x :: t`, or `instance t for u` instead of `t <=: u`.
 - Make the common pattern for constraint (except for `(~)`) be to add a second colon. E.g: `(<::)`, `(<=::)` (note Firacode ligatures does not display the latter as intended though!)
+- Add a dedicated binding operator for `(~)` such as `(~:)`.
 - Instead of `(::)`, all types types implement `Any -> Constraint` so instead of `x :: Int` you would write `Int(x)`.

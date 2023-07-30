@@ -23,5 +23,5 @@ There are really two main aspects of implementation that these features are focu
 
 [^note]: For the curious reader, here were my two main ideas, which I still think are potentially cool, but simply do not fit with WTy2 whatsoever.
 
-- Extend rust-style `impl` returns to allow returning values of potentially different types. This can be done by monomorphising all code following the call-site and statically dispatching at the `return` statement.
+- Extend rust-style `impl` returns to allow returning values of potentially different types. This can be implemented by monomorphising all code following the call-site and statically dispatching at the `return` statement.
 - Allow variables to be generic (take a type parameter), allowing first-class higher-rank polymorphic functions, and also, perhaps more interestingly, super efficient heterogeneous unordered collections (data-oriented programming without the hassle).

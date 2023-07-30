@@ -85,7 +85,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded affix "><li class="part-title">Basic Concepts</li><li class="chapter-item expanded "><a href="core_types.html"><strong aria-hidden="true">2.</strong> Core Types</a></li><li class="chapter-item expanded "><a href="functions.html"><strong aria-hidden="true">3.</strong> Functions</a></li><li class="chapter-item expanded "><a href="declarations.html"><strong aria-hidden="true">4.</strong> Declarations</a></li><li class="chapter-item expanded "><a href="erasure_visibility.html"><strong aria-hidden="true">5.</strong> Erasure and Visibility</a></li><li class="chapter-item expanded "><a href="arrows.html"><strong aria-hidden="true">6.</strong> Arrows</a></li><li class="chapter-item expanded affix "><li class="part-title">Extra</li><li class="chapter-item expanded "><a href="utilities.html"><strong aria-hidden="true">7.</strong> Utilities</a></li><li class="chapter-item expanded affix "><li class="part-title">Dependent Types</li><li class="chapter-item expanded "><a href="constraints.html"><strong aria-hidden="true">8.</strong> Constraints</a></li><li class="chapter-item expanded "><a href="proofs.html"><strong aria-hidden="true">9.</strong> Proofs</a></li><li class="chapter-item expanded "><a href="dependent_types.html"><strong aria-hidden="true">10.</strong> Dependent Types</a></li><li class="chapter-item expanded affix "><li class="part-title">Implementation/Low-Level Features</li><li class="chapter-item expanded "><a href="subset.html"><strong aria-hidden="true">11.</strong> Core Subset</a></li><li class="chapter-item expanded "><a href="recursive_types.html"><strong aria-hidden="true">12.</strong> Recursive Types</a></li><li class="chapter-item expanded "><a href="specialisation.html"><strong aria-hidden="true">13.</strong> Specialisation</a></li><li class="chapter-item expanded "><a href="allocators.html"><strong aria-hidden="true">14.</strong> Type Aware Allocators</a></li><li class="chapter-item expanded affix "><li class="part-title">Design</li><li class="chapter-item expanded "><a href="soundness.html"><strong aria-hidden="true">15.</strong> Soundness</a></li><li class="chapter-item expanded "><a href="wadlers_law.html"><strong aria-hidden="true">16.</strong> Syntax Debates</a></li><li class="chapter-item expanded affix "><li class="part-title">TODO</li><li class="chapter-item expanded "><a href="modes.html"><strong aria-hidden="true">17.</strong> Modes</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded affix "><li class="part-title">Basic Concepts</li><li class="chapter-item expanded "><a href="core_types.html"><strong aria-hidden="true">2.</strong> Core Types</a></li><li class="chapter-item expanded "><a href="arrows.html"><strong aria-hidden="true">3.</strong> Core Type Operators</a></li><li class="chapter-item expanded "><a href="functions.html"><strong aria-hidden="true">4.</strong> Functions</a></li><li class="chapter-item expanded "><a href="declarations.html"><strong aria-hidden="true">5.</strong> Declarations</a></li><li class="chapter-item expanded "><a href="erasure_visibility.html"><strong aria-hidden="true">6.</strong> Erasure and Visibility</a></li><li class="chapter-item expanded "><a href="coherence.html"><strong aria-hidden="true">7.</strong> Coherence</a></li><li class="chapter-item expanded affix "><li class="part-title">Extra</li><li class="chapter-item expanded "><a href="utilities.html"><strong aria-hidden="true">8.</strong> Utilities</a></li><li class="chapter-item expanded affix "><li class="part-title">Dependent Types</li><li class="chapter-item expanded "><a href="constraints.html"><strong aria-hidden="true">9.</strong> Constraints</a></li><li class="chapter-item expanded "><a href="proofs.html"><strong aria-hidden="true">10.</strong> Proofs</a></li><li class="chapter-item expanded "><a href="dependent_types.html"><strong aria-hidden="true">11.</strong> Dependent Types</a></li><li class="chapter-item expanded affix "><li class="part-title">Implementation</li><li class="chapter-item expanded "><a href="low_level.html"><strong aria-hidden="true">12.</strong> Low-level Semantics</a></li><li class="chapter-item expanded "><a href="run_rep.html"><strong aria-hidden="true">13.</strong> Runtime Representation</a></li><li class="chapter-item expanded "><a href="subset.html"><strong aria-hidden="true">14.</strong> Core Subset</a></li><li class="chapter-item expanded "><a href="specialisation.html"><strong aria-hidden="true">15.</strong> Specialisation</a></li><li class="chapter-item expanded affix "><li class="part-title">Design</li><li class="chapter-item expanded "><a href="soundness.html"><strong aria-hidden="true">16.</strong> Soundness</a></li><li class="chapter-item expanded "><a href="wadlers_law.html"><strong aria-hidden="true">17.</strong> Syntax Debates</a></li><li class="chapter-item expanded affix "><li class="part-title">TODO</li><li class="chapter-item expanded "><a href="modes.html"><strong aria-hidden="true">18.</strong> Modes</a></li><li class="chapter-item expanded affix "><li class="part-title">Old</li><li class="chapter-item expanded "><a href="allocators.html"><strong aria-hidden="true">19.</strong> Type Aware Allocators</a></li><li class="chapter-item expanded "><a href="recursive_types.html"><strong aria-hidden="true">20.</strong> Recursive Types</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -172,16 +172,16 @@
                 <div id="content" class="content">
                     <main>
                         <h1 id="introduction"><a class="header" href="#introduction">Introduction</a></h1>
-<p>WTy2 is a dependently typed, functional programming language.</p>
-<p>It was designed with a few goals in mind:</p>
+<p>WTy2 is a pure, functional programming language based on extrinsic dependent typing.</p>
+<p>It is being designed with a few goals in mind:</p>
 <ul>
 <li>Aim for there to be exactly one &quot;best&quot; way to design every abstraction. If there has to be multiple, the relative trade-offs for each should be obvious and small in number.</li>
 <li>Allow extremely strong compile-time guarantees (via dependent types), but optionally. It should be possible to start with a program that relies heavily on run-time assertions and bit-by-bit introduce more and more static checks without major refactoring.</li>
 <li>To support this, breaking from common philosophy on dependent types, WTy2 does NOT encourage creating many separate datatypes to maintain invariants (correct-by-construction). For example, the idiomatic WTy2 encoding a vector (length-indexed list) is to pass a list and a constraint holding a runtime irrelevant proof that it's length is equal to <code>n</code>, NOT to define a new inductive datatype. The style of invariant-capturing WTy2 encourages therefore is more similar to languages with refinement-type systems. To make this feasible in a dependently typed setting, WTy2 introduces a simple but powerful concept of &quot;implicit proofs&quot;.</li>
-<li>WTy2 is also designed to be (eventually) <strong>blazing fast</strong>. Implementing the type system will be more than enough work for the forseable future, but to avoid shooting itself in the foot if/when focus shifts to performance, types are unboxed and linear-by-default and an initial design has been sketched out for &quot;type-aware allocators&quot; which would help support performant heterogeneous collections.</li>
+<li>WTy2 is also designed to be (eventually) <strong>blazing fast</strong>. Implementing the type system as-is will be more than enough work for the forseable future, but to avoid shooting itself in the foot if/when focus shifts to performance, some effort is being put into mechanisms for providing the programmer opt-in guarantees about data representation, memory layout, specialisation etc...</li>
 </ul>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="core-types"><a class="header" href="#core-types">Core Types</a></h1>
-<p>WTy2 is a language with subtyping and with first-class types. This has an interesting consequence: instead of having some sort of &quot;kind&quot; system, the key language constructs in WTy2 simply implement various built-in types.</p>
+<p>WTy2 is a language with subtyping and with first-class types. This has an interesting consequence: instead of having a &quot;kind&quot; system, different language constructs are simply members of different types.</p>
 <h2 id="any"><a class="header" href="#any">Any</a></h2>
 <p><code>Any</code> is the supertype of all types.</p>
 <h2 id="type"><a class="header" href="#type">Type</a></h2>
@@ -191,11 +191,36 @@
 <p><code>Constraint</code> represents &quot;constraints&quot;. These can look syntactically similar to bindings (the constraint-versions of binding operators contain an extra <code>:</code> to disambiguate), but instead of bringing variables into scope, they constrain existing values.</p>
 <p>Constraints can be created with the built-in <code>~</code>, <code>::</code> and <code>&lt;::</code> operators.</p>
 <h2 id="functions"><a class="header" href="#functions">Functions</a></h2>
-<p><code>a -&gt; b</code> is the generic function type. Function arrows in WTy2 are dependent, but to avoid always having to write non-dependent arrows as <code>a -&gt; { b }</code>, WTy2 features some syntax sugar which automatically inserts braces.</p>
-<h2 id="tuplesrecordsdependent-pairsliststelescopes"><a class="header" href="#tuplesrecordsdependent-pairsliststelescopes">Tuples/Records/Dependent Pairs/Lists/Telescopes</a></h2>
-<p>Yep, Tuples, Records, Dependent Pairs, Lists and Telescopes in WTy2 are all supported via the same built-in datatype (somewhat similarly to how TypeScript supports tuple-like syntax with it's arrays, but in a dependent setting). This datatype and associated sugar in WTy2 becomes a little complicated, and so it has it's own dedicated section in the spec.</p>
-<h3 id="unit-"><a class="header" href="#unit-">Unit (&quot;()&quot;)</a></h3>
-<p><code>()</code> is the unit tuple. It implements <code>Type</code>, <code>Constraint</code> AND <code>()</code> (i.e: itself)</p>
+<p>See <a href="./arrows.html">Core Type Operators</a></p>
+<h2 id="tuplesrecordsdependent-pairslists-and-telescopes"><a class="header" href="#tuplesrecordsdependent-pairslists-and-telescopes">Tuples/Records/Dependent Pairs/Lists and Telescopes</a></h2>
+<p>In WTy2, the built-in tuples, records, dependent pairs, lists etc... all desugar down to the same datatype - a dependent inductively-defined tuple:</p>
+<pre><code class="language-WTy2">datatype DepTup(tele: Tele) where
+  (:.) : [ty, rest] (head: ty, tail: rest(head))
+       -&gt; DepTup(ty .- rest)
+  Nil  : DepTup(NilTele);
+</code></pre>
+<p>Where <code>Tele</code> is another built-in datatype, a telescope:</p>
+<pre><code class="language-WTy2">datatype Tele
+  = (.-)    : (ty: Type, rest: t -&gt; Type) -&gt; Tele
+  | NilTele : Tele;
+</code></pre>
+<p>Ordinary lists and tuples can be defined from this pretty trivially:</p>
+<pre><code>type List(ty: Type)
+  = [head: ty, tail: List(ty)]
+    '(head :. tail)
+  | 'Nil;
+
+type Tuple(tys: List(ty))
+  = [ty, rest, head: ty, tail: Tuple(rest)]
+    '(head :. tail) &lt;&lt;= { tys ~ ty :. rest }
+  | 'Nil;
+</code></pre>
+<p>More convenient to use list/tuple syntax and records are implemented as syntax-sugar on top of these datatypes (i.e: <code>(0, 1, 2)</code> becomes <code>0 :. 1 :. 2 :. Nil</code>). Following the structure of how <code>DepTup</code> is defined, fields in dependent records can only depend on fields to the left of them.</p>
+<h3 id="unit-"><a class="header" href="#unit-">Unit (<code>()</code>)</a></h3>
+<p>The unit type is also defined in terms of <code>DepTup</code>, with <code>()</code> being a valid identifier:</p>
+<pre><code>pattern () = Nil;
+type Unit = '();
+</code></pre>
 <h3 id="design-note-singleton-tuples"><a class="header" href="#design-note-singleton-tuples">Design Note: Singleton Tuples</a></h3>
 <p>WTy2 also supports singleton tuples. The parsing ambiguity of expression in parens vs a singleton tuple is resolved as follows:
 <code>(E)</code> where <code>E</code> is an expression - parenthesised expression
@@ -205,18 +230,59 @@
 <p>In WTy2, the types of records look almost identical to <code>Bind</code>ings. However, <code>Bind</code>ings are NOT first-class. <code>return (x: Int)</code> returns a <code>Type</code> which is equal to the record type <code>(x: Int)</code>. <code>{x: Int}() = 4</code> is not a valid way to bring <code>x</code> into scope.</p>
 <h2 id="void"><a class="header" href="#void">Void</a></h2>
 <p><code>Void</code> is the subtype of all types. It contains no inhabitants.</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="type-operators"><a class="header" href="#type-operators">Type Operators</a></h1>
+<p>WTy2 quite a few built-in type operators (mostly arrows), they are summarised here.</p>
+<h2 id="function--"><a class="header" href="#function--">Function (<code>-&gt;</code>)</a></h2>
+<pre><code class="language-WTy2">(-&gt;): (t: Type, r: t -&gt; Type) -&gt; Type
+</code></pre>
+<p>Dependent function arrow.</p>
+<p>In the source language, braces are implicitly added around RHS if necessary.</p>
+<h2 id="constrained-by-"><a class="header" href="#constrained-by-">Constrained By (<code>&lt;&lt;=</code>)</a></h2>
+<pre><code class="language-WTy2">(&lt;&lt;=): (t: Type, p: t -&gt; Constraint) -&gt; Type
+</code></pre>
+<p>Narrows a type, requiring the constraint to be satisfiable for all member values. When pattern matching on values of the type, the constraint is brought into scope.</p>
+<h2 id="constructor-"><a class="header" href="#constructor-">Constructor (<code>~&gt;</code>)</a></h2>
+<pre><code class="language-WTy2">(~&gt;): (t: Type, r: t -&gt; Type) -&gt; Type
+</code></pre>
+<p>Similar to function arrow, but must be &quot;matchable&quot;. i.e:</p>
+<pre><code class="language-WTy2">a ~&gt; b = (f: a -&gt; b) &lt;&lt;= {
+    (x: a, y: a, g: a ~&gt; b) &lt;&lt;= { f(x) ~ g(x) } |- { f ~ g /\ x ~ y }
+  }
+</code></pre>
+<p>In the source language, braces are implicitly added around RHS if necessary.</p>
+<h2 id="supertype-"><a class="header" href="#supertype-">Supertype (<code>&lt;:</code>)</a></h2>
+<pre><code class="language-WTy2">(&lt;:): (Type, Type) -&gt; Constraint
+t &lt;: u = for(x: t) { x :: u }
+</code></pre>
+<p>Values of the LHS type can be upcast into ones of the RHS type.</p>
+<h2 id="instance-head-"><a class="header" href="#instance-head-">Instance Head (<code>&lt;=:</code>)</a></h2>
+<pre><code class="language-WTy2">(&lt;=:): (Type, Instanceable)
+</code></pre>
+<p>The LHS type is an instance head of the instanceable<sup class="footnote-reference"><a href="#note">1</a></sup> type on the RHS.</p>
+<h2 id="implies-"><a class="header" href="#implies-">Implies (<code>=&gt;</code>)</a></h2>
+<pre><code class="language-WTy2">(=&gt;): (Constraint, Constraint) -&gt; Constraint
+</code></pre>
+<p>The RHS constraint can be obtained from the LHS constraint.</p>
+<h2 id="forall-for--derivable--"><a class="header" href="#forall-for--derivable--">Forall (<code>for</code>) / Derivable (<code>|-</code>)</a></h2>
+<pre><code class="language-WTy2">for : (t: Type, c: t -&gt; Constraint) -&gt; Constraint
+(|-): (t: Type, c: t -&gt; Constraint) -&gt; Constraint
+</code></pre>
+<p>The constraint <code>c(t)</code> is derivable from the typing context <code>t</code> - i.e: quantified constraints. The operator version <code>(|-)</code> exists predominately to allow use of <code>(&lt;&lt;=)</code> on the quantified-over type without requiring additional parenthesis.</p>
+<p>In the source language, braces are implicitly added around RHS of (<code>|-</code>) if necessary.</p>
+<p><sup class="footnote-reference"><a href="#note">1</a></sup>
+<code>Instanceable</code> is not actually a type in WTy2 (and so <code>x :: Instanceable</code> is not a valid constraint). The reason for this is that it breaks some very intuitive and useful laws (e.g: <code>for(x &lt;: t, y &lt;: t) { x &amp; y &lt;: t }</code>). The suggested actual condition is to allow only identifiers which are resolved directly as open types (i.e: before performing any reduction). This keeps WTy2 in line with current-day Haskell, but there are other options - see <a href="https://gitlab.haskell.org/ghc/ghc/-/issues/13267">GHC Issue 13267</a>.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="functions-1"><a class="header" href="#functions-1">Functions</a></h1>
 <p>Functions in WTy2 can be created with function declarations or lambda.</p>
 <h2 id="lambda-blocks"><a class="header" href="#lambda-blocks">Lambda-Blocks</a></h2>
 <p>In WTy2, braces (<code>{}</code>) are used to denote a lambda. Inside the braces, there can be:</p>
 <ul>
 <li>Just an expression. In this case the argument type is inferred, and can be referred to in the expression as <code>it</code>. The really powerful part here is that variables <code>varName</code> are attempted to be resolved as fields of <code>it</code> first (as in <code>it.varName</code>). This is similar to <code>this</code> being in scope allowing access to fields and methods of the class without needing to specify the receiver in OOP languages.</li>
-<li>A &quot;<code>\</code>&quot; followed by an irrefutable pattern which is bound to by the argument, an <code>-&gt;</code> and the return expression.</li>
-<li>Multiple <code>|</code>s, each followed by a pattern, a <code>-&gt;</code> and a return expression for if that match succeeds.</li>
+<li>A &quot;<code>\</code>&quot; followed by an irrefutable pattern which is bound to by the argument, an <code>.</code><sup class="footnote-reference"><a href="#note">1</a></sup> and the return expression.</li>
+<li>Multiple <code>|</code>s, each followed by a pattern, a <code>.</code> and a return expression for if that match succeeds.</li>
 </ul>
 <h2 id="function-definitions"><a class="header" href="#function-definitions">Function Definitions</a></h2>
 <p>WTy2 is a functional programming language, meaning functions are first class and can be bound to variables. Using only existing introduced syntax, a function that adds three integers can be defined like so:</p>
-<pre><code class="language-wty2">addThree: (Int, Int, Int) -&gt; Int = { \(x, y, z) -&gt; x + y + z };
+<pre><code class="language-wty2">addThree: Tuple(Int, Int, Int) -&gt; Int = { \(x, y, z). x + y + z };
 </code></pre>
 <p>Using record syntax, we can achieve this in a slightly cleaner way as</p>
 <pre><code class="language-wty2">addThree: (x: Int, y: Int, z: Int) -&gt; Int = { x + y + z };
@@ -224,27 +290,17 @@
 <p>WTy2 introduces an additional way to define functions, which looks closer to imperative programming languages:</p>
 <pre><code class="language-wty2">addThree(x: Int, y: Int, z: Int): Int = x + y + z;
 </code></pre>
-<p>In general <code>f(t): u</code> can be used anywhere <code>f: t -&gt; u</code> would also fit, with one small difference. If it is the LHS of an assignment (like above, then the braces around the RHS expression are implicit).</p>
+<p>In general <code>f(t): u</code> can be thought of as equivalent to...</p>
+<ul>
+<li>If <code>t</code> is a type (including record types), <code>f: t -&gt; u</code></li>
+<li>If <code>t</code> is a list of types, <code>f: Tuple(t) -&gt; u</code></li>
+</ul>
+<p>With one difference: if it is the LHS of an assignment (like above) then the braces around the RHS expression are implicit.</p>
 <h2 id="recursion"><a class="header" href="#recursion">Recursion</a></h2>
-<p>In WTy2, the source syntax allows functions to recursively call themselves or others defined in the same scope freely, making this simple for the programmer.</p>
-<p>Functions in WTy2 are both unboxed and capturing by default, so implementing recursion is not quite as simple as one might assume. Consider in Rust how closures cannot refer to themselves. This can be worked around with a few patterns, such as creating a non-capturing recursive <code>fn</code> item inside the closure and passing in the enviroment, but this is quite clunky.</p>
-<pre><code class="language-rs">let step = 1;
-let foo = |x| {
-    fn foo_rec(step: i32, x: i32) -&gt; i32 {
-        if (x &lt;= 0) { 0 } else { x + foo_rec(step, x-step) }
-    }
-    foo_rec(step, x)
-};
-println!(&quot;{}&quot;, foo(10));
-</code></pre>
-<p>In WTy2, the source syntax allows functions to recursively call themselves or others defined in the same scope freely, making this simple for the programmer. The interesting part is the compilation strategy:</p>
-<p>Functions that just call themselves are easy. As functions are compiled into structures with a <code>(-&gt;)</code> instance, the <code>call</code> method can just recursively call itself.</p>
-<p>Mutually recursive functions are more challenging. A naive approach would be to include each</p>
-<p>First, functions are placed into recursive groups by forming a graph of which call each other.</p>
-<p>n the back-end</p>
-<p>In principle, this</p>
-<p>What is happening here is that</p>
-<p>In WTy2 recursion is simple! Functions can refer to themselves or other functions in the same or above scope in their bodies. There is no dedicated <code>letrec</code> binding or similar: all function bindings are recursive. Variables that are not functions (RHS is not surrounded by - possibly implicit - braces)</p>
+<p>TODO</p>
+<div class="footnote-definition" id="note"><sup class="footnote-definition-label">1</sup>
+<p>A seemingly more natural (and more popular) choice here is to use an arrow like <code>-&gt;</code> or <code>=&gt;</code> as the separator. WTy2 instead follows lambda calculus with <code>.</code> to avoid unnecessary punning (<code>(-&gt;)</code>/<code>(=&gt;)</code> are already type operator used to construct function types/constraint implications). <code>.</code> on the other hand is never parsed as an operator, already being used for record field access and uniform calling syntax.</p>
+</div>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="declarations"><a class="header" href="#declarations">Declarations</a></h1>
 <p>WTy2 supports top-level bindings in the form of &quot;declarations&quot;.</p>
 <p>All named declarations can be prefixed with visibility annotations.</p>
@@ -335,32 +391,79 @@ _: () &lt;&lt;= { erasedLen ~ len } = ();
 <h2 id="bidirectional-type-inference"><a class="header" href="#bidirectional-type-inference">Bidirectional Type Inference</a></h2>
 <p>One unfortunate consequence of handling inference in this way is that setting up constraints based on the desired return type (bidirectional type inference) is not really possible. This can be a useful feature - for example, in languages like Haskell, numeric expressions can stay entirely in terms of <code>Num a =&gt; a</code> until finally being instantiated to a specific numeric type at call-site, but it also leads to many cases of potential ambiguity and arguably makes code harder to reason about.</p>
 <p><sup class="footnote-reference"><a href="#note">1</a></sup> Note this is less restrictive than it might initially sound. If we have <code>x: Animal</code> and a function <code>id[t: Type](x: t): t</code>, <code>id(x)</code> does indeed typecheck, with <code>t</code> instantiated to <code>x.head(Animal)</code>.</p>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="arrows"><a class="header" href="#arrows">Arrows</a></h1>
-<p>WTy2 has a lot of arrows, they are summarised here.</p>
-<h2 id="function--"><a class="header" href="#function--">Function (-&gt;)</a></h2>
-<pre><code class="language-WTy2">(-&gt;): (Type, Type) -&gt; Type
+<div style="break-before: page; page-break-before: always;"></div><h1 id="coherence"><a class="header" href="#coherence">Coherence</a></h1>
+<p>WTy2 has a number of rules to guarantee instances do not overlap. These can be broken into checking if known instances overlap and preventing overlap down-the-line.</p>
+<h2 id="detecting-errors-early"><a class="header" href="#detecting-errors-early">Detecting Errors Early</a></h2>
+<p>A goal of WTy2 is that adding a valid instance (i.e: no error is detected at the site of the instance) should never break existing code.</p>
+<p>Note that Haskell does not actually meet this criteria due to overlap only being checked lazily (when trying to solve the constraint), see:</p>
+<pre><code class="language-hs">class C a
+
+instance C (Char, a)
+
+-- This instance appears to be fine, but causes an error at the
+-- call to `bar` due to the instance of `C` becoming ambiguous
+{-
+instance C (a, Bool)
+-}
+
+foo :: ()
+foo = bar ('a', True)
+
+bar :: C a =&gt; a -&gt; ()
+bar _ = ()
 </code></pre>
-<p>Ordinary function arrow.</p>
-<h2 id="constructor-"><a class="header" href="#constructor-">Constructor (~&gt;)</a></h2>
-<pre><code class="language-WTy2">(~&gt;): (Type, Type) -&gt; Type
+<p>Following this rule doesn't just lead to a theoretically cleaner language, it has a direct practical benefit: adding new valid instances to a library can never be a breaking change and so does not require a semantic version bump. This does make overlap checking more challenging though.</p>
+<h2 id="openclosed-rules"><a class="header" href="#openclosed-rules">Open/Closed Rules</a></h2>
+<p>Types can either be open or closed. These properties interact with the <code>(|)</code> and <code>(&amp;)</code> type operators like so:</p>
+<pre><code>for(t: Closed, u: Closed) { t | u :: Closed }
+for(t: Open, u: Type)     { t | u :: Open   }
+for(t: Closed, u: Type)   { t &amp; u :: Closed }
+for(t: Open, u: Open)     { t &amp; u :: Open   }
 </code></pre>
-<p>Similar to function arrow, but must be &quot;matchable&quot;. i.e: <code>(x: a, y: a, f: a -&gt; b, g: a -&gt; b) &lt;&lt;= f(x) ~ g(y) |- f ~ g /\ a ~ b</code> is in scope.</p>
-<h2 id="constrained-by-"><a class="header" href="#constrained-by-">Constrained By (&lt;&lt;=)</a></h2>
-<pre><code class="language-WTy2">(&lt;&lt;=): (t: Type, p: t -&gt; Constraint) -&gt; Type
+<p>Types are closed iff their supertype is closed. Recall that</p>
+<pre><code class="language-WTy2">type T = U;
 </code></pre>
-<p>Narrows a type, requiring the constraint to be true on the value for it to a member of the new type. When pattern matching on members of the type, the constraint is brought into scope.</p>
-<h2 id="supertype-"><a class="header" href="#supertype-">Supertype (&lt;:)</a></h2>
-<pre><code class="language-WTy2">(&lt;:): (Type, Type) -&gt; Constraint
+<p>...is translated into:</p>
+<pre><code class="language-WTy2">type T { } &lt;: U;
+instance T for U;
 </code></pre>
-<p>Values of the LHS type can be upcast into ones of the RHS type.</p>
-<h2 id="implies-"><a class="header" href="#implies-">Implies (=&gt;)</a></h2>
-<pre><code class="language-WTy2">(=&gt;): (Constraint, Constraint) -&gt; Constraint
+<p>So for type-alias syntax, the defined type is closed iff the RHS type is closed.</p>
+<p>A type may have exactly one &quot;open&quot; instance, or many &quot;closed&quot; instances.</p>
+<p>NOTE: This is not a good enough rule - how to handle <code>Vec(Any)</code> - i.e: the argument type is open.</p>
+<h2 id="detecting-overlap-between-two-closed-types"><a class="header" href="#detecting-overlap-between-two-closed-types">Detecting Overlap Between Two Closed Types</a></h2>
+<p>Given two known instances, WTy2 must check that the sets of values represented by the types do not overlap. This check must be inherently conservative because this condition in general reduces to proving Fermat's last theorem.</p>
+<pre><code class="language-WTy2">type C
+instance C for (x: Int, y: Int, z: Int)
+instance C for [n: Int] (x: Int, y: Int, z: Int) &lt;&lt;= { x ^ n + y ^ n ~ z ^ n }
 </code></pre>
-<p>The RHS constraint can be obtained from the LHS constraint.</p>
-<h2 id="entails--"><a class="header" href="#entails--">Entails (|-)</a></h2>
-<pre><code class="language-WTy2">(|-): (Type, Constraint) -&gt; Type
-a |- r = a -&gt; Proof(r)
+<p>Still, we would like to allow vaguely interesting instances (like what modern Haskell can support) and so cannot be super conservative like declaring overlap as soon as two types contain the same constructor:</p>
+<pre><code class="language-hs">class C a
+
+instance C [Int]
+instance C [Bool]
 </code></pre>
+<p>Of course, the problem is MUCH easier in Haskell because the type system is intrinsic, and so instance selection is driven by the type, not the value.</p>
+<p>I have not worked out a specific algorithm yet, but my current idea is, for the duration of the check, to ignore many of WTy2's more advanced typing features (constraints, dependent types) and follow an algorithm similar to subtyping of equi-recursive types as described in TAPL.</p>
+<h2 id="orphan-rules"><a class="header" href="#orphan-rules">Orphan Rules</a></h2>
+<p>To avoid overlap even when multiple modules are involved, WTy2 uses a set of orphan rules, inspired by Rust.</p>
+<p>Note Rust is a bit more general than this. It allows:</p>
+<pre><code class="language-rs">struct S1;
+struct S2;
+struct S3;
+
+trait T1 {}
+trait T2 {}
+trait T3 {}
+
+impl &lt;T: T2&gt; T1 for T {}
+
+impl T1 for S1 {}
+
+impl T2 for S2 {}
+
+// impl T1 for S2 {}
+</code></pre>
+<p>as long as (TODO: CHECK EXACT CONDITION) are defined in the same module. In my opinion, this is a mistake: it makes the rules more complicated and has limited utility (OOP has proven that default instances for a type in terms of another are useful, but this can be achieved through much more principled means like Haskell's <code>deriving via</code>).</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="utilities"><a class="header" href="#utilities">Utilities</a></h1>
 <p>WTy2's syntax is designed for allowing defining functions that appear similar to built-in language constructsof other languages. Below are a few examples:</p>
 <h2 id="do"><a class="header" href="#do">Do</a></h2>
@@ -369,21 +472,21 @@ a |- r = a -&gt; Proof(r)
 </code></pre>
 <p>This is primarily useful when defining functions in <code>f(x: t): u = ...</code>-style where you still want to use a block to define locals or use <code>do</code>-notation sugar <sup class="footnote-reference"><a href="#note">1</a></sup>. E.g:</p>
 <pre><code class="language-WTy2">foo(x: Int, y: Int): Int = do {
-    z = x * 3;
-    w = y - 2;
+    z := x * 3;
+    w := y - 2;
     (z * z + w) / (x + w)
 }
 </code></pre>
 <h2 id="if-elif-else"><a class="header" href="#if-elif-else">If-Elif-Else</a></h2>
-<p>Inspired by oh-so-many programming languages, maybe Algol 58 was first?</p>
+<p>Inspired by oh-so-many programming languages, maybe Algol 60 was first?</p>
 <pre><code class="language-WTy2">if[t: Type](c: Bool, e: () -&gt; t): Maybe(t) = with(c) {
 | True  -&gt; Just(e()),
 | False -&gt; Nothing
 }
 </code></pre>
 <pre><code>elif[t: Type](x: Maybe(t), c: Bool, e: () -&gt; t): Maybe(t) = with(x, c) {
-| (Just(y), _) -&gt; x,
-| (Nothing, True) -&gt; Just(e()),
+| (Just(y), _)     -&gt; x,
+| (Nothing, True)  -&gt; Just(e()),
 | (Nothing, False) -&gt; Nothing,
 }
 </code></pre>
@@ -393,21 +496,17 @@ a |- r = a -&gt; Proof(r)
 }
 </code></pre>
 <p>E.g:</p>
-<pre><code class="language-WTy2">if(True) {
+<pre><code class="language-WTy2">_ := if(True) {
     &quot;Case one!&quot;
 }.elif(False) {
     &quot;Case two!&quot;
 }.else {
     &quot;Case three!&quot;
 }
-```
-
-## Fun
-
-Inspired by Kotlin
-
-```WTy2
-fun[r: Type](t: Type, f: t -&gt; r): t -&gt; r = f
+</code></pre>
+<h2 id="fun"><a class="header" href="#fun">Fun</a></h2>
+<p>Inspired by Kotlin</p>
+<pre><code class="language-WTy2">fun[r: Type](t: Type, f: t -&gt; r): t -&gt; r = f
 </code></pre>
 <p>In WTy2, serves to annotate the argument type of a function without having to use arrow-lambda syntax.</p>
 <h2 id="lazy"><a class="header" href="#lazy">Lazy</a></h2>
@@ -427,13 +526,13 @@ fun[r: Type](t: Type, f: t -&gt; r): t -&gt; r = f
 <pre><code class="language-WTy2">also[t: Type, m: Applicative](x: t, f: t -&gt; m()): m(t) = f(x) $&gt; x
 </code></pre>
 <p><code>with</code> fits really well with lambda-case syntax as a way to pattern match on a variable. E.g:</p>
-<pre><code class="language-WTy2">with(x) {
+<pre><code class="language-WTy2">_ := with(x) {
 | 0 -&gt; &quot;Zero!&quot;,
 | 1 -&gt; &quot;One!&quot;,
 | _ -&gt; &quot;Other!&quot;
 }
 </code></pre>
-<p><sup class="footnote-reference"><a href="#note">1</a></sup> Of course in WTy2, <code>do</code>-notation is not really related to the <code>do</code> utility defined here; it can be used in any block... But hey, I didn't name it!</p>
+<p><sup class="footnote-reference"><a href="#note">1</a></sup> Of course in WTy2, <code>do</code>-notation is not really related to the <code>do</code> utility defined here; it can be used in any block. &quot;Braces-notation&quot; doesn't quite roll of the tongue though...</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="constraints"><a class="header" href="#constraints">Constraints</a></h1>
 <p>Constraints in WTy2 are used to pass evidence of equality or type membership. As WTy2 retains full information on the constructors used to create a value via the tags, they can be entirely erased at runtime (i.e: Haskell-style dictionary-passing is unnecessary) but implementation strategy is still a work in progress.
 Indeed given current design for overlap of instances, dispatch can reqire arbitrary computation, meaning dictionary-passing could turn out to be a major optimisation.</p>
@@ -564,6 +663,125 @@ proof(Proof(A)): Proof(C) = do {
 <p>WTy2 also supports dependent function arrows, through a similar mechanism. The argument record to a function is in scope in the return type (including the return constraint), as well as the function body.</p>
 <p>Note this makes <code>&lt;==</code> constraints on return types somewhat ambiguous in that if the return type of the function is a record with identically named fields (or simply the <code>it</code> keyword is used), this could refer to the argument record or the return. WTy2 disambiguates this by treating this case as shadowing. In general, the innermost <code>it</code> (and it's associated record names) shadow the outermost one.</p>
 <p>Currently, there is no mechanism to forcefully disambiguate (though perhaps some syntax to specify de Bruijn indices or similar could work). The field names of the argument or return record must be changed to refer to the argument record fields in the return constraint.</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="low-level-semantics"><a class="header" href="#low-level-semantics">Low-level Semantics</a></h1>
+<p>WTy2 is a programming language (read: language for writing programs). Programs are <em>usually</em> written with the intention of executing them on a computer, and so <em>some</em> thought should <em>probably</em> be put into how that might be achieved.</p>
+<p>Original goals for WTy2 included having it be a suitable language for systems programming, with predictable compilation and <strong>blazing-fast</strong> performance. These are noble goals, but the reality of making a programming language is that there is only so much time and so I must admit: while I think (hope) that I have come up with novel and interesting ideas in the realm of abstraction, I have not been able to crack how to place those in a systems-programming-appropriate type system, and I do not believe I am likely to anytime soon.</p>
+<p>Specifically, the state-of-the-art right now in this area seems generally to focus on linear/uniqueness typing, borrowing, monomorphisation and allowing unboxed types with suitable restrictions. Let's address each in turn:</p>
+<ul>
+<li>
+<p><strong>Linearity/Uniqueness Typing</strong> - A very powerful type system feature, useful for expressing contracts with types (i.e: safe resource usage) on top of benefits for memory management implementation. However, it is also hard to combine with dependent types. Idris2 has managed the linearity half via QTT, but suffers from a lack of quantity polymorphism that requires code be duplicated to handle the different quantities, which is unnacceptable in an abstraction-driven language IMO.</p>
+</li>
+<li>
+<p><strong>Borrowing</strong> - Linearity/uniqueness typing also has an additional problem: it is very restrictive (especially if it is the default). Lending a temporary reference (with the caller afterwards still free to drop or move the referenced value safely) becomes pretty necessary when using these typing features in practice. Unfortunately, these guarantees about how long referenced values live for are hard to track, requiring (lifetime) annotations and/or very restricted use.
+Further, when references become pervasive in a language with subtyping, considerations must be made over whether that subtyping relation is coercive - effectively a decision between variance and efficient/flexible runtime representation. Both would be nice!</p>
+</li>
+<li>
+<p><strong>Monomorphisation</strong> - Noticing how typeclasses, invented merely as a tool for abstraction in Haskell fit so perfectly with a low-level compilation strategy of compiling distinct versions of functions for each type is in my opinion the coolest thing <strong>by far</strong> about Rust. It's so clean that I spent quite a few months obsessed with the idea, looking at ways to enhance it <sup class="footnote-reference"><a href="#note">1</a></sup> (one insight being the possibility of extending <code>impl</code> returns to returning values of finitely many different types, monomorphising the future code for each).</p>
+<p>Simultaneously, when types are viewed as sets of values, monomorphisation starts to look insane - it's entirely predicated on the idea that the number of sets of values considered by a program is vastly smaller than the number of values it deals with (for one, the number of those sets must be finite or your executable must become infinitely large). This simply isn't the case when subtyping, fancy-typing, let alone dependent typing are added to the mix. Plus as a dual to the predictability you get as a programmer, the compilation strategy reveals implementation details, requiring consideration on whether to suffer executable bloat or dynamic dispatch cost.</p>
+</li>
+<li>
+<p><strong>Unboxed Types</strong> - I already rejected the duplication of code associated with linearity-without-polymorphism so that I similarly reject it in the context of (un)boxing should come as no surprise - and polymorphism over unboxed values relies on full monomorphisation. Further, in giving control over exactly the representation of data inherently leaks implementation details - forcing decisions based on the actual size of values that occupy a type onto the programmer.</p>
+<p>It is unfortunate that this is probably the feature least compatible with WTy2 and yet is one with potentially the highest impact (zero-cost FP via unboxed closures is very enticing). My hope is that a compiler doing extensive cross-module specialisation might be able to automatically unbox, but this is only something that should be considered far down the line.</p>
+</li>
+</ul>
+<p>There are really two main aspects of implementation that these features are focussed on: memory management and runtime representation of values/dispatch strategy. For the former, WTy2 will take inspiration from Lean and Koka ( similarly functional, pure, strict programming languages with rich type systems) and adopt a form of reference counting. What's especially nice about this approach is that it combines well with the lower-level type system features that might be added later (in-place updates for values with a refcount of one is just a runtime version of in-place updating of uniques, borrows can skip the refcount increment/decrement etc...). For the latter, in the best case specialising functions for specific sets of values is likely to be a significant optimisation, but the baseline strategy must support WTy2's infinitely large types, existential types etc... - a uniform runtime representation of values is required. See the dedicated section for the current design.</p>
+<div class="footnote-definition" id="note"><sup class="footnote-definition-label">1</sup>
+<p>For the curious reader, here were my two main ideas, which I still think are potentially cool, but simply do not fit with WTy2 whatsoever.</p>
+</div>
+<ul>
+<li>Extend rust-style <code>impl</code> returns to allow returning values of potentially different types. This can be implemented by monomorphising all code following the call-site and statically dispatching at the <code>return</code> statement.</li>
+<li>Allow variables to be generic (take a type parameter), allowing first-class higher-rank polymorphic functions, and also, perhaps more interestingly, super efficient heterogeneous unordered collections (data-oriented programming without the hassle).</li>
+</ul>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="runtime-representation"><a class="header" href="#runtime-representation">Runtime Representation</a></h1>
+<p>Every WTy2 value has an associated &quot;full&quot; representation, which is unique. In practice, values are known to be members of types, which constrains the possible values, and so can be smaller.</p>
+<p>Every tag is 32 bits.</p>
+<h2 id="examples"><a class="header" href="#examples">Examples</a></h2>
+<pre><code class="language-WTy2">datatype Bool = True | False;
+
+datatype Nat = 0 | 1 | 2 | 3 | ...;
+
+// Note this is probably not a great choice for representation of `Int` in
+// WTy2 base given it means all 32-bit integers are now 64-bits even in compact
+// form (and we have negative zero!!). It is just an example.
+datatype Sign = Positive | Negative;
+
+datatype Int = MkInt(Sign, Nat);
+
+type Num where { ... };
+
+instance Num for Int where { ... };
+
+type C;
+
+instance C for Int &lt;&lt;= { holds(it.between(2, 5)) }
+instance C for Int &lt;&lt;= { holds(it &lt; -1) }
+</code></pre>
+<div class="table-wrapper"><table><thead><tr><th>Variable</th><th>Full Repr</th><th>Compact Repr</th></tr></thead><tbody>
+<tr><td>x: Bool = True</td><td><code>TBool, TTrue</code></td><td><code>TTrue</code></td></tr>
+<tr><td>x: Nat = 3</td><td><code>MkInt, T3</code></td><td><code>T3</code></td></tr>
+<tr><td>x: Int = 3</td><td><code>MkInt, TSign, TPositive, TNat T3</code></td><td><code>TPositive, T3</code></td></tr>
+<tr><td>x: Int = -3</td><td><code>MkInt, TSign, TNegative, TNat T3</code></td><td><code>TNegative, T3</code></td></tr>
+<tr><td>x: Num = 3</td><td><code>TNum, TNumIntDict, MkInt, T3</code></td><td><code>TNum, MkInt, T3</code></td></tr>
+<tr><td>x: C = 3</td><td><code>TC, TCIntDict0, MkInt, T3</code></td><td><code>TC, TCIntDict0, T3</code></td></tr>
+</tbody></table>
+</div>
+<p>Subtyping</p>
+<p>There are actually two possible strategies for combining this scheme with subtyping:</p>
+<ul>
+<li>
+<p>Make subtyping coercive by adding/removing tags implicitly where necessary. This limits sharing significantly.</p>
+</li>
+<li>
+<p>Still point to the original data but ALSO include the type (recall types are first-class values). This makes pattern matching on values of these supertypes much more complicated.</p>
+</li>
+</ul>
+<h2 id="comparison-of-subtyping-approaches"><a class="header" href="#comparison-of-subtyping-approaches">Comparison of Subtyping Approaches:</a></h2>
+<pre><code class="language-WTy2">data Foo;
+datatype B = Bar | Baz;
+data Car;
+data Coo;
+
+type C = B | 'Foo | 'Car | 'Coo;
+
+type C_Alias = C;
+</code></pre>
+<pre><code class="language-WTy2">foo: C -&gt; ...;
+
+x: ??? = Baz;
+foo(x); // How is x passed to foo?
+</code></pre>
+<p><code>x</code> is a unique stack allocated <code>C</code> (<code>C : Sized</code> so this is possible)
+<code>[TB, TBaz]</code>
+<code>x</code> is a reference to a <code>C</code>
+<code>[TRef, &amp;[TB, TBaz]]</code>
+<code>x</code> is a reference to a B (TRefCo = Covariant Reference)
+<code>[TRefCo, &amp;[TB], &amp;[TBaz]]</code>
+<code>x</code> is a reference to C_Alias (i.e: if can prove representation is same, then don't need to use TRefCo)
+<code>[TRef, &amp;[TBaz]]</code></p>
+<p>Costs (i.e: additional allocation on top of the referenced value):</p>
+<ol>
+<li>None</li>
+<li>One 8 byte stack allocation</li>
+<li>One 4 byte heap allocation and one 12 byte stack allocation</li>
+<li>One 8 byte stack allocation</li>
+</ol>
+<p>x is a unique stack allocated C (C : Sized so this is possible)
+<code>[TB, TBaz]</code>
+x is a reference to a C
+<code>[TB, TBaz]</code>
+x is a reference to a B (TRefCo = Covariant Reference)
+<code>[TB, TBaz], [TBaz]</code>
+x is a reference to C_Alias (i.e: if can prove representation is same, then don't need to use TRefCo)
+<code>[TBaz]</code></p>
+<p>Costs:</p>
+<ol>
+<li>None</li>
+<li>None</li>
+<li>One <code>size(TBaz) + TB</code> stack allocation</li>
+<li>None</li>
+</ol>
+<p>Conclusions:</p>
+<p>The important difference here is the third case: a heap allocation (of the type, which must be unsized) vs a copy of the value (which can be done on the stack).</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="core-language"><a class="header" href="#core-language">Core Language</a></h1>
 <p>Implementing a typechecker and compiler for the entire WTy2 language at once is likely to prove somewhat challenging. Here, a design for an intermediate, typed core language (inspired by efforts on GHC) is outlined.</p>
 <p>Core-Lang Constructs:</p>
@@ -585,6 +803,151 @@ proof(Proof(A)): Proof(C) = do {
 <ul>
 <li>How to represent recursion? Could either use recursive binders or a dedicated fixpoint operator.</li>
 </ul>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="specialisation"><a class="header" href="#specialisation">Specialisation</a></h1>
+<p>WTy2 does NOT currently feature &quot;specialisation&quot; as a high-level language feature (à la Rust <sup class="footnote-reference"><a href="#note">1</a></sup>), being able to override typeclass instances for specific types. Instead, specialisation in the context of WTy2 refers to an optimisation strategy that is key to get highly polymorphic WTy2 programs to perform well <sup class="footnote-reference"><a href="#note">1</a></sup>.</p>
+<p>Specialisation can be thought of a bit like a &quot;lite&quot; version of monomorphisation. Types can be arbitrarily large in WTy2, so full monomorphisation as a compilation strategy is infeasible; however, where possible, compiling separate versions of functions for specific argument values (or sets of argument values) and dispatching to those specialised versions can get most of the benefits (the main downside being the compiler now has to decide on a strategy for deciding when to specialise).</p>
+<p>Some possible heuristics for deciding when specialisation might be a good idea are:</p>
+<ul>
+<li>One of the function's arguments has a small set of inhabiting values. For example, if a function takes a boolean argument, specialisations for when the boolean is true and false are probably a good idea.</li>
+<li>A function is explicitly called somewhere in the program with an argument of more constrained type than the function accepts. For example, if a function takes an arbitrary <code>Num</code> and is called somewhere with an <code>Int</code>, a specialisation for <code>Int</code>s should probably be generated. If the function is called with a constant <code>23</code>, then a specialisation for this exact integer could be generated (effectively constant-folding).</li>
+<li>Note after one function is specialised, function calls in that function's body may now also become candidates for specialisation by the rule above. This transitive specialisation is very powerful, as it can eliminate what might otherwise be a large number of repeated matches.</li>
+</ul>
+<p>Specialisation is similar to inlining, but generated specialised code can be reused, reducing executable bloat. Prioritising specialisation over inlining seems like a reasonable goal.</p>
+<h2 id="dispatching-to-specialised-functions"><a class="header" href="#dispatching-to-specialised-functions">Dispatching to Specialised Functions</a></h2>
+<p>Dispatching to specialised functions at runtime rather than compile time would greatly increase the power of this optimisation. i.e: suppose there is a function <code>foo: [n &lt;=: Num](n) -&gt; n</code> and with a much faster specialisation for <code>n ~ Int</code>. We would like to ensure that even code like <code>x: Int = 0; y: Num = x; z = foo(y);</code> uses the specialiased version of <code>foo</code>, using the type information (in the form of variant tags) that is kept around at runtime to dispatch appropriately (assuming the savings from running the specialised version are worth it over the cost of dispatching appropriately).</p>
+<p>Exactly how feasible this is will likely have to be reassessed after the design for open types/instances is finalised, but this potentially could be implemented very simply as just a compiler pass which adds seemingly redundant pattern matches before various function calls that appear to be good candidates for specialisation <sup class="footnote-reference"><a href="#note">1</a></sup>.</p>
+<div class="footnote-definition" id="note"><sup class="footnote-definition-label">1</sup>
+<p>The writer of the specification personally considers this form of specialisation (sometimes called ad-hoc polymorphism) as a misfeature and so would be hesitent to work on it, even if there was a feasible implementation strategy for it in WTy2.
+<sup class="footnote-reference"><a href="#note">1</a></sup>: À la Haskell - https://wiki.haskell.org/Inlining_and_Specialisation#What_is_specialisation.3F
+<sup class="footnote-reference"><a href="#note">1</a></sup>: Of course, pattern matches on open types are not available as a feature in the source language, but when it comes to implementation, values of open types will still be tagged.</p>
+</div>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="soundness"><a class="header" href="#soundness">Soundness</a></h1>
+<p>WTy2 claims is a programming language with dependent types first and foremost, NOT a theorem prover.</p>
+<p>In fact, WTy2 as it currently exists is highly inconsistent, it is easy to prove bottom and from there anything. The only guarantee making this somewhat palatable is that these are all cases where the program will loop at runtime. WTy2 (when programs are ran in debug mode) will never actually create values of bottom type.</p>
+<p>This is useful for programming (proving termination is tiresome and sometimes even impossible) but makes WTy2 effectively useless for theorem proving. In the far future if these holes were to be closed (likely opt-in with some sort of compiler pragma or flag, <code>safe</code>), then this would no longer be the case, and hence these holes are documented below:</p>
+<h2 id="non-terminating-recursive-functions"><a class="header" href="#non-terminating-recursive-functions">Non-terminating Recursive Functions</a></h2>
+<pre><code class="language-WTy2">foo() = foo()
+</code></pre>
+<h2 id="type-in-type"><a class="header" href="#type-in-type">Type in Type</a></h2>
+<p>Similar to Haskell, WTy2 has the axiom <code>Type : Type</code>. Girard's paradox <sup class="footnote-reference"><a href="#note">1</a></sup> is almost certainly derivable from this.</p>
+<h2 id="russels-paradox---danger"><a class="header" href="#russels-paradox---danger">Russel's Paradox - DANGER!!</a></h2>
+<p>Unfortunately, WTy2 as currently designed has a much larger soundness hole than either of the above problems (both of which, while limiting its capabilities as a theorem prover, still <em>probably</em> still have the guarantee that if the program manages to execute the assignment of a variable, it's value is of the correct type - i.e: the program will either loop infinitely or produce bottom before executing any unsound code).</p>
+<p>Due to the way subtyping and constraints work however, Russel's paradox can be encoded surprisingly easily, with bottom appearing to be derivable without the program even <em>doing</em> anything.</p>
+<pre><code class="language-WTy2">type Russel = (t: Type) &lt;&lt;= { t :: t =&gt; t :: Void };
+
+ohDear: Void = Russel;
+</code></pre>
+<p>An informal sketch of how a constraint solver might check (and approve!) this is outlined below:</p>
+<p>Constraints are written in almost identical syntax to ordinary WTy2 source, but we elide types of <code>for</code> bound variables, instead prefering to write them as implications where necessary.</p>
+<pre><code class="language-WTy2CoSo"># From definition of Russel
+
+[G1] for(t) { t :: Russel /\ t :: t =&gt; t :: Void }
+[G2] for(t) { (t :: t =&gt; t :: Void) =&gt; t :: Russel }
+
+[W1] Russel :: Void
+
+# Head of G1 matches, instantiate with t = Russel
+
+[W2] Russel :: Russel /\ Russel :: Russel
+
+# Simplify
+
+[W3] Russel :: Russel
+
+# Head of G2 matches, instantiate LHS with t = Russel
+
+[W4] Russel :: Russel =&gt; Russel :: Void
+
+# Wanted is an implication, so assume LHS and try to reach RHS
+# This is arguably the point where everything goes wrong!!
+
+[G3] Russel :: Russel
+
+[W5] Russel :: Void
+
+# Interesting to note we have reached the same wanted that we
+# started with, but we have made progress: we now have G3!
+
+# Head of G1 matches, again, so instantiate LHS with t = Russel
+
+[W6] Russel :: Russel /\ Russel :: Russel
+
+# Solve with G3
+</code></pre>
+<p>And so we conclude by deriving <code>Russel :: Void</code>, which is clearly unsound.</p>
+<p><sup class="footnote-reference"><a href="#note">1</a></sup> See http://liamoc.net/posts/2015-09-10-girards-paradox.html for a nice walkthrough of how to derive this in Agda.</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="syntax-debates"><a class="header" href="#syntax-debates">Syntax Debates</a></h1>
+<p><a href="https://wiki.haskell.org/Wadler&#x27;s_Law">https://wiki.haskell.org/Wadler's_Law</a></p>
+<p>Syntax is hard, and discussions about it tends to go nowhere...</p>
+<p>...so let's discuss syntax!</p>
+<h2 id="enforced-capitalisation-convention"><a class="header" href="#enforced-capitalisation-convention">Enforced Capitalisation Convention</a></h2>
+<p>In functional languages, it is easy to have an ambiguity with irrefutable pattern matches vs variable bindings. Consider in Haskell:</p>
+<pre><code class="language-hs">foo = ...
+  where
+    {- Function or Constructor -} i = ...
+</code></pre>
+<p>Haskell gets around the ambiguity here by enforcing a simple capitalisation convention: constructors must start with a capital letter, and variables must start with a lowercase one.</p>
+<pre><code class="language-hs">foo = ...
+  where
+    Bar i = ... -- Pattern match
+    bar i = ... -- Local function definition
+</code></pre>
+<p>As long as, the language allows nullary data constructors data constructors this does not just apply to functions, and the ambiguity in WTy2 specifically is even more prevalent, given the rule that <code>f: t -&gt; u</code> can be written as <code>f(t): u</code>.</p>
+<p>One obvious solution is to copy Haskell's homework: data constructors are capitalised and variables are not. This rule fits well with WTy2's style in general: types should be capitalised, and this makes sense because types, like data constructors, are matchable.</p>
+<p>However, there are downsides. The most compelling from my perspective is how non-latin alphabets do not necessarily contain capital letters. I do not believe this is quite as significant of an issue as sometimes presented (a convention for code written in those alphabets could easily be created where data constructors/types must start with a latin-alphabet capital letter, say <code>M</code> for <code>matchable</code>) but even so, it is not ideal.</p>
+<p>The alternative is to use some dedicated keyword/symbol to disambuate. Perhaps <code>def</code> prefixing all variable bindings or <code>match</code> prefixing all irrefutable pattern matches.</p>
+<p>Using <code>def</code> keyword on functions</p>
+<pre><code class="language-WTy2">def takesFunctionAndMatches(def foo(Int): Int, MkFoo(x): Foo) := do {
+    def bar(y: Int) = foo(y);
+    MkBar(z) = x;
+}
+</code></pre>
+<p>Using <code>match</code> keyword on matches</p>
+<pre><code>takesFunctionAndMatches(foo(Int): Int, match MkFoo(x): Foo) := do {
+    bar(y: Int) = foo(y);
+    match MkBar(z) = x;
+}
+</code></pre>
+<p>Neither alternative feels great though coming from Haskell. There is no reward for following the capitalisation convention! My current plan is therefore a compromise: capitalised = assume match, lowercase = assume variable but the programmer can also use either keyword to override. This might be an overkill solution, but it seems promising.</p>
+<h2 id="bindingconstraint-operators"><a class="header" href="#bindingconstraint-operators">Binding/Constraint Operators</a></h2>
+<p>Currently, I am liking:</p>
+<div class="table-wrapper"><table><thead><tr><th>Binding</th><th>Constraint</th><th>Meaning</th></tr></thead><tbody>
+<tr><td><code>x : t</code></td><td><code>x :: t</code></td><td><code>x</code> is of type <code>t</code></td></tr>
+<tr><td><code>t &lt;=: u</code></td><td><code>t &lt;=| u</code></td><td><code>t</code> is an instance head of <code>u</code></td></tr>
+<tr><td><code>t &lt;: u</code></td><td><code>t &lt;| </code></td><td><code>t</code> is a subtype of <code>u</code></td></tr>
+<tr><td><code>x : 'y</code></td><td><code>x ~ y</code></td><td><code>x</code> reduces to <code>y</code></td></tr>
+</tbody></table>
+</div>
+<p>But it has a few problems:</p>
+<ul>
+<li><code>(&lt;=:)</code>/<code>(&lt;=|)</code> can easily look either like a combo of less-than-equal <code>(&lt;=)</code> and <code>(:)</code>/<code>(|)</code>, which with the context of subtyping being a combo of <code>(&lt;)</code> and <code>(:)</code>/<code>(|)</code> doesn't make much sense (instance head is a MORE restrictive relation!) Alternatively they look a bit like a reversed implies <code>(=&gt;)</code> which they are ALSO unrelated to!</li>
+<li>The instance head operator <code>(&lt;=:)</code> is longer (in terms of characters) than subtyping <code>(&lt;:)</code>, but it will likely be used MORE in practice.</li>
+<li>With <code>(:)</code>, <code>(::)</code>, and <code>(&lt;:)</code> taken, what should cons be? <code>(:&gt;)</code> could very easily be misinterpreted as a flipped version of <code>(&lt;:)</code>. Perhaps <code>(:;)</code> or <code>(:.)</code>?</li>
+</ul>
+<p>And there are a LOT of alternatives:</p>
+<ul>
+<li>Use keywords/infix functions instead of operators. E.g: <code>x is t</code> instead of <code>x :: t</code>, or <code>instance t for u</code> instead of <code>t &lt;=: u</code>.</li>
+<li>Make the common pattern for constraint (except for <code>(~)</code>) be to add a second colon. E.g: <code>(&lt;::)</code>, <code>(&lt;=::)</code> (note Fira Code ligatures does not display the latter as intended though!)</li>
+<li>Add a dedicated binding operator for <code>(~)</code> such as <code>(~:)</code>.</li>
+<li>Instead of <code>(::)</code>, all types types implement <code>Any -&gt; Constraint</code> so instead of <code>x :: Int</code> you would write <code>Int(x)</code>.</li>
+</ul>
+<h2 id="implicit-braces"><a class="header" href="#implicit-braces">Implicit Braces</a></h2>
+<p>WTy2 contains a few built-in dependent type operators (<code>(-&gt;)</code>, <code>(~&gt;)</code>, <code>(|-)</code>) which automatically add braces to the RHS if the type expression does not type-check without. The advantage is obvious: cleaner syntax. All non-dependent functions requiring braces around the result type (e.g: <code>Int -&gt; { Int }</code>) (or using a different arrow) is ugly.</p>
+<p>That said, this is clearly a special case, and special cases generally do not lead to a cleaner and easier-to-learn language. It might be worth considering if this implicit lambda-abstraction functionality is something that should be possible to opt into with other operators.</p>
+<h2 id="unicode"><a class="header" href="#unicode">Unicode</a></h2>
+<p>TODO</p>
+<ul>
+<li><code>∀</code> should be parsed as a letter to allow <code>∀ := for</code>.</li>
+</ul>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="modes"><a class="header" href="#modes">Modes</a></h1>
+<p>WTy2 is designed to be a language which can be implemented very efficiently, and give programmers control over performance. At the same time, WTy2 is not Rust: implementing a full-on borrow checker and requiring all references to track lifetimes in WTy2 programs seems excessive. To try and strike a middle-ground, WTy2 takes inspiration from some of the recent work Jane Street has done with OCAML <a href="https://blog.janestreet.com/oxidizing-ocaml-locality/">https://blog.janestreet.com/oxidizing-ocaml-locality/</a>, <a href="https://blog.janestreet.com/oxidizing-ocaml-ownership/">https://blog.janestreet.com/oxidizing-ocaml-ownership/</a>.</p>
+<p>TODO...</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="type-aware-allocators"><a class="header" href="#type-aware-allocators">Type Aware Allocators</a></h1>
+<p>A goal of WTy2 is to allow for good performance (especially with regards to memory locality) without much additional work on the part of the programmer/enforcing closed-world assumptions on written code.</p>
+<p>A major part of this is the concept of a type-aware-allocator. WTy2 makes extensive use of allocators (array based and recursive data structures in WTy2 should ideally be generic over the allocation scheme) so by providing tools to create good ones, almost all data structures should benefit.</p>
+<p>As an example for the sort of properties we would like to achieve, suppose our program had a large list of <code>Int</code>s, this was then upcasted into a list of <code>Num</code>s and then many other opaque <code>Num</code>s got added to the list. We then calculate a total sum (note that this operation does not care about the order in which we iterate over the values). Ideally therefore (for cache and memory locality reasons) we should somehow keep all the <code>Int</code>s in their own region of memory and sum these first.</p>
+<p>The rules for performing specialisation with these allocators should use similar (perhaps the same) rules as ordinary function specialisation. i.e: a good heuristic is if we allocate any value with known concrete type, we should specialise for that type.</p>
+<p>It would be ideal if WTy2 could provide some sort of language interface to create custom type-aware alloactors. I do not currently have a good model for how to design this. Difficulties I can currently forsee include prevent the number of specialisations from being observable (to prevent UB - the compiler is free to specialise as much or as little as it wants), and more generally just challenges of writing low-level mutability-based code in a pure functional language.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="recursive-data-types"><a class="header" href="#recursive-data-types">Recursive Data Types</a></h1>
 <p>Elsewhere in this spec (I may go back and fix it up later), I have been relatively loose with defining types like:</p>
 <pre><code class="language-WTy2">data Cons(head: t, tail: List(t))
@@ -656,155 +1019,6 @@ z: List(t=Int) = altBuild(Cons(3, x))
 </code></pre>
 <p>Note this works because the type of <code>x</code> is elaborated with the constraint <code>x ~ Cons(1, Cons(2, Cons(3, Nil)))</code> which fixes the size of <code>x</code>.</p>
 <p>In theory, this means lists with constraints that ensure finite length should also be allowed. In practise, compilers may want to try and detect these cases by iterating through potential inhabiting values. If iterating through all potential inhabiting values takes too long, it is likely that the structure is large enough that it would benefit from being heap allocated anyway. Perhaps it could be made possible (via dependent types) to allow the programmer to write proofs that a constraint implies that the size of the type is bounded.</p>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="specialisation"><a class="header" href="#specialisation">Specialisation</a></h1>
-<p>WTy2 does NOT currently feature &quot;specialisation&quot; as a high-level language feature (à la Rust <sup class="footnote-reference"><a href="#note">1</a></sup>), being able to override typeclass instances for specific types. Instead, specialisation in the context of WTy2 refers to an optimisation strategy that is key to get highly polymorphic WTy2 programs to perform well <sup class="footnote-reference"><a href="#note">1</a></sup>.</p>
-<p>Specialisation can be thought of a bit like a &quot;lite&quot; version of monomorphisation. Types can be infinitely large in WTy2, so full monomorphisation as a compilation strategy is infeasible; however, where possible, compiling separate versions of functions for specific argument values (or sets of argument values) and dispatching to those specialised versions can get most of the benefits (the main downside being the compiler now has to decide on a strategy for deciding when to specialise).</p>
-<p>Some possible heuristics for deciding when specialisation might be a good idea are:</p>
-<ul>
-<li>A function is explicitly called somewhere in the program with an argument of more constrained type than the function accepts. For example, if a function takes an arbitrary <code>Num</code> and is called somewhere with and <code>Int</code>, a specialisation <code>Int</code>s should probably be generated. If the function is called with a constant <code>23</code>, then a specialisation for this exact integer could be generated (and likely later inlined, but more on that later).</li>
-<li>Note after one function is specialised, function calls in that function's body may now also become candidates for specialisation by the rule above. This transitive specialisation is very powerful, as it can eliminate would might otherwise by a large number of repeated switches.</li>
-<li>One of the function's arguments have a small set of inhabiting values. For example, if a function takes a boolean argument, specialisations for when the boolean is true and false might be a good idea.</li>
-</ul>
-<p>Specialisation is similar to inlining, but generated specialised code can be reused, reducing executable bloat. Prioritising specialisation over inlining seems reasonable as an approach to not have overly long compilation times.</p>
-<h2 id="dispatching-to-specialised-functions"><a class="header" href="#dispatching-to-specialised-functions">Dispatching to Specialised Functions</a></h2>
-<p>Dispatching to specialised functions at runtime rather than compile time would greatly increase the power of this optimisation. i.e: suppose there is a function <code>foo: [n &lt;: Num](n) -&gt; n</code> and with a much faster specialisation for <code>n ~ Int</code>. We would like to ensure that even code like <code>x: Int = 0; y: Num = x; z = foo(y);</code> uses the specialiased version of <code>foo</code>, using the type information (in the form of variant tags) that is kept around at runtime to dispatch appropriately (assuming the savings from running the specialised version are worth it over the cost of dispatching appropriately). Exactly how feasible this is will likely have to be reassessed after the design for open types/intsances is finalised.</p>
-<div class="footnote-definition" id="note"><sup class="footnote-definition-label">1</sup>
-<p>The writer of the specification personally considers this form of specialisation as a misfeature and so would be hesitent to work on it, even if there was a feasible implementation strategy for it in WTy2.
-<sup class="footnote-reference"><a href="#note">1</a></sup>: À la Haskell - https://wiki.haskell.org/Inlining_and_Specialisation#What_is_specialisation.3F</p>
-</div>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="type-aware-allocators"><a class="header" href="#type-aware-allocators">Type Aware Allocators</a></h1>
-<p>A goal of WTy2 is to allow for good performance (especially with regards to memory locality) without much additional work on the part of the programmer/enforcing closed-world assumptions on your code.</p>
-<p>A major part of this is the concept of a type-aware-allocator. WTy2 makes extensive use of allocators (array based and recursive data structures in WTy2 should ideally be generic over the allocation scheme) so by providing tools to create good ones, almost all data structures should benefit.</p>
-<p>As an example for the sort of properties we would like to achieve, suppose our program had a large list of <code>Int</code>s, this was then upcasted into a list of <code>Num</code>s and then many other opaque <code>Num</code>s got added to the list. We then calculate a total sum. Note that this operation does not care about the order in which we iterate over the values - ideally (for cache and memory locality reasons) we should somehow keep all the <code>Int</code>s in their own region of memory and sum these first.</p>
-<p>The rules for performing specialisation with these allocators should use similar (perhaps the same) rules as ordinary function specialisation. i.e: a good heuristic is if we allocate any value with known concrete type, we should specialise for that type.</p>
-<p>A potential path for implementation is &quot;indexed variables&quot;:
-Syntax WIP, but perhaps something like:</p>
-<pre><code class="language-WTy2">strict foo(t :=&gt; Monoid): List(t) = list(100) { mempty(t) }
-</code></pre>
-<p>Here, <code>foo</code> should be expanded into a number of variable declarations, using the same rules as function specialisation for how many variables to create.</p>
-<p>i.e: one valid expansion would be</p>
-<pre><code class="language-WTy2">foo_Int: List(Int) = list(100) { mempty(t) };
-foo_Monoid: List(Monoid) = list(100) { mempty(t) };
-</code></pre>
-<p>another is</p>
-<pre><code class="language-WTy2">foo_Monoid: List(Monoid) = list(100) { mempty(t) };
-</code></pre>
-<p>Programs should not rely on a specific number of instances being created.</p>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="soundness"><a class="header" href="#soundness">Soundness</a></h1>
-<p>WTy2 claims is a programming language with dependent types first and foremost, NOT a theorem prover.</p>
-<p>In fact, WTy2 as it currently exists is highly inconsistent, it is easy to prove bottom and from there anything. The only guarantee making this somewhat palatable is that these are all cases where the program will loop at runtime. WTy2 (when programs are ran in debug mode) will never actually create values of bottom type.</p>
-<p>This is useful for programming (proving termination is tiresome and sometimes even impossible) but makes WTy2 effectively useless for theorem proving. In the far future if these holes were to be closed (likely opt-in with some sort of compiler pragma or flag, <code>safe</code>), then this would no longer be the case, and hence these holes are documented below:</p>
-<h2 id="non-terminating-recursive-functions"><a class="header" href="#non-terminating-recursive-functions">Non-terminating Recursive Functions</a></h2>
-<pre><code class="language-WTy2">foo() = foo()
-</code></pre>
-<h2 id="type-in-type"><a class="header" href="#type-in-type">Type in Type</a></h2>
-<p>Similar to Haskell, WTy2 has the axiom <code>Type : Type</code>. Girard's paradox <sup class="footnote-reference"><a href="#note">1</a></sup> is almost certainly derivable from this.</p>
-<h2 id="russels-paradox---danger"><a class="header" href="#russels-paradox---danger">Russel's Paradox - DANGER!!</a></h2>
-<p>Unfortunately, WTy2 as currently designed has a much larger soundness hole than either of the above problems (both of which, while limiting it's capabilities as a theorem prover, still <em>probably</em> still have the guarantee that if the program manages to execute the assignment of a variable, it's value is of the correct type - i.e: the program will either loop infinitely or produce bottom before executing any unsound code).</p>
-<p>Due to the way subtyping and constraints work, Russel's paradox can be encoded surprisingly easily, with bottom appearing to be derivable without the program even <em>doing</em> anything.</p>
-<pre><code class="language-WTy2">type Russel = (t: Type) &lt;&lt;= { t :: t =&gt; t :: Void }
-
-ohDear(): Void = Russel;
-</code></pre>
-<p>Luckily this is definable (and rejected) by Haskell!</p>
-<p>An informal sketch of how a constraint solver might check (and approve!) this is outlined below:</p>
-<p>Constraints are written in almost identical syntax to ordinary WTy2, but we elide types of <code>for</code> bound variables, instead prefering to write them as implications where necessary.</p>
-<pre><code class="language-WTy2CoSo"># From definition of Russel
-
-[G1] for(t) { t :: Russel /\ t :: t =&gt; t :: Void }
-[G2] for(t) { (t :: t =&gt; t :: Void) =&gt; t :: Russel }
-
-[W1] Russel :: Void
-
-# Head of G1 matches, instantiate with t = Russel
-
-[W2] Russel :: Russel /\ Russel :: Russel
-
-# Simplify
-
-[W3] Russel :: Russel
-
-# Head of G2 matches, instantiate LHS with t = Russel
-
-[W4] Russel :: Russel =&gt; Russel :: Void
-
-# Wanted is an implication, so assume LHS and try to reach RHS
-# This is arguably the point where everything goes wrong!!
-
-[G3] Russel :: Russel
-
-[W5] Russel :: Void
-
-# Interesting to note we have reached the same wanted that we
-# started with, but we have made progress: we now have G3!
-
-# Head of G1 matches, again, so instantiate LHS with t = Russel
-
-[W6] Russel :: Russel /\ Russel :: Russel
-
-# Solve with G3
-</code></pre>
-<p>And so we conclude by deriving <code>Russel :: Void</code>, which is clearly unsound.</p>
-<p><sup class="footnote-reference"><a href="#note">1</a></sup> See http://liamoc.net/posts/2015-09-10-girards-paradox.html for a nice walkthrough of how to derive this in Agda.</p>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="syntax-debates"><a class="header" href="#syntax-debates">Syntax Debates</a></h1>
-<p><a href="https://wiki.haskell.org/Wadler&#x27;s_Law">https://wiki.haskell.org/Wadler's_Law</a></p>
-<p>Syntax is hard, and discussions about it generally go nowhere...</p>
-<p>...so let's discuss syntax!</p>
-<h2 id="enforced-capitalisation-convention"><a class="header" href="#enforced-capitalisation-convention">Enforced Capitalisation Convention</a></h2>
-<p>In functional languages, it is often easy to have an ambiguity with irrefutable pattern matches vs function definitions. Consider in Haskell:</p>
-<pre><code class="language-hs">foo = ...
-  where
-    {- Something -} i = ...
-</code></pre>
-<p>Haskell gets around the ambiguity here by enforcing a simple capitalisation convention: constructors must start with a capital letter, and functions must start with a lowercase one.</p>
-<pre><code class="language-hs">foo = ...
-  where
-    Bar i = ... -- Pattern match
-    bar i = ... -- Local function definition
-</code></pre>
-<p>WTy2 has a similar potential ambiguity, and it is even more prevalent, given the rule that <code>f: t -&gt; u</code> can be written as <code>f(t): u</code> (so the ambiguity is possible even inside patterns).</p>
-<p>One obvious solution is to copy Haskell's homework: data constructors are capitalised and variables are not. This rule fits well with WTy2's syntax in general: types should be capitalised, and this makes sense because types, like data constructors, are also matchable.</p>
-<p>However, there are downsides. The most compelling from my perspective is how non-latin alphabets do not necessarily contain capital letters. I do not believe this is quite as significant of an issue as sometimes presented (a convention for code written in those alphabets could easily be created where data constructors/types must start with a latin-alphabet capital letter, say <code>M</code> for <code>matchable</code>) but even so, it is not ideal.</p>
-<p>The alternative is to use some dedicated keyword/symbol to disambuate. Perhaps <code>fn</code> prefixing all functions written in <code>f(t): u</code>-style or <code>match</code> prefixing all irrefutable pattern matches.</p>
-<p>Using <code>fn</code> keyword on functions</p>
-<pre><code class="language-WTy2">takesFunctionAndMatches(fn foo(Int): Int, Foo(x)) {
-    fn bar(y: Int) = foo(y);
-    Bar(z) = x;
-    ...
-}
-</code></pre>
-<p>Using <code>match</code> keyword on matches</p>
-<pre><code>takesFunctionAndMatches(foo(Int): Int, match Foo(x)) {
-    bar(y: Int) = foo(y);
-    match Bar(z) = x;
-}
-</code></pre>
-<p>Perhaps some compromise is possible: capitalised = assume match, lowercase = assume function but then can use either keyword to override. This might be an overkill solution, but it seems promising.</p>
-<h2 id="bindingconstraint-operators"><a class="header" href="#bindingconstraint-operators">Binding/Constraint Operators</a></h2>
-<p>Currently, I am liking:</p>
-<div class="table-wrapper"><table><thead><tr><th>Binding</th><th>Constraint</th><th>Meaning</th></tr></thead><tbody>
-<tr><td><code>x : t</code></td><td><code>x :: t</code></td><td><code>x</code> is of type <code>t</code></td></tr>
-<tr><td><code>t &lt;=: u</code></td><td><code>t &lt;=| u</code></td><td><code>t</code> is an instance head of <code>u</code></td></tr>
-<tr><td><code>t &lt;: u</code></td><td><code>t &lt;| </code></td><td><code>t</code> is a subtype of <code>u</code></td></tr>
-<tr><td><code>x ~: y</code></td><td><code>x ~ y</code></td><td><code>x</code> reduces to <code>y</code></td></tr>
-</tbody></table>
-</div>
-<p>But it has a few problems:</p>
-<ul>
-<li><code>(&lt;=:)</code>/<code>(&lt;=|)</code> can easily look either like a combo of less-than-equal <code>(&lt;=)</code> and <code>(:)</code>/<code>(|)</code>, which with the context of subtyping being a combo of <code>(&lt;)</code> and <code>(:)</code>/<code>(|)</code> doesn't make much sense (instance head is a MORE restrictive relation, not more!) Alternatively they look a bit like a reversed implies <code>(=&gt;)</code> which they are ALSO unrelated to!</li>
-<li>The instance head operator <code>(&lt;=:)</code> is more characters than subtyping <code>(&lt;:)</code>, but will likely be used MORE in practice.</li>
-<li>With <code>(:)</code>, <code>(::)</code>, and <code>(&lt;:)</code> taken, what should cons be? <code>(:&gt;)</code> could very easily be misinterpreted as a flipped version of <code>(&lt;:)</code>.</li>
-<li>Less important, but <code>(~:)</code> looks ugly IMO.</li>
-</ul>
-<p>And there are a LOT of alternatives:</p>
-<ul>
-<li>Use keywords/infix functions instead of operators. E.g: <code>x is t</code> instead of <code>x :: t</code>, or <code>instance t for u</code> instead of <code>t &lt;=: u</code>.</li>
-<li>Make the common pattern for constraint (except for <code>(~)</code>) be to add a second colon. E.g: <code>(&lt;::)</code>, <code>(&lt;=::)</code> (note Firacode ligatures does not display the latter as intended though!)</li>
-<li>Instead of <code>(::)</code>, all types types implement <code>Any -&gt; Constraint</code> so instead of <code>x :: Int</code> you would write <code>Int(x)</code>.</li>
-</ul>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="modes"><a class="header" href="#modes">Modes</a></h1>
-<p>WTy2 is designed to be a language which can be implemented very efficiently, and give programmers control over performance. At the same time, WTy2 is not Rust: implementing a full-on borrow checker and requiring all references to track lifetimes in WTy2 programs seems excessive. To try and strike a middle-ground, WTy2 takes inspiration from some of the recent work Jane Street has done with OCAML <a href="https://blog.janestreet.com/oxidizing-ocaml-locality/">https://blog.janestreet.com/oxidizing-ocaml-locality/</a>, <a href="https://blog.janestreet.com/oxidizing-ocaml-ownership/">https://blog.janestreet.com/oxidizing-ocaml-ownership/</a>.</p>
-<p>TODO...</p>
 
                     </main>
 

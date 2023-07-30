@@ -84,7 +84,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded affix "><li class="part-title">Basic Concepts</li><li class="chapter-item expanded "><a href="core_types.html"><strong aria-hidden="true">2.</strong> Core Types</a></li><li class="chapter-item expanded "><a href="functions.html"><strong aria-hidden="true">3.</strong> Functions</a></li><li class="chapter-item expanded "><a href="declarations.html"><strong aria-hidden="true">4.</strong> Declarations</a></li><li class="chapter-item expanded "><a href="erasure_visibility.html"><strong aria-hidden="true">5.</strong> Erasure and Visibility</a></li><li class="chapter-item expanded "><a href="arrows.html"><strong aria-hidden="true">6.</strong> Arrows</a></li><li class="chapter-item expanded affix "><li class="part-title">Extra</li><li class="chapter-item expanded "><a href="utilities.html"><strong aria-hidden="true">7.</strong> Utilities</a></li><li class="chapter-item expanded affix "><li class="part-title">Dependent Types</li><li class="chapter-item expanded "><a href="constraints.html"><strong aria-hidden="true">8.</strong> Constraints</a></li><li class="chapter-item expanded "><a href="proofs.html"><strong aria-hidden="true">9.</strong> Proofs</a></li><li class="chapter-item expanded "><a href="dependent_types.html"><strong aria-hidden="true">10.</strong> Dependent Types</a></li><li class="chapter-item expanded affix "><li class="part-title">Implementation/Low-Level Features</li><li class="chapter-item expanded "><a href="subset.html"><strong aria-hidden="true">11.</strong> Core Subset</a></li><li class="chapter-item expanded "><a href="recursive_types.html"><strong aria-hidden="true">12.</strong> Recursive Types</a></li><li class="chapter-item expanded "><a href="specialisation.html"><strong aria-hidden="true">13.</strong> Specialisation</a></li><li class="chapter-item expanded "><a href="allocators.html"><strong aria-hidden="true">14.</strong> Type Aware Allocators</a></li><li class="chapter-item expanded affix "><li class="part-title">Design</li><li class="chapter-item expanded "><a href="soundness.html"><strong aria-hidden="true">15.</strong> Soundness</a></li><li class="chapter-item expanded "><a href="wadlers_law.html" class="active"><strong aria-hidden="true">16.</strong> Syntax Debates</a></li><li class="chapter-item expanded affix "><li class="part-title">TODO</li><li class="chapter-item expanded "><a href="modes.html"><strong aria-hidden="true">17.</strong> Modes</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded affix "><li class="part-title">Basic Concepts</li><li class="chapter-item expanded "><a href="core_types.html"><strong aria-hidden="true">2.</strong> Core Types</a></li><li class="chapter-item expanded "><a href="arrows.html"><strong aria-hidden="true">3.</strong> Core Type Operators</a></li><li class="chapter-item expanded "><a href="functions.html"><strong aria-hidden="true">4.</strong> Functions</a></li><li class="chapter-item expanded "><a href="declarations.html"><strong aria-hidden="true">5.</strong> Declarations</a></li><li class="chapter-item expanded "><a href="erasure_visibility.html"><strong aria-hidden="true">6.</strong> Erasure and Visibility</a></li><li class="chapter-item expanded "><a href="coherence.html"><strong aria-hidden="true">7.</strong> Coherence</a></li><li class="chapter-item expanded affix "><li class="part-title">Extra</li><li class="chapter-item expanded "><a href="utilities.html"><strong aria-hidden="true">8.</strong> Utilities</a></li><li class="chapter-item expanded affix "><li class="part-title">Dependent Types</li><li class="chapter-item expanded "><a href="constraints.html"><strong aria-hidden="true">9.</strong> Constraints</a></li><li class="chapter-item expanded "><a href="proofs.html"><strong aria-hidden="true">10.</strong> Proofs</a></li><li class="chapter-item expanded "><a href="dependent_types.html"><strong aria-hidden="true">11.</strong> Dependent Types</a></li><li class="chapter-item expanded affix "><li class="part-title">Implementation</li><li class="chapter-item expanded "><a href="low_level.html"><strong aria-hidden="true">12.</strong> Low-level Semantics</a></li><li class="chapter-item expanded "><a href="run_rep.html"><strong aria-hidden="true">13.</strong> Runtime Representation</a></li><li class="chapter-item expanded "><a href="subset.html"><strong aria-hidden="true">14.</strong> Core Subset</a></li><li class="chapter-item expanded "><a href="specialisation.html"><strong aria-hidden="true">15.</strong> Specialisation</a></li><li class="chapter-item expanded affix "><li class="part-title">Design</li><li class="chapter-item expanded "><a href="soundness.html"><strong aria-hidden="true">16.</strong> Soundness</a></li><li class="chapter-item expanded "><a href="wadlers_law.html" class="active"><strong aria-hidden="true">17.</strong> Syntax Debates</a></li><li class="chapter-item expanded affix "><li class="part-title">TODO</li><li class="chapter-item expanded "><a href="modes.html"><strong aria-hidden="true">18.</strong> Modes</a></li><li class="chapter-item expanded affix "><li class="part-title">Old</li><li class="chapter-item expanded "><a href="allocators.html"><strong aria-hidden="true">19.</strong> Type Aware Allocators</a></li><li class="chapter-item expanded "><a href="recursive_types.html"><strong aria-hidden="true">20.</strong> Recursive Types</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -175,59 +175,66 @@
                     <main>
                         <h1 id="syntax-debates"><a class="header" href="#syntax-debates">Syntax Debates</a></h1>
 <p><a href="https://wiki.haskell.org/Wadler&#x27;s_Law">https://wiki.haskell.org/Wadler's_Law</a></p>
-<p>Syntax is hard, and discussions about it generally go nowhere...</p>
+<p>Syntax is hard, and discussions about it tends to go nowhere...</p>
 <p>...so let's discuss syntax!</p>
 <h2 id="enforced-capitalisation-convention"><a class="header" href="#enforced-capitalisation-convention">Enforced Capitalisation Convention</a></h2>
-<p>In functional languages, it is often easy to have an ambiguity with irrefutable pattern matches vs function definitions. Consider in Haskell:</p>
+<p>In functional languages, it is easy to have an ambiguity with irrefutable pattern matches vs variable bindings. Consider in Haskell:</p>
 <pre><code class="language-hs">foo = ...
   where
-    {- Something -} i = ...
+    {- Function or Constructor -} i = ...
 </code></pre>
-<p>Haskell gets around the ambiguity here by enforcing a simple capitalisation convention: constructors must start with a capital letter, and functions must start with a lowercase one.</p>
+<p>Haskell gets around the ambiguity here by enforcing a simple capitalisation convention: constructors must start with a capital letter, and variables must start with a lowercase one.</p>
 <pre><code class="language-hs">foo = ...
   where
     Bar i = ... -- Pattern match
     bar i = ... -- Local function definition
 </code></pre>
-<p>WTy2 has a similar potential ambiguity, and it is even more prevalent, given the rule that <code>f: t -&gt; u</code> can be written as <code>f(t): u</code> (so the ambiguity is possible even inside patterns).</p>
-<p>One obvious solution is to copy Haskell's homework: data constructors are capitalised and variables are not. This rule fits well with WTy2's syntax in general: types should be capitalised, and this makes sense because types, like data constructors, are also matchable.</p>
+<p>As long as, the language allows nullary data constructors data constructors this does not just apply to functions, and the ambiguity in WTy2 specifically is even more prevalent, given the rule that <code>f: t -&gt; u</code> can be written as <code>f(t): u</code>.</p>
+<p>One obvious solution is to copy Haskell's homework: data constructors are capitalised and variables are not. This rule fits well with WTy2's style in general: types should be capitalised, and this makes sense because types, like data constructors, are matchable.</p>
 <p>However, there are downsides. The most compelling from my perspective is how non-latin alphabets do not necessarily contain capital letters. I do not believe this is quite as significant of an issue as sometimes presented (a convention for code written in those alphabets could easily be created where data constructors/types must start with a latin-alphabet capital letter, say <code>M</code> for <code>matchable</code>) but even so, it is not ideal.</p>
-<p>The alternative is to use some dedicated keyword/symbol to disambuate. Perhaps <code>fn</code> prefixing all functions written in <code>f(t): u</code>-style or <code>match</code> prefixing all irrefutable pattern matches.</p>
-<p>Using <code>fn</code> keyword on functions</p>
-<pre><code class="language-WTy2">takesFunctionAndMatches(fn foo(Int): Int, Foo(x)) {
-    fn bar(y: Int) = foo(y);
-    Bar(z) = x;
-    ...
+<p>The alternative is to use some dedicated keyword/symbol to disambuate. Perhaps <code>def</code> prefixing all variable bindings or <code>match</code> prefixing all irrefutable pattern matches.</p>
+<p>Using <code>def</code> keyword on functions</p>
+<pre><code class="language-WTy2">def takesFunctionAndMatches(def foo(Int): Int, MkFoo(x): Foo) := do {
+    def bar(y: Int) = foo(y);
+    MkBar(z) = x;
 }
 </code></pre>
 <p>Using <code>match</code> keyword on matches</p>
-<pre><code>takesFunctionAndMatches(foo(Int): Int, match Foo(x)) {
+<pre><code>takesFunctionAndMatches(foo(Int): Int, match MkFoo(x): Foo) := do {
     bar(y: Int) = foo(y);
-    match Bar(z) = x;
+    match MkBar(z) = x;
 }
 </code></pre>
-<p>Perhaps some compromise is possible: capitalised = assume match, lowercase = assume function but then can use either keyword to override. This might be an overkill solution, but it seems promising.</p>
+<p>Neither alternative feels great though coming from Haskell. There is no reward for following the capitalisation convention! My current plan is therefore a compromise: capitalised = assume match, lowercase = assume variable but the programmer can also use either keyword to override. This might be an overkill solution, but it seems promising.</p>
 <h2 id="bindingconstraint-operators"><a class="header" href="#bindingconstraint-operators">Binding/Constraint Operators</a></h2>
 <p>Currently, I am liking:</p>
 <div class="table-wrapper"><table><thead><tr><th>Binding</th><th>Constraint</th><th>Meaning</th></tr></thead><tbody>
 <tr><td><code>x : t</code></td><td><code>x :: t</code></td><td><code>x</code> is of type <code>t</code></td></tr>
 <tr><td><code>t &lt;=: u</code></td><td><code>t &lt;=| u</code></td><td><code>t</code> is an instance head of <code>u</code></td></tr>
 <tr><td><code>t &lt;: u</code></td><td><code>t &lt;| </code></td><td><code>t</code> is a subtype of <code>u</code></td></tr>
-<tr><td><code>x ~: y</code></td><td><code>x ~ y</code></td><td><code>x</code> reduces to <code>y</code></td></tr>
+<tr><td><code>x : 'y</code></td><td><code>x ~ y</code></td><td><code>x</code> reduces to <code>y</code></td></tr>
 </tbody></table>
 </div>
 <p>But it has a few problems:</p>
 <ul>
-<li><code>(&lt;=:)</code>/<code>(&lt;=|)</code> can easily look either like a combo of less-than-equal <code>(&lt;=)</code> and <code>(:)</code>/<code>(|)</code>, which with the context of subtyping being a combo of <code>(&lt;)</code> and <code>(:)</code>/<code>(|)</code> doesn't make much sense (instance head is a MORE restrictive relation, not more!) Alternatively they look a bit like a reversed implies <code>(=&gt;)</code> which they are ALSO unrelated to!</li>
-<li>The instance head operator <code>(&lt;=:)</code> is more characters than subtyping <code>(&lt;:)</code>, but will likely be used MORE in practice.</li>
-<li>With <code>(:)</code>, <code>(::)</code>, and <code>(&lt;:)</code> taken, what should cons be? <code>(:&gt;)</code> could very easily be misinterpreted as a flipped version of <code>(&lt;:)</code>.</li>
-<li>Less important, but <code>(~:)</code> looks ugly IMO.</li>
+<li><code>(&lt;=:)</code>/<code>(&lt;=|)</code> can easily look either like a combo of less-than-equal <code>(&lt;=)</code> and <code>(:)</code>/<code>(|)</code>, which with the context of subtyping being a combo of <code>(&lt;)</code> and <code>(:)</code>/<code>(|)</code> doesn't make much sense (instance head is a MORE restrictive relation!) Alternatively they look a bit like a reversed implies <code>(=&gt;)</code> which they are ALSO unrelated to!</li>
+<li>The instance head operator <code>(&lt;=:)</code> is longer (in terms of characters) than subtyping <code>(&lt;:)</code>, but it will likely be used MORE in practice.</li>
+<li>With <code>(:)</code>, <code>(::)</code>, and <code>(&lt;:)</code> taken, what should cons be? <code>(:&gt;)</code> could very easily be misinterpreted as a flipped version of <code>(&lt;:)</code>. Perhaps <code>(:;)</code> or <code>(:.)</code>?</li>
 </ul>
 <p>And there are a LOT of alternatives:</p>
 <ul>
 <li>Use keywords/infix functions instead of operators. E.g: <code>x is t</code> instead of <code>x :: t</code>, or <code>instance t for u</code> instead of <code>t &lt;=: u</code>.</li>
-<li>Make the common pattern for constraint (except for <code>(~)</code>) be to add a second colon. E.g: <code>(&lt;::)</code>, <code>(&lt;=::)</code> (note Firacode ligatures does not display the latter as intended though!)</li>
+<li>Make the common pattern for constraint (except for <code>(~)</code>) be to add a second colon. E.g: <code>(&lt;::)</code>, <code>(&lt;=::)</code> (note Fira Code ligatures does not display the latter as intended though!)</li>
+<li>Add a dedicated binding operator for <code>(~)</code> such as <code>(~:)</code>.</li>
 <li>Instead of <code>(::)</code>, all types types implement <code>Any -&gt; Constraint</code> so instead of <code>x :: Int</code> you would write <code>Int(x)</code>.</li>
+</ul>
+<h2 id="implicit-braces"><a class="header" href="#implicit-braces">Implicit Braces</a></h2>
+<p>WTy2 contains a few built-in dependent type operators (<code>(-&gt;)</code>, <code>(~&gt;)</code>, <code>(|-)</code>) which automatically add braces to the RHS if the type expression does not type-check without. The advantage is obvious: cleaner syntax. All non-dependent functions requiring braces around the result type (e.g: <code>Int -&gt; { Int }</code>) (or using a different arrow) is ugly.</p>
+<p>That said, this is clearly a special case, and special cases generally do not lead to a cleaner and easier-to-learn language. It might be worth considering if this implicit lambda-abstraction functionality is something that should be possible to opt into with other operators.</p>
+<h2 id="unicode"><a class="header" href="#unicode">Unicode</a></h2>
+<p>TODO</p>
+<ul>
+<li><code>∀</code> should be parsed as a letter to allow <code>∀ := for</code>.</li>
 </ul>
 
                     </main>

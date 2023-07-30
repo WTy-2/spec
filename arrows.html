@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Arrows - The WTy2 Language Specification</title>
+        <title>Core Type Operators - The WTy2 Language Specification</title>
 
 
         <!-- Custom HTML head -->
@@ -84,7 +84,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded affix "><li class="part-title">Basic Concepts</li><li class="chapter-item expanded "><a href="core_types.html"><strong aria-hidden="true">2.</strong> Core Types</a></li><li class="chapter-item expanded "><a href="functions.html"><strong aria-hidden="true">3.</strong> Functions</a></li><li class="chapter-item expanded "><a href="declarations.html"><strong aria-hidden="true">4.</strong> Declarations</a></li><li class="chapter-item expanded "><a href="erasure_visibility.html"><strong aria-hidden="true">5.</strong> Erasure and Visibility</a></li><li class="chapter-item expanded "><a href="arrows.html" class="active"><strong aria-hidden="true">6.</strong> Arrows</a></li><li class="chapter-item expanded affix "><li class="part-title">Extra</li><li class="chapter-item expanded "><a href="utilities.html"><strong aria-hidden="true">7.</strong> Utilities</a></li><li class="chapter-item expanded affix "><li class="part-title">Dependent Types</li><li class="chapter-item expanded "><a href="constraints.html"><strong aria-hidden="true">8.</strong> Constraints</a></li><li class="chapter-item expanded "><a href="proofs.html"><strong aria-hidden="true">9.</strong> Proofs</a></li><li class="chapter-item expanded "><a href="dependent_types.html"><strong aria-hidden="true">10.</strong> Dependent Types</a></li><li class="chapter-item expanded affix "><li class="part-title">Implementation/Low-Level Features</li><li class="chapter-item expanded "><a href="subset.html"><strong aria-hidden="true">11.</strong> Core Subset</a></li><li class="chapter-item expanded "><a href="recursive_types.html"><strong aria-hidden="true">12.</strong> Recursive Types</a></li><li class="chapter-item expanded "><a href="specialisation.html"><strong aria-hidden="true">13.</strong> Specialisation</a></li><li class="chapter-item expanded "><a href="allocators.html"><strong aria-hidden="true">14.</strong> Type Aware Allocators</a></li><li class="chapter-item expanded affix "><li class="part-title">Design</li><li class="chapter-item expanded "><a href="soundness.html"><strong aria-hidden="true">15.</strong> Soundness</a></li><li class="chapter-item expanded "><a href="wadlers_law.html"><strong aria-hidden="true">16.</strong> Syntax Debates</a></li><li class="chapter-item expanded affix "><li class="part-title">TODO</li><li class="chapter-item expanded "><a href="modes.html"><strong aria-hidden="true">17.</strong> Modes</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded affix "><li class="part-title">Basic Concepts</li><li class="chapter-item expanded "><a href="core_types.html"><strong aria-hidden="true">2.</strong> Core Types</a></li><li class="chapter-item expanded "><a href="arrows.html" class="active"><strong aria-hidden="true">3.</strong> Core Type Operators</a></li><li class="chapter-item expanded "><a href="functions.html"><strong aria-hidden="true">4.</strong> Functions</a></li><li class="chapter-item expanded "><a href="declarations.html"><strong aria-hidden="true">5.</strong> Declarations</a></li><li class="chapter-item expanded "><a href="erasure_visibility.html"><strong aria-hidden="true">6.</strong> Erasure and Visibility</a></li><li class="chapter-item expanded "><a href="coherence.html"><strong aria-hidden="true">7.</strong> Coherence</a></li><li class="chapter-item expanded affix "><li class="part-title">Extra</li><li class="chapter-item expanded "><a href="utilities.html"><strong aria-hidden="true">8.</strong> Utilities</a></li><li class="chapter-item expanded affix "><li class="part-title">Dependent Types</li><li class="chapter-item expanded "><a href="constraints.html"><strong aria-hidden="true">9.</strong> Constraints</a></li><li class="chapter-item expanded "><a href="proofs.html"><strong aria-hidden="true">10.</strong> Proofs</a></li><li class="chapter-item expanded "><a href="dependent_types.html"><strong aria-hidden="true">11.</strong> Dependent Types</a></li><li class="chapter-item expanded affix "><li class="part-title">Implementation</li><li class="chapter-item expanded "><a href="low_level.html"><strong aria-hidden="true">12.</strong> Low-level Semantics</a></li><li class="chapter-item expanded "><a href="run_rep.html"><strong aria-hidden="true">13.</strong> Runtime Representation</a></li><li class="chapter-item expanded "><a href="subset.html"><strong aria-hidden="true">14.</strong> Core Subset</a></li><li class="chapter-item expanded "><a href="specialisation.html"><strong aria-hidden="true">15.</strong> Specialisation</a></li><li class="chapter-item expanded affix "><li class="part-title">Design</li><li class="chapter-item expanded "><a href="soundness.html"><strong aria-hidden="true">16.</strong> Soundness</a></li><li class="chapter-item expanded "><a href="wadlers_law.html"><strong aria-hidden="true">17.</strong> Syntax Debates</a></li><li class="chapter-item expanded affix "><li class="part-title">TODO</li><li class="chapter-item expanded "><a href="modes.html"><strong aria-hidden="true">18.</strong> Modes</a></li><li class="chapter-item expanded affix "><li class="part-title">Old</li><li class="chapter-item expanded "><a href="allocators.html"><strong aria-hidden="true">19.</strong> Type Aware Allocators</a></li><li class="chapter-item expanded "><a href="recursive_types.html"><strong aria-hidden="true">20.</strong> Recursive Types</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -173,42 +173,57 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="arrows"><a class="header" href="#arrows">Arrows</a></h1>
-<p>WTy2 has a lot of arrows, they are summarised here.</p>
-<h2 id="function--"><a class="header" href="#function--">Function (-&gt;)</a></h2>
-<pre><code class="language-WTy2">(-&gt;): (Type, Type) -&gt; Type
+                        <h1 id="type-operators"><a class="header" href="#type-operators">Type Operators</a></h1>
+<p>WTy2 quite a few built-in type operators (mostly arrows), they are summarised here.</p>
+<h2 id="function--"><a class="header" href="#function--">Function (<code>-&gt;</code>)</a></h2>
+<pre><code class="language-WTy2">(-&gt;): (t: Type, r: t -&gt; Type) -&gt; Type
 </code></pre>
-<p>Ordinary function arrow.</p>
-<h2 id="constructor-"><a class="header" href="#constructor-">Constructor (~&gt;)</a></h2>
-<pre><code class="language-WTy2">(~&gt;): (Type, Type) -&gt; Type
-</code></pre>
-<p>Similar to function arrow, but must be &quot;matchable&quot;. i.e: <code>(x: a, y: a, f: a -&gt; b, g: a -&gt; b) &lt;&lt;= f(x) ~ g(y) |- f ~ g /\ a ~ b</code> is in scope.</p>
-<h2 id="constrained-by-"><a class="header" href="#constrained-by-">Constrained By (&lt;&lt;=)</a></h2>
+<p>Dependent function arrow.</p>
+<p>In the source language, braces are implicitly added around RHS if necessary.</p>
+<h2 id="constrained-by-"><a class="header" href="#constrained-by-">Constrained By (<code>&lt;&lt;=</code>)</a></h2>
 <pre><code class="language-WTy2">(&lt;&lt;=): (t: Type, p: t -&gt; Constraint) -&gt; Type
 </code></pre>
-<p>Narrows a type, requiring the constraint to be true on the value for it to a member of the new type. When pattern matching on members of the type, the constraint is brought into scope.</p>
-<h2 id="supertype-"><a class="header" href="#supertype-">Supertype (&lt;:)</a></h2>
+<p>Narrows a type, requiring the constraint to be satisfiable for all member values. When pattern matching on values of the type, the constraint is brought into scope.</p>
+<h2 id="constructor-"><a class="header" href="#constructor-">Constructor (<code>~&gt;</code>)</a></h2>
+<pre><code class="language-WTy2">(~&gt;): (t: Type, r: t -&gt; Type) -&gt; Type
+</code></pre>
+<p>Similar to function arrow, but must be &quot;matchable&quot;. i.e:</p>
+<pre><code class="language-WTy2">a ~&gt; b = (f: a -&gt; b) &lt;&lt;= {
+    (x: a, y: a, g: a ~&gt; b) &lt;&lt;= { f(x) ~ g(x) } |- { f ~ g /\ x ~ y }
+  }
+</code></pre>
+<p>In the source language, braces are implicitly added around RHS if necessary.</p>
+<h2 id="supertype-"><a class="header" href="#supertype-">Supertype (<code>&lt;:</code>)</a></h2>
 <pre><code class="language-WTy2">(&lt;:): (Type, Type) -&gt; Constraint
+t &lt;: u = for(x: t) { x :: u }
 </code></pre>
 <p>Values of the LHS type can be upcast into ones of the RHS type.</p>
-<h2 id="implies-"><a class="header" href="#implies-">Implies (=&gt;)</a></h2>
+<h2 id="instance-head-"><a class="header" href="#instance-head-">Instance Head (<code>&lt;=:</code>)</a></h2>
+<pre><code class="language-WTy2">(&lt;=:): (Type, Instanceable)
+</code></pre>
+<p>The LHS type is an instance head of the instanceable<sup class="footnote-reference"><a href="#note">1</a></sup> type on the RHS.</p>
+<h2 id="implies-"><a class="header" href="#implies-">Implies (<code>=&gt;</code>)</a></h2>
 <pre><code class="language-WTy2">(=&gt;): (Constraint, Constraint) -&gt; Constraint
 </code></pre>
 <p>The RHS constraint can be obtained from the LHS constraint.</p>
-<h2 id="entails--"><a class="header" href="#entails--">Entails (|-)</a></h2>
-<pre><code class="language-WTy2">(|-): (Type, Constraint) -&gt; Type
-a |- r = a -&gt; Proof(r)
+<h2 id="forall-for--derivable--"><a class="header" href="#forall-for--derivable--">Forall (<code>for</code>) / Derivable (<code>|-</code>)</a></h2>
+<pre><code class="language-WTy2">for : (t: Type, c: t -&gt; Constraint) -&gt; Constraint
+(|-): (t: Type, c: t -&gt; Constraint) -&gt; Constraint
 </code></pre>
+<p>The constraint <code>c(t)</code> is derivable from the typing context <code>t</code> - i.e: quantified constraints. The operator version <code>(|-)</code> exists predominately to allow use of <code>(&lt;&lt;=)</code> on the quantified-over type without requiring additional parenthesis.</p>
+<p>In the source language, braces are implicitly added around RHS of (<code>|-</code>) if necessary.</p>
+<p><sup class="footnote-reference"><a href="#note">1</a></sup>
+<code>Instanceable</code> is not actually a type in WTy2 (and so <code>x :: Instanceable</code> is not a valid constraint). The reason for this is that it breaks some very intuitive and useful laws (e.g: <code>for(x &lt;: t, y &lt;: t) { x &amp; y &lt;: t }</code>). The suggested actual condition is to allow only identifiers which are resolved directly as open types (i.e: before performing any reduction). This keeps WTy2 in line with current-day Haskell, but there are other options - see <a href="https://gitlab.haskell.org/ghc/ghc/-/issues/13267">GHC Issue 13267</a>.</p>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="erasure_visibility.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="core_types.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
-                            <a rel="next" href="utilities.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next" href="functions.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
 
@@ -218,11 +233,11 @@ a |- r = a -&gt; Proof(r)
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="erasure_visibility.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="core_types.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
 
-                    <a rel="next" href="utilities.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next" href="functions.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>

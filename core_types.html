@@ -84,7 +84,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded affix "><li class="part-title">Basic Concepts</li><li class="chapter-item expanded "><a href="core_types.html" class="active"><strong aria-hidden="true">2.</strong> Core Types</a></li><li class="chapter-item expanded "><a href="functions.html"><strong aria-hidden="true">3.</strong> Functions</a></li><li class="chapter-item expanded "><a href="declarations.html"><strong aria-hidden="true">4.</strong> Declarations</a></li><li class="chapter-item expanded "><a href="erasure_visibility.html"><strong aria-hidden="true">5.</strong> Erasure and Visibility</a></li><li class="chapter-item expanded "><a href="arrows.html"><strong aria-hidden="true">6.</strong> Arrows</a></li><li class="chapter-item expanded affix "><li class="part-title">Extra</li><li class="chapter-item expanded "><a href="utilities.html"><strong aria-hidden="true">7.</strong> Utilities</a></li><li class="chapter-item expanded affix "><li class="part-title">Dependent Types</li><li class="chapter-item expanded "><a href="constraints.html"><strong aria-hidden="true">8.</strong> Constraints</a></li><li class="chapter-item expanded "><a href="proofs.html"><strong aria-hidden="true">9.</strong> Proofs</a></li><li class="chapter-item expanded "><a href="dependent_types.html"><strong aria-hidden="true">10.</strong> Dependent Types</a></li><li class="chapter-item expanded affix "><li class="part-title">Implementation/Low-Level Features</li><li class="chapter-item expanded "><a href="subset.html"><strong aria-hidden="true">11.</strong> Core Subset</a></li><li class="chapter-item expanded "><a href="recursive_types.html"><strong aria-hidden="true">12.</strong> Recursive Types</a></li><li class="chapter-item expanded "><a href="specialisation.html"><strong aria-hidden="true">13.</strong> Specialisation</a></li><li class="chapter-item expanded "><a href="allocators.html"><strong aria-hidden="true">14.</strong> Type Aware Allocators</a></li><li class="chapter-item expanded affix "><li class="part-title">Design</li><li class="chapter-item expanded "><a href="soundness.html"><strong aria-hidden="true">15.</strong> Soundness</a></li><li class="chapter-item expanded "><a href="wadlers_law.html"><strong aria-hidden="true">16.</strong> Syntax Debates</a></li><li class="chapter-item expanded affix "><li class="part-title">TODO</li><li class="chapter-item expanded "><a href="modes.html"><strong aria-hidden="true">17.</strong> Modes</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded affix "><li class="part-title">Basic Concepts</li><li class="chapter-item expanded "><a href="core_types.html" class="active"><strong aria-hidden="true">2.</strong> Core Types</a></li><li class="chapter-item expanded "><a href="arrows.html"><strong aria-hidden="true">3.</strong> Core Type Operators</a></li><li class="chapter-item expanded "><a href="functions.html"><strong aria-hidden="true">4.</strong> Functions</a></li><li class="chapter-item expanded "><a href="declarations.html"><strong aria-hidden="true">5.</strong> Declarations</a></li><li class="chapter-item expanded "><a href="erasure_visibility.html"><strong aria-hidden="true">6.</strong> Erasure and Visibility</a></li><li class="chapter-item expanded "><a href="coherence.html"><strong aria-hidden="true">7.</strong> Coherence</a></li><li class="chapter-item expanded affix "><li class="part-title">Extra</li><li class="chapter-item expanded "><a href="utilities.html"><strong aria-hidden="true">8.</strong> Utilities</a></li><li class="chapter-item expanded affix "><li class="part-title">Dependent Types</li><li class="chapter-item expanded "><a href="constraints.html"><strong aria-hidden="true">9.</strong> Constraints</a></li><li class="chapter-item expanded "><a href="proofs.html"><strong aria-hidden="true">10.</strong> Proofs</a></li><li class="chapter-item expanded "><a href="dependent_types.html"><strong aria-hidden="true">11.</strong> Dependent Types</a></li><li class="chapter-item expanded affix "><li class="part-title">Implementation</li><li class="chapter-item expanded "><a href="low_level.html"><strong aria-hidden="true">12.</strong> Low-level Semantics</a></li><li class="chapter-item expanded "><a href="run_rep.html"><strong aria-hidden="true">13.</strong> Runtime Representation</a></li><li class="chapter-item expanded "><a href="subset.html"><strong aria-hidden="true">14.</strong> Core Subset</a></li><li class="chapter-item expanded "><a href="specialisation.html"><strong aria-hidden="true">15.</strong> Specialisation</a></li><li class="chapter-item expanded affix "><li class="part-title">Design</li><li class="chapter-item expanded "><a href="soundness.html"><strong aria-hidden="true">16.</strong> Soundness</a></li><li class="chapter-item expanded "><a href="wadlers_law.html"><strong aria-hidden="true">17.</strong> Syntax Debates</a></li><li class="chapter-item expanded affix "><li class="part-title">TODO</li><li class="chapter-item expanded "><a href="modes.html"><strong aria-hidden="true">18.</strong> Modes</a></li><li class="chapter-item expanded affix "><li class="part-title">Old</li><li class="chapter-item expanded "><a href="allocators.html"><strong aria-hidden="true">19.</strong> Type Aware Allocators</a></li><li class="chapter-item expanded "><a href="recursive_types.html"><strong aria-hidden="true">20.</strong> Recursive Types</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -174,7 +174,7 @@
                 <div id="content" class="content">
                     <main>
                         <h1 id="core-types"><a class="header" href="#core-types">Core Types</a></h1>
-<p>WTy2 is a language with subtyping and with first-class types. This has an interesting consequence: instead of having some sort of &quot;kind&quot; system, the key language constructs in WTy2 simply implement various built-in types.</p>
+<p>WTy2 is a language with subtyping and with first-class types. This has an interesting consequence: instead of having a &quot;kind&quot; system, different language constructs are simply members of different types.</p>
 <h2 id="any"><a class="header" href="#any">Any</a></h2>
 <p><code>Any</code> is the supertype of all types.</p>
 <h2 id="type"><a class="header" href="#type">Type</a></h2>
@@ -184,11 +184,36 @@
 <p><code>Constraint</code> represents &quot;constraints&quot;. These can look syntactically similar to bindings (the constraint-versions of binding operators contain an extra <code>:</code> to disambiguate), but instead of bringing variables into scope, they constrain existing values.</p>
 <p>Constraints can be created with the built-in <code>~</code>, <code>::</code> and <code>&lt;::</code> operators.</p>
 <h2 id="functions"><a class="header" href="#functions">Functions</a></h2>
-<p><code>a -&gt; b</code> is the generic function type. Function arrows in WTy2 are dependent, but to avoid always having to write non-dependent arrows as <code>a -&gt; { b }</code>, WTy2 features some syntax sugar which automatically inserts braces.</p>
-<h2 id="tuplesrecordsdependent-pairsliststelescopes"><a class="header" href="#tuplesrecordsdependent-pairsliststelescopes">Tuples/Records/Dependent Pairs/Lists/Telescopes</a></h2>
-<p>Yep, Tuples, Records, Dependent Pairs, Lists and Telescopes in WTy2 are all supported via the same built-in datatype (somewhat similarly to how TypeScript supports tuple-like syntax with it's arrays, but in a dependent setting). This datatype and associated sugar in WTy2 becomes a little complicated, and so it has it's own dedicated section in the spec.</p>
-<h3 id="unit-"><a class="header" href="#unit-">Unit (&quot;()&quot;)</a></h3>
-<p><code>()</code> is the unit tuple. It implements <code>Type</code>, <code>Constraint</code> AND <code>()</code> (i.e: itself)</p>
+<p>See <a href="./arrows.html">Core Type Operators</a></p>
+<h2 id="tuplesrecordsdependent-pairslists-and-telescopes"><a class="header" href="#tuplesrecordsdependent-pairslists-and-telescopes">Tuples/Records/Dependent Pairs/Lists and Telescopes</a></h2>
+<p>In WTy2, the built-in tuples, records, dependent pairs, lists etc... all desugar down to the same datatype - a dependent inductively-defined tuple:</p>
+<pre><code class="language-WTy2">datatype DepTup(tele: Tele) where
+  (:.) : [ty, rest] (head: ty, tail: rest(head))
+       -&gt; DepTup(ty .- rest)
+  Nil  : DepTup(NilTele);
+</code></pre>
+<p>Where <code>Tele</code> is another built-in datatype, a telescope:</p>
+<pre><code class="language-WTy2">datatype Tele
+  = (.-)    : (ty: Type, rest: t -&gt; Type) -&gt; Tele
+  | NilTele : Tele;
+</code></pre>
+<p>Ordinary lists and tuples can be defined from this pretty trivially:</p>
+<pre><code>type List(ty: Type)
+  = [head: ty, tail: List(ty)]
+    '(head :. tail)
+  | 'Nil;
+
+type Tuple(tys: List(ty))
+  = [ty, rest, head: ty, tail: Tuple(rest)]
+    '(head :. tail) &lt;&lt;= { tys ~ ty :. rest }
+  | 'Nil;
+</code></pre>
+<p>More convenient to use list/tuple syntax and records are implemented as syntax-sugar on top of these datatypes (i.e: <code>(0, 1, 2)</code> becomes <code>0 :. 1 :. 2 :. Nil</code>). Following the structure of how <code>DepTup</code> is defined, fields in dependent records can only depend on fields to the left of them.</p>
+<h3 id="unit-"><a class="header" href="#unit-">Unit (<code>()</code>)</a></h3>
+<p>The unit type is also defined in terms of <code>DepTup</code>, with <code>()</code> being a valid identifier:</p>
+<pre><code>pattern () = Nil;
+type Unit = '();
+</code></pre>
 <h3 id="design-note-singleton-tuples"><a class="header" href="#design-note-singleton-tuples">Design Note: Singleton Tuples</a></h3>
 <p>WTy2 also supports singleton tuples. The parsing ambiguity of expression in parens vs a singleton tuple is resolved as follows:
 <code>(E)</code> where <code>E</code> is an expression - parenthesised expression
@@ -207,7 +232,7 @@
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
-                            <a rel="next" href="functions.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next" href="arrows.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
 
@@ -221,7 +246,7 @@
                         <i class="fa fa-angle-left"></i>
                     </a>
 
-                    <a rel="next" href="functions.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next" href="arrows.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>

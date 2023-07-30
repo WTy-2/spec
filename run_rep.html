@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Type Aware Allocators - The WTy2 Language Specification</title>
+        <title>Runtime Representation - The WTy2 Language Specification</title>
 
 
         <!-- Custom HTML head -->
@@ -84,7 +84,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded affix "><li class="part-title">Basic Concepts</li><li class="chapter-item expanded "><a href="core_types.html"><strong aria-hidden="true">2.</strong> Core Types</a></li><li class="chapter-item expanded "><a href="arrows.html"><strong aria-hidden="true">3.</strong> Core Type Operators</a></li><li class="chapter-item expanded "><a href="functions.html"><strong aria-hidden="true">4.</strong> Functions</a></li><li class="chapter-item expanded "><a href="declarations.html"><strong aria-hidden="true">5.</strong> Declarations</a></li><li class="chapter-item expanded "><a href="erasure_visibility.html"><strong aria-hidden="true">6.</strong> Erasure and Visibility</a></li><li class="chapter-item expanded "><a href="coherence.html"><strong aria-hidden="true">7.</strong> Coherence</a></li><li class="chapter-item expanded affix "><li class="part-title">Extra</li><li class="chapter-item expanded "><a href="utilities.html"><strong aria-hidden="true">8.</strong> Utilities</a></li><li class="chapter-item expanded affix "><li class="part-title">Dependent Types</li><li class="chapter-item expanded "><a href="constraints.html"><strong aria-hidden="true">9.</strong> Constraints</a></li><li class="chapter-item expanded "><a href="proofs.html"><strong aria-hidden="true">10.</strong> Proofs</a></li><li class="chapter-item expanded "><a href="dependent_types.html"><strong aria-hidden="true">11.</strong> Dependent Types</a></li><li class="chapter-item expanded affix "><li class="part-title">Implementation</li><li class="chapter-item expanded "><a href="low_level.html"><strong aria-hidden="true">12.</strong> Low-level Semantics</a></li><li class="chapter-item expanded "><a href="run_rep.html"><strong aria-hidden="true">13.</strong> Runtime Representation</a></li><li class="chapter-item expanded "><a href="subset.html"><strong aria-hidden="true">14.</strong> Core Subset</a></li><li class="chapter-item expanded "><a href="specialisation.html"><strong aria-hidden="true">15.</strong> Specialisation</a></li><li class="chapter-item expanded affix "><li class="part-title">Design</li><li class="chapter-item expanded "><a href="soundness.html"><strong aria-hidden="true">16.</strong> Soundness</a></li><li class="chapter-item expanded "><a href="wadlers_law.html"><strong aria-hidden="true">17.</strong> Syntax Debates</a></li><li class="chapter-item expanded affix "><li class="part-title">TODO</li><li class="chapter-item expanded "><a href="modes.html"><strong aria-hidden="true">18.</strong> Modes</a></li><li class="chapter-item expanded affix "><li class="part-title">Old</li><li class="chapter-item expanded "><a href="allocators.html" class="active"><strong aria-hidden="true">19.</strong> Type Aware Allocators</a></li><li class="chapter-item expanded "><a href="recursive_types.html"><strong aria-hidden="true">20.</strong> Recursive Types</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded affix "><li class="part-title">Basic Concepts</li><li class="chapter-item expanded "><a href="core_types.html"><strong aria-hidden="true">2.</strong> Core Types</a></li><li class="chapter-item expanded "><a href="arrows.html"><strong aria-hidden="true">3.</strong> Core Type Operators</a></li><li class="chapter-item expanded "><a href="functions.html"><strong aria-hidden="true">4.</strong> Functions</a></li><li class="chapter-item expanded "><a href="declarations.html"><strong aria-hidden="true">5.</strong> Declarations</a></li><li class="chapter-item expanded "><a href="erasure_visibility.html"><strong aria-hidden="true">6.</strong> Erasure and Visibility</a></li><li class="chapter-item expanded "><a href="coherence.html"><strong aria-hidden="true">7.</strong> Coherence</a></li><li class="chapter-item expanded affix "><li class="part-title">Extra</li><li class="chapter-item expanded "><a href="utilities.html"><strong aria-hidden="true">8.</strong> Utilities</a></li><li class="chapter-item expanded affix "><li class="part-title">Dependent Types</li><li class="chapter-item expanded "><a href="constraints.html"><strong aria-hidden="true">9.</strong> Constraints</a></li><li class="chapter-item expanded "><a href="proofs.html"><strong aria-hidden="true">10.</strong> Proofs</a></li><li class="chapter-item expanded "><a href="dependent_types.html"><strong aria-hidden="true">11.</strong> Dependent Types</a></li><li class="chapter-item expanded affix "><li class="part-title">Implementation</li><li class="chapter-item expanded "><a href="low_level.html"><strong aria-hidden="true">12.</strong> Low-level Semantics</a></li><li class="chapter-item expanded "><a href="run_rep.html" class="active"><strong aria-hidden="true">13.</strong> Runtime Representation</a></li><li class="chapter-item expanded "><a href="subset.html"><strong aria-hidden="true">14.</strong> Core Subset</a></li><li class="chapter-item expanded "><a href="specialisation.html"><strong aria-hidden="true">15.</strong> Specialisation</a></li><li class="chapter-item expanded affix "><li class="part-title">Design</li><li class="chapter-item expanded "><a href="soundness.html"><strong aria-hidden="true">16.</strong> Soundness</a></li><li class="chapter-item expanded "><a href="wadlers_law.html"><strong aria-hidden="true">17.</strong> Syntax Debates</a></li><li class="chapter-item expanded affix "><li class="part-title">TODO</li><li class="chapter-item expanded "><a href="modes.html"><strong aria-hidden="true">18.</strong> Modes</a></li><li class="chapter-item expanded affix "><li class="part-title">Old</li><li class="chapter-item expanded "><a href="allocators.html"><strong aria-hidden="true">19.</strong> Type Aware Allocators</a></li><li class="chapter-item expanded "><a href="recursive_types.html"><strong aria-hidden="true">20.</strong> Recursive Types</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -144,7 +144,7 @@
                         <a href="https://github.com/WTy-2/spec/" title="Git repository" aria-label="Git repository">
                             <i id="git-repository-button" class="fa fa-github"></i>
                         </a>
-                        <a href="https://github.com/WTy-2/spec/edit/trunk/src/allocators.md" title="Suggest an edit" aria-label="Suggest an edit">
+                        <a href="https://github.com/WTy-2/spec/edit/trunk/src/run_rep.md" title="Suggest an edit" aria-label="Suggest an edit">
                             <i id="git-edit-button" class="fa fa-edit"></i>
                         </a>
 
@@ -173,22 +173,106 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="type-aware-allocators"><a class="header" href="#type-aware-allocators">Type Aware Allocators</a></h1>
-<p>A goal of WTy2 is to allow for good performance (especially with regards to memory locality) without much additional work on the part of the programmer/enforcing closed-world assumptions on written code.</p>
-<p>A major part of this is the concept of a type-aware-allocator. WTy2 makes extensive use of allocators (array based and recursive data structures in WTy2 should ideally be generic over the allocation scheme) so by providing tools to create good ones, almost all data structures should benefit.</p>
-<p>As an example for the sort of properties we would like to achieve, suppose our program had a large list of <code>Int</code>s, this was then upcasted into a list of <code>Num</code>s and then many other opaque <code>Num</code>s got added to the list. We then calculate a total sum (note that this operation does not care about the order in which we iterate over the values). Ideally therefore (for cache and memory locality reasons) we should somehow keep all the <code>Int</code>s in their own region of memory and sum these first.</p>
-<p>The rules for performing specialisation with these allocators should use similar (perhaps the same) rules as ordinary function specialisation. i.e: a good heuristic is if we allocate any value with known concrete type, we should specialise for that type.</p>
-<p>It would be ideal if WTy2 could provide some sort of language interface to create custom type-aware alloactors. I do not currently have a good model for how to design this. Difficulties I can currently forsee include prevent the number of specialisations from being observable (to prevent UB - the compiler is free to specialise as much or as little as it wants), and more generally just challenges of writing low-level mutability-based code in a pure functional language.</p>
+                        <h1 id="runtime-representation"><a class="header" href="#runtime-representation">Runtime Representation</a></h1>
+<p>Every WTy2 value has an associated &quot;full&quot; representation, which is unique. In practice, values are known to be members of types, which constrains the possible values, and so can be smaller.</p>
+<p>Every tag is 32 bits.</p>
+<h2 id="examples"><a class="header" href="#examples">Examples</a></h2>
+<pre><code class="language-WTy2">datatype Bool = True | False;
+
+datatype Nat = 0 | 1 | 2 | 3 | ...;
+
+// Note this is probably not a great choice for representation of `Int` in
+// WTy2 base given it means all 32-bit integers are now 64-bits even in compact
+// form (and we have negative zero!!). It is just an example.
+datatype Sign = Positive | Negative;
+
+datatype Int = MkInt(Sign, Nat);
+
+type Num where { ... };
+
+instance Num for Int where { ... };
+
+type C;
+
+instance C for Int &lt;&lt;= { holds(it.between(2, 5)) }
+instance C for Int &lt;&lt;= { holds(it &lt; -1) }
+</code></pre>
+<div class="table-wrapper"><table><thead><tr><th>Variable</th><th>Full Repr</th><th>Compact Repr</th></tr></thead><tbody>
+<tr><td>x: Bool = True</td><td><code>TBool, TTrue</code></td><td><code>TTrue</code></td></tr>
+<tr><td>x: Nat = 3</td><td><code>MkInt, T3</code></td><td><code>T3</code></td></tr>
+<tr><td>x: Int = 3</td><td><code>MkInt, TSign, TPositive, TNat T3</code></td><td><code>TPositive, T3</code></td></tr>
+<tr><td>x: Int = -3</td><td><code>MkInt, TSign, TNegative, TNat T3</code></td><td><code>TNegative, T3</code></td></tr>
+<tr><td>x: Num = 3</td><td><code>TNum, TNumIntDict, MkInt, T3</code></td><td><code>TNum, MkInt, T3</code></td></tr>
+<tr><td>x: C = 3</td><td><code>TC, TCIntDict0, MkInt, T3</code></td><td><code>TC, TCIntDict0, T3</code></td></tr>
+</tbody></table>
+</div>
+<p>Subtyping</p>
+<p>There are actually two possible strategies for combining this scheme with subtyping:</p>
+<ul>
+<li>
+<p>Make subtyping coercive by adding/removing tags implicitly where necessary. This limits sharing significantly.</p>
+</li>
+<li>
+<p>Still point to the original data but ALSO include the type (recall types are first-class values). This makes pattern matching on values of these supertypes much more complicated.</p>
+</li>
+</ul>
+<h2 id="comparison-of-subtyping-approaches"><a class="header" href="#comparison-of-subtyping-approaches">Comparison of Subtyping Approaches:</a></h2>
+<pre><code class="language-WTy2">data Foo;
+datatype B = Bar | Baz;
+data Car;
+data Coo;
+
+type C = B | 'Foo | 'Car | 'Coo;
+
+type C_Alias = C;
+</code></pre>
+<pre><code class="language-WTy2">foo: C -&gt; ...;
+
+x: ??? = Baz;
+foo(x); // How is x passed to foo?
+</code></pre>
+<p><code>x</code> is a unique stack allocated <code>C</code> (<code>C : Sized</code> so this is possible)
+<code>[TB, TBaz]</code>
+<code>x</code> is a reference to a <code>C</code>
+<code>[TRef, &amp;[TB, TBaz]]</code>
+<code>x</code> is a reference to a B (TRefCo = Covariant Reference)
+<code>[TRefCo, &amp;[TB], &amp;[TBaz]]</code>
+<code>x</code> is a reference to C_Alias (i.e: if can prove representation is same, then don't need to use TRefCo)
+<code>[TRef, &amp;[TBaz]]</code></p>
+<p>Costs (i.e: additional allocation on top of the referenced value):</p>
+<ol>
+<li>None</li>
+<li>One 8 byte stack allocation</li>
+<li>One 4 byte heap allocation and one 12 byte stack allocation</li>
+<li>One 8 byte stack allocation</li>
+</ol>
+<p>x is a unique stack allocated C (C : Sized so this is possible)
+<code>[TB, TBaz]</code>
+x is a reference to a C
+<code>[TB, TBaz]</code>
+x is a reference to a B (TRefCo = Covariant Reference)
+<code>[TB, TBaz], [TBaz]</code>
+x is a reference to C_Alias (i.e: if can prove representation is same, then don't need to use TRefCo)
+<code>[TBaz]</code></p>
+<p>Costs:</p>
+<ol>
+<li>None</li>
+<li>None</li>
+<li>One <code>size(TBaz) + TB</code> stack allocation</li>
+<li>None</li>
+</ol>
+<p>Conclusions:</p>
+<p>The important difference here is the third case: a heap allocation (of the type, which must be unsized) vs a copy of the value (which can be done on the stack).</p>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="modes.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="low_level.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
-                            <a rel="next" href="recursive_types.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next" href="subset.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
 
@@ -198,11 +282,11 @@
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="modes.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="low_level.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
 
-                    <a rel="next" href="recursive_types.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next" href="subset.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>

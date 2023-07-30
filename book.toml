@@ -7,6 +7,6 @@ title = "The WTy2 Language Specification"
 
 [output.html]
 git-repository-url = "https://github.com/WTy-2/spec/"
-edit-url-template = "https://github.com/WTy-2/spec/edit/main/{path}"
+edit-url-template = "https://github.com/WTy-2/spec/edit/trunk/{path}"
 additional-css = ["theme/custom.css"]
 additional-js = ["theme/ligature_toggle.js"]

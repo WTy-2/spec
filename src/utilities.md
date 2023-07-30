@@ -48,7 +48,7 @@ else[t: Type](x: Maybe(t), e: () -> t): t = with(x) {
 
 E.g:
 
-````WTy2
+```WTy2
 _ := if(True) {
     "Case one!"
 }.elif(False) {
@@ -64,7 +64,7 @@ Inspired by Kotlin
 
 ```WTy2
 fun[r: Type](t: Type, f: t -> r): t -> r = f
-````
+```
 
 In WTy2, serves to annotate the argument type of a function without having to use arrow-lambda syntax.
 
@@ -110,4 +110,4 @@ _ := with(x) {
 }
 ```
 
-[^note] Of course in WTy2, `do`-notation is not really related to the `do` utility defined here; it can be used in any block... But hey, I didn't name it!
+[^note] Of course in WTy2, `do`-notation is not really related to the `do` utility defined here; it can be used in any block. "Braces-notation" doesn't quite roll of the tongue though...

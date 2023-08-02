@@ -1,8 +1,8 @@
 # Soundness
 
-WTy2 claims is a programming language with dependent types first and foremost, NOT a theorem prover.
+WTy2 is a programming language with dependent types first and foremost, NOT a theorem prover.
 
-In fact, WTy2 as it currently exists is highly inconsistent, it is easy to prove bottom and from there anything. The only guarantee making this somewhat palatable is that these are all cases where the program will loop at runtime. WTy2 (when programs are ran in debug mode) will never actually create values of bottom type.
+In fact, viewed as a logic, WTy2 as it currently exists is highly inconsistent. It is triviall to prove bottom and from there anything. The only guarantee making this somewhat palatable is that these are all cases where the program will loop or crash at runtime. WTy2 (when programs are ran in debug mode without optimisations) will never actually create values of bottom type.
 
 This is useful for programming (proving termination is tiresome and sometimes even impossible) but makes WTy2 effectively useless for theorem proving. In the far future if these holes were to be closed (likely opt-in with some sort of compiler pragma or flag, `safe`), then this would no longer be the case, and hence these holes are documented below:
 
@@ -18,7 +18,7 @@ Similar to Haskell, WTy2 has the axiom `Type : Type`. Girard's paradox [^note] i
 
 ## Russel's Paradox - DANGER!!
 
-Unfortunately, WTy2 as currently designed has a much larger soundness hole than either of the above problems (both of which, while limiting its capabilities as a theorem prover, still _probably_ still have the guarantee that if the program manages to execute the assignment of a variable, it's value is of the correct type - i.e: the program will either loop infinitely or produce bottom before executing any unsound code).
+Unfortunately, WTy2 as currently designed has a much larger soundness hole than either of the above problems (both of which, while limiting its capabilities as a theorem prover, still _probably_ still have the guarantee that if the program manages to execute the assignment of a variable, it's value is of the correct type - i.e: the program will either loop infinitely or produce crash before executing any unsound code).
 
 Due to the way subtyping and constraints work however, Russel's paradox can be encoded surprisingly easily, with bottom appearing to be derivable without the program even _doing_ anything.
 
@@ -70,5 +70,7 @@ Constraints are written in almost identical syntax to ordinary WTy2 source, but 
 ```
 
 And so we conclude by deriving `Russel :: Void`, which is clearly unsound.
+
+I am currently unsure how to resolve this...
 
 [^note] See http://liamoc.net/posts/2015-09-10-girards-paradox.html for a nice walkthrough of how to derive this in Agda.

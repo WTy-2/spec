@@ -39,7 +39,7 @@ instance C for Int <<= { holds(it < -1) }
 
 ## Subtyping
 
-There are two possible strategies I can think of for combining this scheme with subtyping:
+There are a couple possible strategies I can think of for combining this scheme with subtyping:
 
 - Make subtyping coercive by copying and adding/removing where necessary. This limits sharing significantly.
 
@@ -47,4 +47,4 @@ There are two possible strategies I can think of for combining this scheme with 
 
 [^note]:
     I think packing tags in memory might actually be possible if we added a special tag denoting a reference which could appear in any place in a value, but I need to think this over more.
-    In any case, this packing definitely would make implementation much more complicated, and for an initial compiler I really want something easy and consistent, not necessarily fast.
+    In any case, this packing definitely would make implementation more complicated, and for an initial compiler I really want something easy and consistent, not necessarily fast.

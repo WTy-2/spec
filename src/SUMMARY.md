@@ -1,43 +1,39 @@
 # Summary
 
-- [Introduction](./introduction.md)
+- [Introduction](./summary/introduction.md)
 
 # Basic Concepts
 
-- [Core Types](./core_types.md)
-- [Core Type Operators](./arrows.md)
-- [Functions](./functions.md)
-- [Declarations](./declarations.md)
-- [Erasure and Visibility](./erasure_visibility.md)
-- [Coherence](./coherence.md)
+- [Core Types](./basic_concepts/core_types.md)
+- [Core Type Operators](./basic_concepts/arrows.md)
+- [Functions](./basic_concepts/functions.md)
+- [Declarations](./basic_concepts/declarations.md)
+- [Erasure and Visibility](./basic_concepts/erasure_visibility.md)
+- [Coherence](./basic_concepts/coherence.md)
 
 # Extra
 
-- [Utilities](./utilities.md)
+- [Utilities](./extra/utilities.md)
 
 # Dependent Types
 
-- [Constraints](./constraints.md)
-- [Proofs](./proofs.md)
-- [Dependent Types](./dependent_types.md)
+- [Constraints](./dependent_types/constraints.md)
+- [Proofs](./dependent_types/proofs.md)
+- [Dependent Types](./dependent_types/dependent_types.md)
 
 # Implementation
 
-- [Low-level Semantics](./low_level.md)
-- [Runtime Representation](./run_rep.md)
-- [Core Subset](./subset.md)
-- [Specialisation](./specialisation.md)
+- [Low-level Semantics](./implementation/low_level.md)
+- [Runtime Representation](./implementation/run_rep.md)
+- [Core Subset](./implementation/subset.md)
+- [Specialisation](./implementation/specialisation.md)
 
 # Design
 
-- [Soundness](./soundness.md)
-- [Syntax Debates](./wadlers_law.md)
-
-# TODO
-
-- [Modes](./modes.md)
+- [Soundness](./design/soundness.md)
+- [Syntax Debates](./design/wadlers_law.md)
 
 # Old
 
-- [Type Aware Allocators](./allocators.md)
-- [Recursive Types](./recursive_types.md)
+- [Type Aware Allocators](./old/allocators.md)
+- [Recursive Types](./old/recursive_types.md)

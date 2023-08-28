@@ -85,7 +85,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded affix "><li class="part-title">Basic Concepts</li><li class="chapter-item expanded "><a href="core_types.html"><strong aria-hidden="true">2.</strong> Core Types</a></li><li class="chapter-item expanded "><a href="arrows.html"><strong aria-hidden="true">3.</strong> Core Type Operators</a></li><li class="chapter-item expanded "><a href="functions.html"><strong aria-hidden="true">4.</strong> Functions</a></li><li class="chapter-item expanded "><a href="declarations.html"><strong aria-hidden="true">5.</strong> Declarations</a></li><li class="chapter-item expanded "><a href="erasure_visibility.html"><strong aria-hidden="true">6.</strong> Erasure and Visibility</a></li><li class="chapter-item expanded "><a href="coherence.html"><strong aria-hidden="true">7.</strong> Coherence</a></li><li class="chapter-item expanded affix "><li class="part-title">Extra</li><li class="chapter-item expanded "><a href="utilities.html"><strong aria-hidden="true">8.</strong> Utilities</a></li><li class="chapter-item expanded affix "><li class="part-title">Dependent Types</li><li class="chapter-item expanded "><a href="constraints.html"><strong aria-hidden="true">9.</strong> Constraints</a></li><li class="chapter-item expanded "><a href="proofs.html"><strong aria-hidden="true">10.</strong> Proofs</a></li><li class="chapter-item expanded "><a href="dependent_types.html"><strong aria-hidden="true">11.</strong> Dependent Types</a></li><li class="chapter-item expanded affix "><li class="part-title">Implementation</li><li class="chapter-item expanded "><a href="low_level.html"><strong aria-hidden="true">12.</strong> Low-level Semantics</a></li><li class="chapter-item expanded "><a href="run_rep.html"><strong aria-hidden="true">13.</strong> Runtime Representation</a></li><li class="chapter-item expanded "><a href="subset.html"><strong aria-hidden="true">14.</strong> Core Subset</a></li><li class="chapter-item expanded "><a href="specialisation.html"><strong aria-hidden="true">15.</strong> Specialisation</a></li><li class="chapter-item expanded affix "><li class="part-title">Design</li><li class="chapter-item expanded "><a href="soundness.html"><strong aria-hidden="true">16.</strong> Soundness</a></li><li class="chapter-item expanded "><a href="wadlers_law.html"><strong aria-hidden="true">17.</strong> Syntax Debates</a></li><li class="chapter-item expanded affix "><li class="part-title">TODO</li><li class="chapter-item expanded "><a href="modes.html"><strong aria-hidden="true">18.</strong> Modes</a></li><li class="chapter-item expanded affix "><li class="part-title">Old</li><li class="chapter-item expanded "><a href="allocators.html"><strong aria-hidden="true">19.</strong> Type Aware Allocators</a></li><li class="chapter-item expanded "><a href="recursive_types.html"><strong aria-hidden="true">20.</strong> Recursive Types</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="summary/introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded affix "><li class="part-title">Basic Concepts</li><li class="chapter-item expanded "><a href="basic_concepts/core_types.html"><strong aria-hidden="true">2.</strong> Core Types</a></li><li class="chapter-item expanded "><a href="basic_concepts/arrows.html"><strong aria-hidden="true">3.</strong> Core Type Operators</a></li><li class="chapter-item expanded "><a href="basic_concepts/functions.html"><strong aria-hidden="true">4.</strong> Functions</a></li><li class="chapter-item expanded "><a href="basic_concepts/declarations.html"><strong aria-hidden="true">5.</strong> Declarations</a></li><li class="chapter-item expanded "><a href="basic_concepts/erasure_visibility.html"><strong aria-hidden="true">6.</strong> Erasure and Visibility</a></li><li class="chapter-item expanded "><a href="basic_concepts/coherence.html"><strong aria-hidden="true">7.</strong> Coherence</a></li><li class="chapter-item expanded affix "><li class="part-title">Extra</li><li class="chapter-item expanded "><a href="extra/utilities.html"><strong aria-hidden="true">8.</strong> Utilities</a></li><li class="chapter-item expanded affix "><li class="part-title">Dependent Types</li><li class="chapter-item expanded "><a href="dependent_types/constraints.html"><strong aria-hidden="true">9.</strong> Constraints</a></li><li class="chapter-item expanded "><a href="dependent_types/proofs.html"><strong aria-hidden="true">10.</strong> Proofs</a></li><li class="chapter-item expanded "><a href="dependent_types/dependent_types.html"><strong aria-hidden="true">11.</strong> Dependent Types</a></li><li class="chapter-item expanded affix "><li class="part-title">Implementation</li><li class="chapter-item expanded "><a href="implementation/low_level.html"><strong aria-hidden="true">12.</strong> Low-level Semantics</a></li><li class="chapter-item expanded "><a href="implementation/run_rep.html"><strong aria-hidden="true">13.</strong> Runtime Representation</a></li><li class="chapter-item expanded "><a href="implementation/subset.html"><strong aria-hidden="true">14.</strong> Core Subset</a></li><li class="chapter-item expanded "><a href="implementation/specialisation.html"><strong aria-hidden="true">15.</strong> Specialisation</a></li><li class="chapter-item expanded affix "><li class="part-title">Design</li><li class="chapter-item expanded "><a href="design/soundness.html"><strong aria-hidden="true">16.</strong> Soundness</a></li><li class="chapter-item expanded "><a href="design/wadlers_law.html"><strong aria-hidden="true">17.</strong> Syntax Debates</a></li><li class="chapter-item expanded affix "><li class="part-title">Old</li><li class="chapter-item expanded "><a href="old/allocators.html"><strong aria-hidden="true">18.</strong> Type Aware Allocators</a></li><li class="chapter-item expanded "><a href="old/recursive_types.html"><strong aria-hidden="true">19.</strong> Recursive Types</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -191,7 +191,7 @@
 <p><code>Constraint</code> represents &quot;constraints&quot;. These can look syntactically similar to bindings (the constraint-versions of binding operators contain an extra <code>:</code> to disambiguate), but instead of bringing variables into scope, they constrain existing values.</p>
 <p>Constraints can be created with the built-in <code>~</code>, <code>::</code> and <code>&lt;::</code> operators.</p>
 <h2 id="functions"><a class="header" href="#functions">Functions</a></h2>
-<p>See <a href="./arrows.html">Core Type Operators</a></p>
+<p>See <a href="basic_concepts/./arrows.html">Core Type Operators</a></p>
 <h2 id="tuplesrecordsdependent-pairslists-and-telescopes"><a class="header" href="#tuplesrecordsdependent-pairslists-and-telescopes">Tuples/Records/Dependent Pairs/Lists and Telescopes</a></h2>
 <p>In WTy2, the built-in tuples, records, dependent pairs, lists etc... all desugar down to the same datatype - a dependent inductively-defined tuple:</p>
 <pre><code class="language-WTy2">datatype DepTup(tele: Tele) where
@@ -326,22 +326,15 @@ t &lt;: u = for(x: t) { x :: u }
 <p>Type synonyms can be alternatively written by simply declaring a type with the appropriate supertype constraint and then writing a single instance:</p>
 <pre><code class="language-WTy2">type Alias {} =&gt; Foo
 
-instance Alias for Foo
+inst Alias for Foo
 </code></pre>
 <p>Because this pattern is so common, WTy2 provides syntax sugar for it:</p>
 <pre><code>type Alias = Foo
 </code></pre>
 <p>As coherence rules enforce that instances where the instance head is an open type prevent any other instances being written, it is suggested that ideal practice when writing an open-head instance is to instead write a type alias. Implementations may wish to warn the programmer in scenarios where this is not done.</p>
 <h2 id="instance-declarations"><a class="header" href="#instance-declarations">Instance Declarations</a></h2>
-<h3 id="coherence-and-orphan-rules"><a class="header" href="#coherence-and-orphan-rules">Coherence and Orphan Rules</a></h3>
-<p>It is critical to soundess of the WTy2 language that instances do not overlap. The rules for avioding overlap can be summarised as:</p>
-<ul>
-<li>If the instance head is open, that instance must be in the same module as the type declaration and no other instances can be written.</li>
-<li>If the instance head is closed, either the instance must be in the same module as the type declaration, or all implementing patterns must contain at least one variant tag that was defined in the same module (in other words: it must be impossible to write this instance in some other module without importing the one you are writing the instance in).</li>
-</ul>
-<h3 id="named-instances"><a class="header" href="#named-instances">Named Instances</a></h3>
-<p>WTy2 supports &quot;named instances&quot; as an alternative to the newtype pattern.</p>
-<p>The exact semantics and syntax of this feature are WIP, but the goal is to have something at least as powerful as Haskell's &quot;deriving via&quot; extension: enabling overridable default superclass instances.</p>
+<p>Instance declarations in WTy2 are denoted with the <code>inst</code> keyword followed by the open, inst-able type and the instance head (separated with <code>for</code>).</p>
+<p>The instance head type must not have any stuck terms and must not overlap with other instance types (the conditions of overlap are given fully in <a href="basic_concepts/./coherence.html">Coherence</a>).</p>
 <h2 id="data-declarations"><a class="header" href="#data-declarations">Data Declarations</a></h2>
 <p>Data declarations define &quot;variants&quot;. These appear similar to functions but instead of producing arbitrary values after executing some computation, they create tagged versions of whatever type they are declared to take as parameter.</p>
 <p>The suggested implementation is for tags to all share the same 32-bit space of values. As an optimisation, it is suggested that this tag is elided in cases where it is known at compile-time.</p>
@@ -392,7 +385,8 @@ _: () &lt;&lt;= { erasedLen ~ len } = ();
 <p>One unfortunate consequence of handling inference in this way is that setting up constraints based on the desired return type (bidirectional type inference) is not really possible. This can be a useful feature - for example, in languages like Haskell, numeric expressions can stay entirely in terms of <code>Num a =&gt; a</code> until finally being instantiated to a specific numeric type at call-site, but it also leads to many cases of potential ambiguity and arguably makes code harder to reason about.</p>
 <p><sup class="footnote-reference"><a href="#note">1</a></sup> Note this is less restrictive than it might initially sound. If we have <code>x: Animal</code> and a function <code>id[t: Type](x: t): t</code>, <code>id(x)</code> does indeed typecheck, with <code>t</code> instantiated to <code>x.head(Animal)</code>.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="coherence"><a class="header" href="#coherence">Coherence</a></h1>
-<p>WTy2 has a number of rules to guarantee instances do not overlap. These can be broken into checking if known instances overlap and preventing overlap down-the-line.</p>
+<p>WTy2 has a number of rules on instance declarations to guarantee instances do not overlap. Note &quot;overlap&quot; has a slightly stronger meaning in WTy2 than in other languages with typeclasses given the ubiquity of subtyping: treated as sets, there should exist no value that is a member of both types.</p>
+<p>Rules around instances and overlap can get tricky, and luckily, a lot of prior work has been done investigating them in languages such as Rust and Haskell. As such, I will repeatedly refer to the decisions those languages have taken to compare and contrast.</p>
 <h2 id="detecting-errors-early"><a class="header" href="#detecting-errors-early">Detecting Errors Early</a></h2>
 <p>A goal of WTy2 is that adding a valid instance (i.e: no error is detected at the site of the instance) should never break existing code.</p>
 <p>Note that Haskell does not actually meet this criteria due to overlap only being checked lazily (when trying to solve the constraint), see:</p>
@@ -412,10 +406,31 @@ foo = bar ('a', True)
 bar :: C a =&gt; a -&gt; ()
 bar _ = ()
 </code></pre>
-<p>Following this rule doesn't just lead to a theoretically cleaner language, it has a direct practical benefit: adding new valid instances to a library can never be a breaking change and so does not require a semantic version bump. This does make overlap checking more challenging though.</p>
+<p>Following this rule doesn't just lead to a theoretically cleaner language, it has a direct practical benefit: adding new valid instances to a library can never be a breaking change and so does not require a semantic version bump.</p>
+<h2 id="outermost-constructors"><a class="header" href="#outermost-constructors">Outermost Constructors</a></h2>
+<p>Given WTy2 is dependently typed with types effectively modelling arbitrary sets, checking if an arbitrary two types overlap is obviously undecidable. We can trivially encode Fermat's last theorem as a type overlap problem.</p>
+<pre><code class="language-WTy2">type C { };
+inst C for (x: Int, y: Int, z: Int) { };
+inst C for [n: Int] (x: Int, y: Int, z: Int) &lt;&lt;= { x ^ n + y ^ n ~ z ^ n } { };
+</code></pre>
+<p>We take the conservative approach of only considering the outermost constructor(s)<sup class="footnote-reference"><a href="#note">1</a></sup>. For example, the two below instances will always be treated as overlapping (regardless of whether <code>Foo</code> and <code>Bar</code> overlap):</p>
+<pre><code>data Mk[a: Type](x: a);
+
+type Foo : Type = ...
+
+type Bar : Type = ...
+
+type C { };
+
+inst C for [x: Foo] 'Mk(x) { };
+inst C for [x: Bar] 'Mk(x) { };
+</code></pre>
+<p>The check for overlap between closed types then becomes quite simple. The instance head types are reduced into form <code>[...] 'C0(...) | [...] 'C1(...) | ...</code> and the sets of outermost constructors are compared.</p>
+<p>As well as making overlap rules MUCH simpler, this has a really poweful benefit for implementation. (I believe that) with it, we can fully erase constraints (instead keeping tags around at runtime, and dispatching based off the outer tag).</p>
+<p>I further argue (though more loosely) that this has a further advantage in program reasoning, similar to parametricity. Consider defining a <code>Num</code> instance for lists. Haskell would allow defining a <code>Num</code> instance for <code>List Int</code> which operates with <code>zipWith</code> and <code>List SomethingElse</code> which concatenates lists with <code>(+)</code>, removes elements from the first list on <code>(-)</code> etc... I personally believe the solution mandated by WTy2 of defining a separate list datatype to correspond with each of the instances behaviours (or at the very least a newtype wrapper) leads to clearer code.</p>
 <h2 id="openclosed-rules"><a class="header" href="#openclosed-rules">Open/Closed Rules</a></h2>
 <p>Types can either be open or closed. These properties interact with the <code>(|)</code> and <code>(&amp;)</code> type operators like so:</p>
-<pre><code>for(t: Closed, u: Closed) { t | u :: Closed }
+<pre><code class="language-WTy2">for(t: Closed, u: Closed) { t | u :: Closed }
 for(t: Open, u: Type)     { t | u :: Open   }
 for(t: Closed, u: Type)   { t &amp; u :: Closed }
 for(t: Open, u: Open)     { t &amp; u :: Open   }
@@ -425,28 +440,11 @@ for(t: Open, u: Open)     { t &amp; u :: Open   }
 </code></pre>
 <p>...is translated into:</p>
 <pre><code class="language-WTy2">type T { } &lt;: U;
-instance T for U;
+inst T for U;
 </code></pre>
 <p>So for type-alias syntax, the defined type is closed iff the RHS type is closed.</p>
 <p>A type may have exactly one &quot;open&quot; instance, or many &quot;closed&quot; instances.</p>
-<p>NOTE: This is not a good enough rule - how to handle <code>Vec(Any)</code> - i.e: the argument type is open.</p>
-<h2 id="detecting-overlap-between-two-closed-types"><a class="header" href="#detecting-overlap-between-two-closed-types">Detecting Overlap Between Two Closed Types</a></h2>
-<p>Given two known instances, WTy2 must check that the sets of values represented by the types do not overlap. This check must be inherently conservative because this condition in general reduces to proving Fermat's last theorem.</p>
-<pre><code class="language-WTy2">type C
-instance C for (x: Int, y: Int, z: Int)
-instance C for [n: Int] (x: Int, y: Int, z: Int) &lt;&lt;= { x ^ n + y ^ n ~ z ^ n }
-</code></pre>
-<p>Still, we would like to allow vaguely interesting instances (like what modern Haskell can support) and so cannot be super conservative like declaring overlap as soon as two types contain the same constructor:</p>
-<pre><code class="language-hs">class C a
-
-instance C [Int]
-instance C [Bool]
-</code></pre>
-<p>Of course, the problem is MUCH easier in Haskell because the type system is intrinsic, and so instance selection is driven by the type, not the value.</p>
-<p>I have not worked out a specific algorithm yet, but my current idea is, for the duration of the check, to ignore many of WTy2's more advanced typing features (constraints, dependent types) and follow an algorithm similar to subtyping of equi-recursive types as described in TAPL.</p>
-<h2 id="orphan-rules"><a class="header" href="#orphan-rules">Orphan Rules</a></h2>
-<p>To avoid overlap even when multiple modules are involved, WTy2 uses a set of orphan rules, inspired by Rust.</p>
-<p>Note Rust is a bit more general than this. It allows:</p>
+<p>If the equivalent of a WTy2 &quot;open&quot; type in Rust is considered to be a blanket impl (as opposed to an impl for a concrete type), then the rules Rust uses are actually a bit more flexible. It allows:</p>
 <pre><code class="language-rs">struct S1;
 struct S2;
 struct S3;
@@ -459,11 +457,19 @@ impl &lt;T: T2&gt; T1 for T {}
 
 impl T1 for S1 {}
 
-impl T2 for S2 {}
+impl T1 for S2 {}
 
-// impl T1 for S2 {}
+// This impl, if uncommented, will cause an overlap with the blanket impl, but
+// only indirectly - the error message will not point to this line!
+//impl T2 for S2 {}
 </code></pre>
-<p>as long as (TODO: CHECK EXACT CONDITION) are defined in the same module. In my opinion, this is a mistake: it makes the rules more complicated and has limited utility (OOP has proven that default instances for a type in terms of another are useful, but this can be achieved through much more principled means like Haskell's <code>deriving via</code>).</p>
+<p>In my opinion, this is a mistake: the error message not highlighting the correct line is confusing to the programmer, the rules which allow this are necessarily more complicated and I would argue this pattern has very limited utility (OOP has proven that default instances for a type in terms of another are useful, but this can be achieved through much more principled means like Haskell's <code>deriving via</code>).</p>
+<h2 id="orphan-rules"><a class="header" href="#orphan-rules">Orphan Rules</a></h2>
+<p>To avoid overlap even when multiple modules are involved, WTy2 disallows &quot;orphan instances&quot;. The gist is that, either the instance-d type and or every outer constructor of the instance head must be defined in the same module as the instance declaration.</p>
+<p>Haskell only reports a warning on orphan instances rather than an outright error. I believe this is a mistake - orphan instances can trivially lead to overlap and overlap can lead to incoherence.</p>
+<div class="footnote-definition" id="note"><sup class="footnote-definition-label">1</sup>
+<p>Note this closely mirrors the syntactic restriction on <a href="https://www.haskell.org/onlinereport/haskell2010/haskellch4.html#x10-770004.3.2">Haskell 2010</a> instance heads (i.e: without <code>-XFlexibleInstances</code>).</p>
+</div>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="utilities"><a class="header" href="#utilities">Utilities</a></h1>
 <p>WTy2's syntax is designed for allowing defining functions that appear similar to built-in language constructsof other languages. Below are a few examples:</p>
 <h2 id="do"><a class="header" href="#do">Do</a></h2>
@@ -693,52 +699,29 @@ Further, when references become pervasive in a language with subtyping, consider
 <li>Allow variables to be generic (take a type parameter), allowing first-class higher-rank polymorphic functions, and also, perhaps more interestingly, super efficient heterogeneous unordered collections (data-oriented programming without the hassle).</li>
 </ul>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="runtime-representation"><a class="header" href="#runtime-representation">Runtime Representation</a></h1>
-<p>WTy2 values are effectively just linked lists <sup class="footnote-reference"><a href="#note">1</a></sup> of tags, where every tag is 32 bits. Every value has an associated &quot;full&quot; representation, which is unique. In practice, though values are known to be members of types, which constrains the possible values, and so can be smaller.</p>
-<p>How these lists of tags work is probably best illustrated with examples...</p>
-<h2 id="examples"><a class="header" href="#examples">Examples</a></h2>
-<pre><code class="language-WTy2">datatype Bool = True | False;
+<p>Note that there is likely a <strong>ton</strong> of flexibility here, and I know very little about writing efficient language runtimes/low-level performance optimisation. The design I layout here is just a suggestion, that will probably be changed significantly over time <sup class="footnote-reference"><a href="#note">1</a></sup>.</p>
+<p>WTy2 values are linked lists <sup class="footnote-reference"><a href="#note">1</a></sup> of tags, where each tag is 32-bits. The starting point for this idea is that these lists of tags are just the natural serialisations of the values (i.e: the <code>data</code> constructors). All tags are associated with some source-code identifier, and so to illustrate below, I will denote all tags as <code>T_&lt;Ident&gt;</code> where <code>&lt;Ident&gt;</code> is the associated identifier.</p>
+<p>The first obvious issue with this is how to fit all the tags into 32-bits. For example, 32-bit integers alone would fill the space of tags. This is fixed by giving <code>datatype</code> declarations slightly unique semantics. A <code>datatype</code> defines one tag for the type, and then all variants are placed in a separate tag-space (and so are free to overlap with other tags in other <code>datatype</code>s).</p>
+<p>To clarify, after the below two declarations:</p>
+<pre><code class="language-WTy2">datatype Bool0 where
+  True  : Bool0
+  False : Bool0
 
-datatype Nat = 0 | 1 | 2 | 3 | ...;
-
-// Note this is probably not a great choice for representation of `Int` in
-// WTy2 base given it means all 32-bit integers are now at least 64-bits in
-// (and we have negative zero!!). It is just an example.
-datatype Sign = Positive | Negative;
-
-datatype Int = MkInt(Sign, Nat);
-
-type Num where { ... };
-
-instance Num for Int where { ... };
-
-type C;
-
-instance C for Int &lt;&lt;= { holds(it.between(2, 5)) }
-instance C for Int &lt;&lt;= { holds(it &lt; -1) }
+data True0
+data False0
+type Bool1 = True1 | False1
 </code></pre>
-<div class="table-wrapper"><table><thead><tr><th>Variable</th><th>Full Repr</th><th>Compact Repr</th></tr></thead><tbody>
-<tr><td>x: Bool = True</td><td><code>TBool, TTrue</code></td><td><code>TTrue</code></td></tr>
-<tr><td>x: Nat = 3</td><td><code>TMkInt, T3</code></td><td><code>T3</code></td></tr>
-<tr><td>x: Int = 3</td><td><code>TMkInt, TSign, TPositive, TNat T3</code></td><td><code>TPositive, T3</code></td></tr>
-<tr><td>x: Int = -3</td><td><code>TMkInt, TSign, TNegative, TNat T3</code></td><td><code>TNegative, T3</code></td></tr>
-<tr><td>x: Num = 3</td><td><code>TNum, TNumIntDict, MkInt, T3</code></td><td><code>TNum, MkInt, T3</code></td></tr>
-<tr><td>x: C = 3</td><td><code>TC, TCIntDict0, MkInt, T3</code></td><td><code>TC, TCIntDict0, T3</code></td></tr>
-</tbody></table>
-</div>
-<h2 id="subtyping"><a class="header" href="#subtyping">Subtyping</a></h2>
-<p>There are two possible strategies I can think of for combining this scheme with subtyping:</p>
-<ul>
-<li>
-<p>Make subtyping coercive by copying and adding/removing where necessary. This limits sharing significantly.</p>
-</li>
-<li>
-<p>Still point to the original data but ALSO include the type (recall types are first-class values). This makes pattern matching on values of these supertypes much more complicated.</p>
-</li>
-</ul>
+<p><code>x: Bool0 = True0</code> and <code>y: Bool1 = True1</code> (in the absense of other optimisations) will have differently lengthed tag lists at runtime - <code>x</code> will have a tag list of length two (<code>T_Bool0</code> and <code>T_True0</code>), while <code>y</code> will just be a single tag (<code>T_True1</code>).</p>
+<p>In order to &quot;be not stupid&quot; <sup class="footnote-reference"><a href="#note">1</a></sup>, tags which are known to be fixed at compile time really should be elided. Achieving this is subtle though. Consider that WTy2 allows writing extensional proofs about functions like <code>for(x: Int) { foo(x) :: Int }</code> - does this mean we must elide the <code>T_Int0</code> tag from <code>foo</code>-returned values? Achieving this consistently in general is catastrophically undecidable (for the same reason WTy2 bounds the number of automatic proof insertions to one per goal constraint).</p>
+<p>TODO - Come up with some tag-elision system that actually works, and supports aliasing (HARD).</p>
 <div class="footnote-definition" id="note"><sup class="footnote-definition-label">1</sup>
-<pre><code>I think packing tags in memory might actually be possible if we added a special tag denoting a reference which could appear in any place in a value, but I need to think this over more.
-In any case, this packing definitely would make implementation much more complicated, and for an initial compiler I really want something easy and consistent, not necessarily fast.
-</code></pre>
+<p>FYI, for a while, I really was aiming to avoid dictionary passing in ,pst cases by having longer tag lists which retain enough information to do instance selection, and dispatching based on those - I still am not sure if this is a good idea or not, but it felt much messier than what I currently outline here.
+<sup class="footnote-reference"><a href="#note">1</a></sup>:
+I think packing tags in memory might actually be possible if we added a special tag denoting a reference which could appear in any place in a value, but I need to think this over more.
+In any case, this packing definitely would make implementation more complicated, and for an initial compiler I really want something easy and consistent, not necessarily fast.</p>
+</div>
+<div class="footnote-definition" id="note"><sup class="footnote-definition-label">1</sup>
+<p>https://youtu.be/BcC3KScZ-yA?t=2150</p>
 </div>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="core-language"><a class="header" href="#core-language">Core Language</a></h1>
 <p>Implementing a typechecker and compiler for the entire WTy2 language at once is likely to prove somewhat challenging. Here, a design for an intermediate, typed core language (inspired by efforts on GHC) is outlined.</p>
@@ -780,8 +763,8 @@ In any case, this packing definitely would make implementation much more complic
 <sup class="footnote-reference"><a href="#note">1</a></sup>: Of course, pattern matches on open types are not available as a feature in the source language, but when it comes to implementation, values of open types will still be tagged.</p>
 </div>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="soundness"><a class="header" href="#soundness">Soundness</a></h1>
-<p>WTy2 claims is a programming language with dependent types first and foremost, NOT a theorem prover.</p>
-<p>In fact, WTy2 as it currently exists is highly inconsistent, it is easy to prove bottom and from there anything. The only guarantee making this somewhat palatable is that these are all cases where the program will loop at runtime. WTy2 (when programs are ran in debug mode) will never actually create values of bottom type.</p>
+<p>WTy2 is a programming language with dependent types first and foremost, NOT a theorem prover.</p>
+<p>In fact, viewed as a logic, WTy2 as it currently exists is highly inconsistent. It is triviall to prove bottom and from there anything. The only guarantee making this somewhat palatable is that these are all cases where the program will loop or crash at runtime. WTy2 (when programs are ran in debug mode without optimisations) will never actually create values of bottom type.</p>
 <p>This is useful for programming (proving termination is tiresome and sometimes even impossible) but makes WTy2 effectively useless for theorem proving. In the far future if these holes were to be closed (likely opt-in with some sort of compiler pragma or flag, <code>safe</code>), then this would no longer be the case, and hence these holes are documented below:</p>
 <h2 id="non-terminating-recursive-functions"><a class="header" href="#non-terminating-recursive-functions">Non-terminating Recursive Functions</a></h2>
 <pre><code class="language-WTy2">foo() = foo()
@@ -789,7 +772,7 @@ In any case, this packing definitely would make implementation much more complic
 <h2 id="type-in-type"><a class="header" href="#type-in-type">Type in Type</a></h2>
 <p>Similar to Haskell, WTy2 has the axiom <code>Type : Type</code>. Girard's paradox <sup class="footnote-reference"><a href="#note">1</a></sup> is almost certainly derivable from this.</p>
 <h2 id="russels-paradox---danger"><a class="header" href="#russels-paradox---danger">Russel's Paradox - DANGER!!</a></h2>
-<p>Unfortunately, WTy2 as currently designed has a much larger soundness hole than either of the above problems (both of which, while limiting its capabilities as a theorem prover, still <em>probably</em> still have the guarantee that if the program manages to execute the assignment of a variable, it's value is of the correct type - i.e: the program will either loop infinitely or produce bottom before executing any unsound code).</p>
+<p>Unfortunately, WTy2 as currently designed has a much larger soundness hole than either of the above problems (both of which, while limiting its capabilities as a theorem prover, still <em>probably</em> still have the guarantee that if the program manages to execute the assignment of a variable, it's value is of the correct type - i.e: the program will either loop infinitely or produce crash before executing any unsound code).</p>
 <p>Due to the way subtyping and constraints work however, Russel's paradox can be encoded surprisingly easily, with bottom appearing to be derivable without the program even <em>doing</em> anything.</p>
 <pre><code class="language-WTy2">type Russel = (t: Type) &lt;&lt;= { t :: t =&gt; t :: Void };
 
@@ -833,6 +816,7 @@ ohDear: Void = Russel;
 # Solve with G3
 </code></pre>
 <p>And so we conclude by deriving <code>Russel :: Void</code>, which is clearly unsound.</p>
+<p>I am currently unsure how to resolve this...</p>
 <p><sup class="footnote-reference"><a href="#note">1</a></sup> See http://liamoc.net/posts/2015-09-10-girards-paradox.html for a nice walkthrough of how to derive this in Agda.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="syntax-debates"><a class="header" href="#syntax-debates">Syntax Debates</a></h1>
 <p><a href="https://wiki.haskell.org/Wadler&#x27;s_Law">https://wiki.haskell.org/Wadler's_Law</a></p>
@@ -897,9 +881,10 @@ ohDear: Void = Russel;
 <ul>
 <li><code>∀</code> should be parsed as a letter to allow <code>∀ := for</code>.</li>
 </ul>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="modes"><a class="header" href="#modes">Modes</a></h1>
-<p>WTy2 is designed to be a language which can be implemented very efficiently, and give programmers control over performance. At the same time, WTy2 is not Rust: implementing a full-on borrow checker and requiring all references to track lifetimes in WTy2 programs seems excessive. To try and strike a middle-ground, WTy2 takes inspiration from some of the recent work Jane Street has done with OCAML <a href="https://blog.janestreet.com/oxidizing-ocaml-locality/">https://blog.janestreet.com/oxidizing-ocaml-locality/</a>, <a href="https://blog.janestreet.com/oxidizing-ocaml-ownership/">https://blog.janestreet.com/oxidizing-ocaml-ownership/</a>.</p>
-<p>TODO...</p>
+<h2 id="lambdapattern-match-syntax"><a class="header" href="#lambdapattern-match-syntax">Lambda/Pattern Match Syntax</a></h2>
+<p>Currently, for lambdas that bind variables, I like the look of the following syntax: <code>{ \Pat -&gt; ...}</code> for irrefutable patterns and <code>{ | Pat1 -&gt; ..., | Pat2 -&gt; ... }</code> for lambda-case expressions.</p>
+<p>However, this does overload the meaning of <code>-&gt;</code> somewhat. Lambda-calculus gives us an alternative separator <code>.</code> as in <code>{ \Pat. ... }</code> which I don't hate, but I find <code>{ | Pat1. ..., | Pat2. ... }</code> very ugly. <code>{ \Pat1. ..., \Pat2. ... }</code> is better but now no longer really looks like a pattern match.</p>
+<p>Yet another alternative is to use an arrow with a bar <code>|-&gt;</code>. This is justified via numerous FP papers which use the LaTeX equivalent of this symbol, but of course transliterated into ASCII, it does look somewhat ugly.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="type-aware-allocators"><a class="header" href="#type-aware-allocators">Type Aware Allocators</a></h1>
 <p>A goal of WTy2 is to allow for good performance (especially with regards to memory locality) without much additional work on the part of the programmer/enforcing closed-world assumptions on written code.</p>
 <p>A major part of this is the concept of a type-aware-allocator. WTy2 makes extensive use of allocators (array based and recursive data structures in WTy2 should ideally be generic over the allocation scheme) so by providing tools to create good ones, almost all data structures should benefit.</p>

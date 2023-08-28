@@ -88,3 +88,11 @@ That said, this is clearly a special case, and special cases generally do not le
 TODO
 
 - `∀` should be parsed as a letter to allow `∀ := for`.
+
+## Lambda/Pattern Match Syntax
+
+Currently, for lambdas that bind variables, I like the look of the following syntax: `{ \Pat -> ...}` for irrefutable patterns and `{ | Pat1 -> ..., | Pat2 -> ... }` for lambda-case expressions.
+
+However, this does overload the meaning of `->` somewhat. Lambda-calculus gives us an alternative separator `.` as in `{ \Pat. ... }` which I don't hate, but I find `{ | Pat1. ..., | Pat2. ... }` very ugly. `{ \Pat1. ..., \Pat2. ... }` is better but now no longer really looks like a pattern match.
+
+Yet another alternative is to use an arrow with a bar `|->`. This is justified via numerous FP papers which use the LaTeX equivalent of this symbol, but of course transliterated into ASCII, it does look somewhat ugly.

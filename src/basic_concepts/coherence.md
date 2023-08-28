@@ -1,6 +1,8 @@
 # Coherence
 
-WTy2 has a number of rules to guarantee instances do not overlap. These can be broken into checking if known instances overlap and preventing overlap down-the-line.
+WTy2 has a number of rules on instance declarations to guarantee instances do not overlap. Note "overlap" has a slightly stronger meaning in WTy2 than in other languages with typeclasses given the ubiquity of subtyping: treated as sets, there should exist no value that is a member of both types.
+
+Rules around instances and overlap can get tricky, and luckily, a lot of prior work has been done investigating them in languages such as Rust and Haskell. As such, I will repeatedly refer to the decisions those languages have taken to compare and contrast.
 
 ## Detecting Errors Early
 
@@ -26,13 +28,42 @@ bar :: C a => a -> ()
 bar _ = ()
 ```
 
-Following this rule doesn't just lead to a theoretically cleaner language, it has a direct practical benefit: adding new valid instances to a library can never be a breaking change and so does not require a semantic version bump. This does make overlap checking more challenging though.
+Following this rule doesn't just lead to a theoretically cleaner language, it has a direct practical benefit: adding new valid instances to a library can never be a breaking change and so does not require a semantic version bump.
+
+## Outermost Constructors
+
+Given WTy2 is dependently typed with types effectively modelling arbitrary sets, checking if an arbitrary two types overlap is obviously undecidable. We can trivially encode Fermat's last theorem as a type overlap problem.
+
+```WTy2
+type C { };
+inst C for (x: Int, y: Int, z: Int) { };
+inst C for [n: Int] (x: Int, y: Int, z: Int) <<= { x ^ n + y ^ n ~ z ^ n } { };
+```
+
+We take the conservative approach of only considering the outermost constructor(s)[^note]. For example, the two below instances will always be treated as overlapping (regardless of whether `Foo` and `Bar` overlap):
+
+```
+data Mk[a: Type](x: a);
+
+type Foo : Type = ...
+
+type Bar : Type = ...
+
+type C { };
+
+inst C for [x: Foo] 'Mk(x) { };
+inst C for [x: Bar] 'Mk(x) { };
+```
+
+The check for overlap between closed types then becomes quite simple. The instance head types are reduced into form `[...] 'C0(...) | [...] 'C1(...) | ...` and the sets of outermost constructors are compared.
+
+As well as making overlap rules MUCH simpler, this has a really poweful benefit for implementation. (I believe that) with it, we can fully erase constraints (instead keeping tags around at runtime, and dispatching based off the outer tag).
 
 ## Open/Closed Rules
 
 Types can either be open or closed. These properties interact with the `(|)` and `(&)` type operators like so:
 
-```
+```WTy2
 for(t: Closed, u: Closed) { t | u :: Closed }
 for(t: Open, u: Type)     { t | u :: Open   }
 for(t: Closed, u: Type)   { t & u :: Closed }
@@ -49,43 +80,14 @@ type T = U;
 
 ```WTy2
 type T { } <: U;
-instance T for U;
+inst T for U;
 ```
 
 So for type-alias syntax, the defined type is closed iff the RHS type is closed.
 
 A type may have exactly one "open" instance, or many "closed" instances.
 
-NOTE: This is not a good enough rule - how to handle `Vec(Any)` - i.e: the argument type is open.
-
-## Detecting Overlap Between Two Closed Types
-
-Given two known instances, WTy2 must check that the sets of values represented by the types do not overlap. This check must be inherently conservative because this condition in general reduces to proving Fermat's last theorem.
-
-```WTy2
-type C
-instance C for (x: Int, y: Int, z: Int)
-instance C for [n: Int] (x: Int, y: Int, z: Int) <<= { x ^ n + y ^ n ~ z ^ n }
-```
-
-Still, we would like to allow vaguely interesting instances (like what modern Haskell can support) and so cannot be super conservative like declaring overlap as soon as two types contain the same constructor:
-
-```hs
-class C a
-
-instance C [Int]
-instance C [Bool]
-```
-
-Of course, the problem is MUCH easier in Haskell because the type system is intrinsic, and so instance selection is driven by the type, not the value.
-
-I have not worked out a specific algorithm yet, but my current idea is, for the duration of the check, to ignore many of WTy2's more advanced typing features (constraints, dependent types) and follow an algorithm similar to subtyping of equi-recursive types as described in TAPL.
-
-## Orphan Rules
-
-To avoid overlap even when multiple modules are involved, WTy2 uses a set of orphan rules, inspired by Rust.
-
-Note Rust is a bit more general than this. It allows:
+If the equivalent of a WTy2 "open" type in Rust is considered to be a blanket impl (as opposed to an impl for a concrete type), then the rules Rust uses are actually a bit more flexible. It allows:
 
 ```rs
 struct S1;
@@ -100,9 +102,19 @@ impl <T: T2> T1 for T {}
 
 impl T1 for S1 {}
 
-impl T2 for S2 {}
+impl T1 for S2 {}
 
-// impl T1 for S2 {}
+// This impl, if uncommented, will cause an overlap with the blanket impl, but
+// only indirectly - the error message will not point to this line!
+//impl T2 for S2 {}
 ```
 
-as long as (TODO: CHECK EXACT CONDITION) are defined in the same module. In my opinion, this is a mistake: it makes the rules more complicated and has limited utility (OOP has proven that default instances for a type in terms of another are useful, but this can be achieved through much more principled means like Haskell's `deriving via`).
+In my opinion, this is a mistake: the error message not highlighting the correct line is confusing to the programmer, the rules which allow this are necessarily more complicated and I would argue this pattern has very limited utility (OOP has proven that default instances for a type in terms of another are useful, but this can be achieved through much more principled means like Haskell's `deriving via`).
+
+## Orphan Rules
+
+To avoid overlap even when multiple modules are involved, WTy2 disallows "orphan instances". The gist is that, either the instance-d type and or every outer constructor of the instance head must be defined in the same module as the instance declaration.
+
+Haskell only reports a warning on orphan instances rather than an outright error. I believe this is a mistake - orphan instances can trivially lead to overlap and overlap can lead to incoherence.
+
+[^note]: Note this closely mirrors the syntactic restriction on [Haskell 2010](https://www.haskell.org/onlinereport/haskell2010/haskellch4.html#x10-770004.3.2) instance heads (i.e: without `-XFlexibleInstances`).

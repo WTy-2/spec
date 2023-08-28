@@ -59,6 +59,8 @@ The check for overlap between closed types then becomes quite simple. The instan
 
 As well as making overlap rules MUCH simpler, this has a really poweful benefit for implementation. (I believe that) with it, we can fully erase constraints (instead keeping tags around at runtime, and dispatching based off the outer tag).
 
+I further argue (though more loosely) that this has a further advantage in program reasoning, similar to parametricity. Consider defining a `Num` instance for lists. Haskell would allow defining a `Num` instance for `List Int` which operates with `zipWith` and `List SomethingElse` which concatenates lists with `(+)`, removes elements from the first list on `(-)` etc... I personally believe the solution mandated by WTy2 of defining a separate list datatype to correspond with each of the instances behaviours (or at the very least a newtype wrapper) leads to clearer code.
+
 ## Open/Closed Rules
 
 Types can either be open or closed. These properties interact with the `(|)` and `(&)` type operators like so:

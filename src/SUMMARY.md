@@ -7,6 +7,7 @@
 - [Core Types](./basic_concepts/core_types.md)
 - [Core Type Operators](./basic_concepts/arrows.md)
 - [Functions](./basic_concepts/functions.md)
+- [Records](./basic_concepts/records.md)
 - [Declarations](./basic_concepts/declarations.md)
 - [Erasure and Visibility](./basic_concepts/erasure_visibility.md)
 - [Coherence](./basic_concepts/coherence.md)

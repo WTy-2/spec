@@ -119,4 +119,4 @@ To avoid overlap even when multiple modules are involved, WTy2 disallows "orphan
 
 Haskell only reports a warning on orphan instances rather than an outright error. I believe this is a mistake - orphan instances can trivially lead to overlap and overlap can lead to incoherence.
 
-[^note]: Note this closely mirrors the syntactic restriction on [Haskell 2010](https://www.haskell.org/onlinereport/haskell2010/haskellch4.html#x10-770004.3.2) instance heads (i.e: without `-XFlexibleInstances`).
+[^note]: This (perhaps not entirely coincidentally) closely mirrors the syntactic restriction on [Haskell 2010](https://www.haskell.org/onlinereport/haskell2010/haskellch4.html#x10-770004.3.2) instance heads (i.e: without `-XFlexibleInstances`).

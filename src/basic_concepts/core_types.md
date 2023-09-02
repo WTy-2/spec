@@ -41,9 +41,11 @@ datatype Tele
   | NilTele : Tele;
 ```
 
-Ordinary lists and tuples can be defined from this pretty trivially:
+Of course, to even define a constructor which takes a pair of arguments, we need tuples in the language. A hack to make this work properly inside the typechecker is necessary, but it should not be visible to the user. [^note]
 
-```
+Ordinary lists and tuples can be defined from `DepTup` pretty trivially:
+
+```WTy2
 type List(ty: Type)
   = [head: ty, tail: List(ty)]
     '(head :. tail)
@@ -55,7 +57,7 @@ type Tuple(tys: List(ty))
   | 'Nil;
 ```
 
-More convenient to use list/tuple syntax and records are implemented as syntax-sugar on top of these datatypes (i.e: `(0, 1, 2)` becomes `0 :. 1 :. 2 :. Nil`). Following the structure of how `DepTup` is defined, fields in dependent records can only depend on fields to the left of them.
+More convenient list/tuple syntax and records are implemented as syntax-sugar on top of these datatypes (i.e: `(0, 1, 2)` becomes `0 :. 1 :. 2 :. Nil`). Following the structure of how `DepTup` is defined, fields in dependent records can only depend on fields to the left of them.
 
 ### Unit (`()`)
 
@@ -71,12 +73,22 @@ type Unit = '();
 WTy2 also supports singleton tuples. The parsing ambiguity of expression in parens vs a singleton tuple is resolved as follows:
 `(E)` where `E` is an expression - parenthesised expression
 `(E,)` where `E` is an expression - singleton tuple
-`(i: E)` where `i` is an identifier and `E` is an expression - singleton named tuple
+`(i: E)` where `i` is an identifier and `E` is an expression - singleton record
 
 ### Design Note: Bindings
 
-In WTy2, the types of records look almost identical to `Bind`ings. However, `Bind`ings are NOT first-class. `return (x: Int)` returns a `Type` which is equal to the record type `(x: Int)`. `{x: Int}() = 4` is not a valid way to bring `x` into scope.
+In WTy2, the types of records can look syntactically identical to `Bind`ings (LHS of assignments). However, `Bind`ings are NOT first-class. `return (x: Int)` returns a `Type` which is equal to the record type `(x: Int)`. `{x: Int}() = 4` (perhaps intending the LHS expression to reduce down to `x: Int`) is nonsense.
 
 ## Void
 
 `Void` is the subtype of all types. It contains no inhabitants.
+
+[^note]: There is another possibility: make all operators genuinely arity two (i.e: `(+): Int -> Int -> Int`). This perhaps meshes nicer with function definition syntax sugar, allowing:
+
+```WTy2
+(x: Int) + (y: Int) = ...
+```
+
+Without the argument type having to be constructed by concatenating the LHS and RHS (gets more confusing if the RHS or LHS record contains multiple elements).
+
+I am letting this idea sit for a bit longer before committing to it (it might have some consequences I have not thought of yet), but it seems at least conceptually neat, and removes the need for a weird internal compiler hack of having cons be the only genuinely arity-two constructor in the language.

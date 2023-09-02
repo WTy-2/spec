@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Dependent Types - The WTy2 Language Specification</title>
+        <title>Records - The WTy2 Language Specification</title>
 
 
         <!-- Custom HTML head -->
@@ -84,7 +84,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="../summary/introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded affix "><li class="part-title">Basic Concepts</li><li class="chapter-item expanded "><a href="../basic_concepts/core_types.html"><strong aria-hidden="true">2.</strong> Core Types</a></li><li class="chapter-item expanded "><a href="../basic_concepts/arrows.html"><strong aria-hidden="true">3.</strong> Core Type Operators</a></li><li class="chapter-item expanded "><a href="../basic_concepts/functions.html"><strong aria-hidden="true">4.</strong> Functions</a></li><li class="chapter-item expanded "><a href="../basic_concepts/records.html"><strong aria-hidden="true">5.</strong> Records</a></li><li class="chapter-item expanded "><a href="../basic_concepts/declarations.html"><strong aria-hidden="true">6.</strong> Declarations</a></li><li class="chapter-item expanded "><a href="../basic_concepts/erasure_visibility.html"><strong aria-hidden="true">7.</strong> Erasure and Visibility</a></li><li class="chapter-item expanded "><a href="../basic_concepts/coherence.html"><strong aria-hidden="true">8.</strong> Coherence</a></li><li class="chapter-item expanded affix "><li class="part-title">Extra</li><li class="chapter-item expanded "><a href="../extra/utilities.html"><strong aria-hidden="true">9.</strong> Utilities</a></li><li class="chapter-item expanded affix "><li class="part-title">Dependent Types</li><li class="chapter-item expanded "><a href="../dependent_types/constraints.html"><strong aria-hidden="true">10.</strong> Constraints</a></li><li class="chapter-item expanded "><a href="../dependent_types/proofs.html"><strong aria-hidden="true">11.</strong> Proofs</a></li><li class="chapter-item expanded "><a href="../dependent_types/dependent_types.html" class="active"><strong aria-hidden="true">12.</strong> Dependent Types</a></li><li class="chapter-item expanded affix "><li class="part-title">Implementation</li><li class="chapter-item expanded "><a href="../implementation/low_level.html"><strong aria-hidden="true">13.</strong> Low-level Semantics</a></li><li class="chapter-item expanded "><a href="../implementation/run_rep.html"><strong aria-hidden="true">14.</strong> Runtime Representation</a></li><li class="chapter-item expanded "><a href="../implementation/subset.html"><strong aria-hidden="true">15.</strong> Core Subset</a></li><li class="chapter-item expanded "><a href="../implementation/specialisation.html"><strong aria-hidden="true">16.</strong> Specialisation</a></li><li class="chapter-item expanded affix "><li class="part-title">Design</li><li class="chapter-item expanded "><a href="../design/soundness.html"><strong aria-hidden="true">17.</strong> Soundness</a></li><li class="chapter-item expanded "><a href="../design/wadlers_law.html"><strong aria-hidden="true">18.</strong> Syntax Debates</a></li><li class="chapter-item expanded affix "><li class="part-title">Old</li><li class="chapter-item expanded "><a href="../old/allocators.html"><strong aria-hidden="true">19.</strong> Type Aware Allocators</a></li><li class="chapter-item expanded "><a href="../old/recursive_types.html"><strong aria-hidden="true">20.</strong> Recursive Types</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="../summary/introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded affix "><li class="part-title">Basic Concepts</li><li class="chapter-item expanded "><a href="../basic_concepts/core_types.html"><strong aria-hidden="true">2.</strong> Core Types</a></li><li class="chapter-item expanded "><a href="../basic_concepts/arrows.html"><strong aria-hidden="true">3.</strong> Core Type Operators</a></li><li class="chapter-item expanded "><a href="../basic_concepts/functions.html"><strong aria-hidden="true">4.</strong> Functions</a></li><li class="chapter-item expanded "><a href="../basic_concepts/records.html" class="active"><strong aria-hidden="true">5.</strong> Records</a></li><li class="chapter-item expanded "><a href="../basic_concepts/declarations.html"><strong aria-hidden="true">6.</strong> Declarations</a></li><li class="chapter-item expanded "><a href="../basic_concepts/erasure_visibility.html"><strong aria-hidden="true">7.</strong> Erasure and Visibility</a></li><li class="chapter-item expanded "><a href="../basic_concepts/coherence.html"><strong aria-hidden="true">8.</strong> Coherence</a></li><li class="chapter-item expanded affix "><li class="part-title">Extra</li><li class="chapter-item expanded "><a href="../extra/utilities.html"><strong aria-hidden="true">9.</strong> Utilities</a></li><li class="chapter-item expanded affix "><li class="part-title">Dependent Types</li><li class="chapter-item expanded "><a href="../dependent_types/constraints.html"><strong aria-hidden="true">10.</strong> Constraints</a></li><li class="chapter-item expanded "><a href="../dependent_types/proofs.html"><strong aria-hidden="true">11.</strong> Proofs</a></li><li class="chapter-item expanded "><a href="../dependent_types/dependent_types.html"><strong aria-hidden="true">12.</strong> Dependent Types</a></li><li class="chapter-item expanded affix "><li class="part-title">Implementation</li><li class="chapter-item expanded "><a href="../implementation/low_level.html"><strong aria-hidden="true">13.</strong> Low-level Semantics</a></li><li class="chapter-item expanded "><a href="../implementation/run_rep.html"><strong aria-hidden="true">14.</strong> Runtime Representation</a></li><li class="chapter-item expanded "><a href="../implementation/subset.html"><strong aria-hidden="true">15.</strong> Core Subset</a></li><li class="chapter-item expanded "><a href="../implementation/specialisation.html"><strong aria-hidden="true">16.</strong> Specialisation</a></li><li class="chapter-item expanded affix "><li class="part-title">Design</li><li class="chapter-item expanded "><a href="../design/soundness.html"><strong aria-hidden="true">17.</strong> Soundness</a></li><li class="chapter-item expanded "><a href="../design/wadlers_law.html"><strong aria-hidden="true">18.</strong> Syntax Debates</a></li><li class="chapter-item expanded affix "><li class="part-title">Old</li><li class="chapter-item expanded "><a href="../old/allocators.html"><strong aria-hidden="true">19.</strong> Type Aware Allocators</a></li><li class="chapter-item expanded "><a href="../old/recursive_types.html"><strong aria-hidden="true">20.</strong> Recursive Types</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -144,7 +144,7 @@
                         <a href="https://github.com/WTy-2/spec/" title="Git repository" aria-label="Git repository">
                             <i id="git-repository-button" class="fa fa-github"></i>
                         </a>
-                        <a href="https://github.com/WTy-2/spec/edit/trunk/src/dependent_types/dependent_types.md" title="Suggest an edit" aria-label="Suggest an edit">
+                        <a href="https://github.com/WTy-2/spec/edit/trunk/src/basic_concepts/records.md" title="Suggest an edit" aria-label="Suggest an edit">
                             <i id="git-edit-button" class="fa fa-edit"></i>
                         </a>
 
@@ -173,22 +173,45 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="dependent-types"><a class="header" href="#dependent-types">Dependent Types</a></h1>
-<p>WTy2 features dependent record and function types.</p>
-<h2 id="dependent-function-arrow"><a class="header" href="#dependent-function-arrow">Dependent Function Arrow</a></h2>
-<p>WTy2 also supports dependent function arrows, through a similar mechanism. The argument record to a function is in scope in the return type (including the return constraint), as well as the function body.</p>
-<p>Note this makes <code>&lt;==</code> constraints on return types somewhat ambiguous in that if the return type of the function is a record with identically named fields (or simply the <code>it</code> keyword is used), this could refer to the argument record or the return. WTy2 disambiguates this by treating this case as shadowing. In general, the innermost <code>it</code> (and it's associated record names) shadow the outermost one.</p>
-<p>Currently, there is no mechanism to forcefully disambiguate (though perhaps some syntax to specify de Bruijn indices or similar could work). The field names of the argument or return record must be changed to refer to the argument record fields in the return constraint.</p>
+                        <h1 id="records"><a class="header" href="#records">Records</a></h1>
+<p>Records in WTy2 are internally compiled down to ordinary dependent tuples, but have a few extra features.</p>
+<h2 id="construction"><a class="header" href="#construction">Construction</a></h2>
+<p>Records in WTy2 can be constructed similarly tuples but with each expression prefixed the field name and an <code>=</code> symbol: <code>(field1=expr1, field2=expr2, ..., fieldN=exprN)</code> to create a record of type <code>(field1: type1, field2: type2, ..., type3)</code>.</p>
+<h2 id="subtyping"><a class="header" href="#subtyping">Subtyping</a></h2>
+<p>Records are covariant in types of fields.</p>
+<p>There is also one subtyping rule between records and tuples to allow for passing functions that take named arguments to higher order functions cleanly (recall functions are contravariant in argument type).</p>
+<pre><code class="language-WTy2">(Ty1, Ty2, ..., TyN) &lt;: (field1: Ty1, field2: Ty2, ..., fieldN, TyN);
+</code></pre>
+<h2 id="shuffling"><a class="header" href="#shuffling">Shuffling</a></h2>
+<p>WTy2 defines a primitive <code>shuffle</code> to work with records with different orders of field names:</p>
+<pre><code class="language-WTy2">shuffle: [a](x: a, b: Type) &lt;&lt;= { a: permutation(b) } -&gt; b;
+</code></pre>
+<p>Where <code>permutation</code> is a type family that produces a type containing all record types that are permuations of the fields of the argument record.</p>
+<h2 id="partial-application-"><a class="header" href="#partial-application-">Partial Application (<code>?</code>)</a></h2>
+<p>WTy2 supports a nominal partial application syntax based on records, which leverages yet another primitive:</p>
+<pre><code class="language-WTy2">makePartial: (f: a -&gt; b) -&gt; [a1] a0 &lt;&lt;= { concat(a0, a1): permutation(b) }
+           -&gt; if(isUnit(a1)) { b }.else { a1 -&gt; b };
+</code></pre>
+<p>Where <code>concat</code> is a type family which concatenates two records in the obvious way and <code>isUnit</code> is a function on (record) types which decides if the type is <code>()</code> (one implementation would be <code>isUnit(a: Rec) = a.size() == 0</code>).</p>
+<p>As syntax sugar, WTy2 allows <code>(?) = makePartial</code> to be used a primitive operator which binds tighter than function application, allowing use like:</p>
+<pre><code class="language-WTy2">f: (x: Int, y: Char, z: Bool) -&gt; Int;
+
+g: (y: Char) -&gt; Int = ?f(x=3, z=True);
+</code></pre>
+<p>In the case <code>a0: permutation(b)</code>, we have <code>a1 :: () =&gt; isUnit(a1) ~ True</code>. We special-case this situation in the type signature to allow for convenient passing of records with shuffled field order to functions:</p>
+<pre><code class="language-WTy2">w: Int = ?f(y='a', z=False, x=3);
+</code></pre>
+<p>It is likely inference for this primitive will need to be special-cased in the typechecker (i.e: to take advantage how <code>a1</code> can be inferred by removing fields of <code>b</code> that occur in <code>a0</code>).</p>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="../dependent_types/proofs.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="../basic_concepts/functions.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
-                            <a rel="next" href="../implementation/low_level.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next" href="../basic_concepts/declarations.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
 
@@ -198,11 +221,11 @@
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="../dependent_types/proofs.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="../basic_concepts/functions.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
 
-                    <a rel="next" href="../implementation/low_level.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next" href="../basic_concepts/declarations.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>

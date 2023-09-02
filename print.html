@@ -85,7 +85,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="summary/introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded affix "><li class="part-title">Basic Concepts</li><li class="chapter-item expanded "><a href="basic_concepts/core_types.html"><strong aria-hidden="true">2.</strong> Core Types</a></li><li class="chapter-item expanded "><a href="basic_concepts/arrows.html"><strong aria-hidden="true">3.</strong> Core Type Operators</a></li><li class="chapter-item expanded "><a href="basic_concepts/functions.html"><strong aria-hidden="true">4.</strong> Functions</a></li><li class="chapter-item expanded "><a href="basic_concepts/declarations.html"><strong aria-hidden="true">5.</strong> Declarations</a></li><li class="chapter-item expanded "><a href="basic_concepts/erasure_visibility.html"><strong aria-hidden="true">6.</strong> Erasure and Visibility</a></li><li class="chapter-item expanded "><a href="basic_concepts/coherence.html"><strong aria-hidden="true">7.</strong> Coherence</a></li><li class="chapter-item expanded affix "><li class="part-title">Extra</li><li class="chapter-item expanded "><a href="extra/utilities.html"><strong aria-hidden="true">8.</strong> Utilities</a></li><li class="chapter-item expanded affix "><li class="part-title">Dependent Types</li><li class="chapter-item expanded "><a href="dependent_types/constraints.html"><strong aria-hidden="true">9.</strong> Constraints</a></li><li class="chapter-item expanded "><a href="dependent_types/proofs.html"><strong aria-hidden="true">10.</strong> Proofs</a></li><li class="chapter-item expanded "><a href="dependent_types/dependent_types.html"><strong aria-hidden="true">11.</strong> Dependent Types</a></li><li class="chapter-item expanded affix "><li class="part-title">Implementation</li><li class="chapter-item expanded "><a href="implementation/low_level.html"><strong aria-hidden="true">12.</strong> Low-level Semantics</a></li><li class="chapter-item expanded "><a href="implementation/run_rep.html"><strong aria-hidden="true">13.</strong> Runtime Representation</a></li><li class="chapter-item expanded "><a href="implementation/subset.html"><strong aria-hidden="true">14.</strong> Core Subset</a></li><li class="chapter-item expanded "><a href="implementation/specialisation.html"><strong aria-hidden="true">15.</strong> Specialisation</a></li><li class="chapter-item expanded affix "><li class="part-title">Design</li><li class="chapter-item expanded "><a href="design/soundness.html"><strong aria-hidden="true">16.</strong> Soundness</a></li><li class="chapter-item expanded "><a href="design/wadlers_law.html"><strong aria-hidden="true">17.</strong> Syntax Debates</a></li><li class="chapter-item expanded affix "><li class="part-title">Old</li><li class="chapter-item expanded "><a href="old/allocators.html"><strong aria-hidden="true">18.</strong> Type Aware Allocators</a></li><li class="chapter-item expanded "><a href="old/recursive_types.html"><strong aria-hidden="true">19.</strong> Recursive Types</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="summary/introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded affix "><li class="part-title">Basic Concepts</li><li class="chapter-item expanded "><a href="basic_concepts/core_types.html"><strong aria-hidden="true">2.</strong> Core Types</a></li><li class="chapter-item expanded "><a href="basic_concepts/arrows.html"><strong aria-hidden="true">3.</strong> Core Type Operators</a></li><li class="chapter-item expanded "><a href="basic_concepts/functions.html"><strong aria-hidden="true">4.</strong> Functions</a></li><li class="chapter-item expanded "><a href="basic_concepts/records.html"><strong aria-hidden="true">5.</strong> Records</a></li><li class="chapter-item expanded "><a href="basic_concepts/declarations.html"><strong aria-hidden="true">6.</strong> Declarations</a></li><li class="chapter-item expanded "><a href="basic_concepts/erasure_visibility.html"><strong aria-hidden="true">7.</strong> Erasure and Visibility</a></li><li class="chapter-item expanded "><a href="basic_concepts/coherence.html"><strong aria-hidden="true">8.</strong> Coherence</a></li><li class="chapter-item expanded affix "><li class="part-title">Extra</li><li class="chapter-item expanded "><a href="extra/utilities.html"><strong aria-hidden="true">9.</strong> Utilities</a></li><li class="chapter-item expanded affix "><li class="part-title">Dependent Types</li><li class="chapter-item expanded "><a href="dependent_types/constraints.html"><strong aria-hidden="true">10.</strong> Constraints</a></li><li class="chapter-item expanded "><a href="dependent_types/proofs.html"><strong aria-hidden="true">11.</strong> Proofs</a></li><li class="chapter-item expanded "><a href="dependent_types/dependent_types.html"><strong aria-hidden="true">12.</strong> Dependent Types</a></li><li class="chapter-item expanded affix "><li class="part-title">Implementation</li><li class="chapter-item expanded "><a href="implementation/low_level.html"><strong aria-hidden="true">13.</strong> Low-level Semantics</a></li><li class="chapter-item expanded "><a href="implementation/run_rep.html"><strong aria-hidden="true">14.</strong> Runtime Representation</a></li><li class="chapter-item expanded "><a href="implementation/subset.html"><strong aria-hidden="true">15.</strong> Core Subset</a></li><li class="chapter-item expanded "><a href="implementation/specialisation.html"><strong aria-hidden="true">16.</strong> Specialisation</a></li><li class="chapter-item expanded affix "><li class="part-title">Design</li><li class="chapter-item expanded "><a href="design/soundness.html"><strong aria-hidden="true">17.</strong> Soundness</a></li><li class="chapter-item expanded "><a href="design/wadlers_law.html"><strong aria-hidden="true">18.</strong> Syntax Debates</a></li><li class="chapter-item expanded affix "><li class="part-title">Old</li><li class="chapter-item expanded "><a href="old/allocators.html"><strong aria-hidden="true">19.</strong> Type Aware Allocators</a></li><li class="chapter-item expanded "><a href="old/recursive_types.html"><strong aria-hidden="true">20.</strong> Recursive Types</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -204,8 +204,9 @@
   = (.-)    : (ty: Type, rest: t -&gt; Type) -&gt; Tele
   | NilTele : Tele;
 </code></pre>
-<p>Ordinary lists and tuples can be defined from this pretty trivially:</p>
-<pre><code>type List(ty: Type)
+<p>Of course, to even define a constructor which takes a pair of arguments, we need tuples in the language. A hack to make this work properly inside the typechecker is necessary, but it should not be visible to the user. <sup class="footnote-reference"><a href="#note">1</a></sup></p>
+<p>Ordinary lists and tuples can be defined from <code>DepTup</code> pretty trivially:</p>
+<pre><code class="language-WTy2">type List(ty: Type)
   = [head: ty, tail: List(ty)]
     '(head :. tail)
   | 'Nil;
@@ -215,7 +216,7 @@ type Tuple(tys: List(ty))
     '(head :. tail) &lt;&lt;= { tys ~ ty :. rest }
   | 'Nil;
 </code></pre>
-<p>More convenient to use list/tuple syntax and records are implemented as syntax-sugar on top of these datatypes (i.e: <code>(0, 1, 2)</code> becomes <code>0 :. 1 :. 2 :. Nil</code>). Following the structure of how <code>DepTup</code> is defined, fields in dependent records can only depend on fields to the left of them.</p>
+<p>More convenient list/tuple syntax and records are implemented as syntax-sugar on top of these datatypes (i.e: <code>(0, 1, 2)</code> becomes <code>0 :. 1 :. 2 :. Nil</code>). Following the structure of how <code>DepTup</code> is defined, fields in dependent records can only depend on fields to the left of them.</p>
 <h3 id="unit-"><a class="header" href="#unit-">Unit (<code>()</code>)</a></h3>
 <p>The unit type is also defined in terms of <code>DepTup</code>, with <code>()</code> being a valid identifier:</p>
 <pre><code>pattern () = Nil;
@@ -225,11 +226,18 @@ type Unit = '();
 <p>WTy2 also supports singleton tuples. The parsing ambiguity of expression in parens vs a singleton tuple is resolved as follows:
 <code>(E)</code> where <code>E</code> is an expression - parenthesised expression
 <code>(E,)</code> where <code>E</code> is an expression - singleton tuple
-<code>(i: E)</code> where <code>i</code> is an identifier and <code>E</code> is an expression - singleton named tuple</p>
+<code>(i: E)</code> where <code>i</code> is an identifier and <code>E</code> is an expression - singleton record</p>
 <h3 id="design-note-bindings"><a class="header" href="#design-note-bindings">Design Note: Bindings</a></h3>
-<p>In WTy2, the types of records look almost identical to <code>Bind</code>ings. However, <code>Bind</code>ings are NOT first-class. <code>return (x: Int)</code> returns a <code>Type</code> which is equal to the record type <code>(x: Int)</code>. <code>{x: Int}() = 4</code> is not a valid way to bring <code>x</code> into scope.</p>
+<p>In WTy2, the types of records can look syntactically identical to <code>Bind</code>ings (LHS of assignments). However, <code>Bind</code>ings are NOT first-class. <code>return (x: Int)</code> returns a <code>Type</code> which is equal to the record type <code>(x: Int)</code>. <code>{x: Int}() = 4</code> (perhaps intending the LHS expression to reduce down to <code>x: Int</code>) is nonsense.</p>
 <h2 id="void"><a class="header" href="#void">Void</a></h2>
 <p><code>Void</code> is the subtype of all types. It contains no inhabitants.</p>
+<div class="footnote-definition" id="note"><sup class="footnote-definition-label">1</sup>
+<p>There is another possibility: make all operators genuinely arity two (i.e: <code>(+): Int -&gt; Int -&gt; Int</code>). This perhaps meshes nicer with function definition syntax sugar, allowing:</p>
+</div>
+<pre><code class="language-WTy2">(x: Int) + (y: Int) = ...
+</code></pre>
+<p>Without the argument type having to be constructed by concatenating the LHS and RHS (gets more confusing if the RHS or LHS record contains multiple elements).</p>
+<p>I am letting this idea sit for a bit longer before committing to it (it might have some consequences I have not thought of yet), but it seems at least conceptually neat, and removes the need for a weird internal compiler hack of having cons be the only genuinely arity-two constructor in the language.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="type-operators"><a class="header" href="#type-operators">Type Operators</a></h1>
 <p>WTy2 quite a few built-in type operators (mostly arrows), they are summarised here.</p>
 <h2 id="function--"><a class="header" href="#function--">Function (<code>-&gt;</code>)</a></h2>
@@ -301,6 +309,35 @@ t &lt;: u = for(x: t) { x :: u }
 <div class="footnote-definition" id="note"><sup class="footnote-definition-label">1</sup>
 <p>A seemingly more natural (and more popular) choice here is to use an arrow like <code>-&gt;</code> or <code>=&gt;</code> as the separator. WTy2 instead follows lambda calculus with <code>.</code> to avoid unnecessary punning (<code>(-&gt;)</code>/<code>(=&gt;)</code> are already type operator used to construct function types/constraint implications). <code>.</code> on the other hand is never parsed as an operator, already being used for record field access and uniform calling syntax.</p>
 </div>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="records"><a class="header" href="#records">Records</a></h1>
+<p>Records in WTy2 are internally compiled down to ordinary dependent tuples, but have a few extra features.</p>
+<h2 id="construction"><a class="header" href="#construction">Construction</a></h2>
+<p>Records in WTy2 can be constructed similarly tuples but with each expression prefixed the field name and an <code>=</code> symbol: <code>(field1=expr1, field2=expr2, ..., fieldN=exprN)</code> to create a record of type <code>(field1: type1, field2: type2, ..., type3)</code>.</p>
+<h2 id="subtyping"><a class="header" href="#subtyping">Subtyping</a></h2>
+<p>Records are covariant in types of fields.</p>
+<p>There is also one subtyping rule between records and tuples to allow for passing functions that take named arguments to higher order functions cleanly (recall functions are contravariant in argument type).</p>
+<pre><code class="language-WTy2">(Ty1, Ty2, ..., TyN) &lt;: (field1: Ty1, field2: Ty2, ..., fieldN, TyN);
+</code></pre>
+<h2 id="shuffling"><a class="header" href="#shuffling">Shuffling</a></h2>
+<p>WTy2 defines a primitive <code>shuffle</code> to work with records with different orders of field names:</p>
+<pre><code class="language-WTy2">shuffle: [a](x: a, b: Type) &lt;&lt;= { a: permutation(b) } -&gt; b;
+</code></pre>
+<p>Where <code>permutation</code> is a type family that produces a type containing all record types that are permuations of the fields of the argument record.</p>
+<h2 id="partial-application-"><a class="header" href="#partial-application-">Partial Application (<code>?</code>)</a></h2>
+<p>WTy2 supports a nominal partial application syntax based on records, which leverages yet another primitive:</p>
+<pre><code class="language-WTy2">makePartial: (f: a -&gt; b) -&gt; [a1] a0 &lt;&lt;= { concat(a0, a1): permutation(b) }
+           -&gt; if(isUnit(a1)) { b }.else { a1 -&gt; b };
+</code></pre>
+<p>Where <code>concat</code> is a type family which concatenates two records in the obvious way and <code>isUnit</code> is a function on (record) types which decides if the type is <code>()</code> (one implementation would be <code>isUnit(a: Rec) = a.size() == 0</code>).</p>
+<p>As syntax sugar, WTy2 allows <code>(?) = makePartial</code> to be used a primitive operator which binds tighter than function application, allowing use like:</p>
+<pre><code class="language-WTy2">f: (x: Int, y: Char, z: Bool) -&gt; Int;
+
+g: (y: Char) -&gt; Int = ?f(x=3, z=True);
+</code></pre>
+<p>In the case <code>a0: permutation(b)</code>, we have <code>a1 :: () =&gt; isUnit(a1) ~ True</code>. We special-case this situation in the type signature to allow for convenient passing of records with shuffled field order to functions:</p>
+<pre><code class="language-WTy2">w: Int = ?f(y='a', z=False, x=3);
+</code></pre>
+<p>It is likely inference for this primitive will need to be special-cased in the typechecker (i.e: to take advantage how <code>a1</code> can be inferred by removing fields of <code>b</code> that occur in <code>a0</code>).</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="declarations"><a class="header" href="#declarations">Declarations</a></h1>
 <p>WTy2 supports top-level bindings in the form of &quot;declarations&quot;.</p>
 <p>All named declarations can be prefixed with visibility annotations.</p>
@@ -468,7 +505,7 @@ impl T1 for S2 {}
 <p>To avoid overlap even when multiple modules are involved, WTy2 disallows &quot;orphan instances&quot;. The gist is that, either the instance-d type and or every outer constructor of the instance head must be defined in the same module as the instance declaration.</p>
 <p>Haskell only reports a warning on orphan instances rather than an outright error. I believe this is a mistake - orphan instances can trivially lead to overlap and overlap can lead to incoherence.</p>
 <div class="footnote-definition" id="note"><sup class="footnote-definition-label">1</sup>
-<p>Note this closely mirrors the syntactic restriction on <a href="https://www.haskell.org/onlinereport/haskell2010/haskellch4.html#x10-770004.3.2">Haskell 2010</a> instance heads (i.e: without <code>-XFlexibleInstances</code>).</p>
+<p>This (perhaps not entirely coincidentally) closely mirrors the syntactic restriction on <a href="https://www.haskell.org/onlinereport/haskell2010/haskellch4.html#x10-770004.3.2">Haskell 2010</a> instance heads (i.e: without <code>-XFlexibleInstances</code>).</p>
 </div>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="utilities"><a class="header" href="#utilities">Utilities</a></h1>
 <p>WTy2's syntax is designed for allowing defining functions that appear similar to built-in language constructsof other languages. Below are a few examples:</p>

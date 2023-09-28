@@ -5,7 +5,7 @@
 # Basic Concepts
 
 - [Core Types](./basic_concepts/core_types.md)
-- [Core Type Operators](./basic_concepts/arrows.md)
+- [Common Type Operators](./basic_concepts/arrows.md)
 - [Functions](./basic_concepts/functions.md)
 - [Records](./basic_concepts/records.md)
 - [Declarations](./basic_concepts/declarations.md)

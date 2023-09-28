@@ -1,4 +1,4 @@
-# Type Operators
+# Common Type Operators
 
 WTy2 quite a few common type operators (mostly arrows), they are summarised here.
 

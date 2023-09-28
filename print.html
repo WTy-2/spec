@@ -593,6 +593,10 @@ impl T1 for S2 {}
 <pre><code class="language-WTy2">tagged[a: Ty](f: a ~&gt; Any): Ty = [x: a] 'f(x)
 </code></pre>
 <p>Returns the set of all values tagged with the constructor.</p>
+<h2 id="impl"><a class="header" href="#impl">Impl</a></h2>
+<pre><code class="language-WTy2">impl(t: Ty): Ty = [u: t] u
+</code></pre>
+<p>The union of all types which implement an open type.</p>
 <p><sup class="footnote-reference"><a href="#note">1</a></sup> Of course in WTy2, <code>do</code>-notation is not really related to the <code>do</code> utility defined here; it can be used in any block. &quot;Braces-notation&quot; doesn't quite roll of the tongue though...</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="constraints"><a class="header" href="#constraints">Constraints</a></h1>
 <p>Constraints (<code>Co</code>) in WTy2 are used to pass evidence of equality or type membership, inspired by Haskell's <code>Constraint</code> kind.

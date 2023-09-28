@@ -219,17 +219,18 @@ type Tuple(tys: List(ty))
 </code></pre>
 <p>More convenient list/tuple syntax and records are implemented as syntax-sugar on top of these datatypes (i.e: <code>(0, 1, 2)</code> becomes <code>0 :. 1 :. 2 :. Nil</code>). Following the structure of how <code>DepTup</code> is defined, fields in dependent records can only depend on fields to the left of them.</p>
 <h3 id="unit-"><a class="header" href="#unit-">Unit (<code>()</code>)</a></h3>
-<p>The unit type is also defined in terms of <code>DepTup</code>, with <code>()</code> being a valid identifier:</p>
-<pre><code>pattern () = Nil;
+<p>The unit type is also defined in terms of <code>DepTup</code>, with <code>()</code> parsed as an ordinary identifier:</p>
+<pre><code>() = Nil;
 type Unit = '();
 </code></pre>
 <h3 id="design-note-singleton-tuples"><a class="header" href="#design-note-singleton-tuples">Design Note: Singleton Tuples</a></h3>
 <p>WTy2 also supports singleton tuples. The parsing ambiguity of expression in parens vs a singleton tuple is resolved as follows:
 <code>(E)</code> where <code>E</code> is an expression - parenthesised expression
 <code>(E,)</code> where <code>E</code> is an expression - singleton tuple
-<code>(i: E)</code> where <code>i</code> is an identifier and <code>E</code> is an expression - singleton record</p>
+<code>(i: E)</code> where <code>i</code> is an identifer and <code>E</code> is an expression - named value (<code>t &lt;: (i: t)</code>)
+<code>(i: E,)</code> where <code>i</code> is an identifier and <code>E</code> is an expression - named singleton tuple/singleton record</p>
 <h3 id="design-note-bindings"><a class="header" href="#design-note-bindings">Design Note: Bindings</a></h3>
-<p>In WTy2, the types of records can look syntactically identical to <code>Bind</code>ings (LHS of assignments). However, <code>Bind</code>ings are NOT first-class. <code>return (x: Int)</code> returns a <code>Type</code> which is equal to the record type <code>(x: Int)</code>. <code>{x: Int}() = 4</code> (perhaps intending the LHS expression to reduce down to <code>x: Int</code>) is nonsense.</p>
+<p>In WTy2, the types of records can look syntactically identical to bindings (LHS of assignments). However, bindings are NOT first-class. <code>return (x: Int)</code> returns a <code>Ty</code> which is equal to the record type <code>(x: Int)</code>. <code>do {x: Int} = 4</code> (perhaps intending the LHS expression to reduce down to <code>x: Int</code>) is nonsense.</p>
 <h2 id="void"><a class="header" href="#void">Void</a></h2>
 <p><code>Void</code> is the subtype of all types. It contains no inhabitants.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="common-type-operators"><a class="header" href="#common-type-operators">Common Type Operators</a></h1>

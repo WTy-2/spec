@@ -118,4 +118,12 @@ tagged[a: Ty](f: a ~> Any): Ty = [x: a] 'f(x)
 
 Returns the set of all values tagged with the constructor.
 
+## Impl
+
+```WTy2
+impl(t: Ty): Ty = [u: t] u
+```
+
+The union of all types which implement an open type.
+
 [^note] Of course in WTy2, `do`-notation is not really related to the `do` utility defined here; it can be used in any block. "Braces-notation" doesn't quite roll of the tongue though...

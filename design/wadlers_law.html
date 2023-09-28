@@ -84,7 +84,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="../summary/introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded affix "><li class="part-title">Basic Concepts</li><li class="chapter-item expanded "><a href="../basic_concepts/core_types.html"><strong aria-hidden="true">2.</strong> Core Types</a></li><li class="chapter-item expanded "><a href="../basic_concepts/arrows.html"><strong aria-hidden="true">3.</strong> Core Type Operators</a></li><li class="chapter-item expanded "><a href="../basic_concepts/functions.html"><strong aria-hidden="true">4.</strong> Functions</a></li><li class="chapter-item expanded "><a href="../basic_concepts/records.html"><strong aria-hidden="true">5.</strong> Records</a></li><li class="chapter-item expanded "><a href="../basic_concepts/declarations.html"><strong aria-hidden="true">6.</strong> Declarations</a></li><li class="chapter-item expanded "><a href="../basic_concepts/erasure_visibility.html"><strong aria-hidden="true">7.</strong> Erasure and Visibility</a></li><li class="chapter-item expanded "><a href="../basic_concepts/coherence.html"><strong aria-hidden="true">8.</strong> Coherence</a></li><li class="chapter-item expanded affix "><li class="part-title">Extra</li><li class="chapter-item expanded "><a href="../extra/utilities.html"><strong aria-hidden="true">9.</strong> Utilities</a></li><li class="chapter-item expanded affix "><li class="part-title">Dependent Types</li><li class="chapter-item expanded "><a href="../dependent_types/constraints.html"><strong aria-hidden="true">10.</strong> Constraints</a></li><li class="chapter-item expanded "><a href="../dependent_types/proofs.html"><strong aria-hidden="true">11.</strong> Proofs</a></li><li class="chapter-item expanded "><a href="../dependent_types/dependent_types.html"><strong aria-hidden="true">12.</strong> Dependent Types</a></li><li class="chapter-item expanded affix "><li class="part-title">Implementation</li><li class="chapter-item expanded "><a href="../implementation/low_level.html"><strong aria-hidden="true">13.</strong> Low-level Semantics</a></li><li class="chapter-item expanded "><a href="../implementation/run_rep.html"><strong aria-hidden="true">14.</strong> Runtime Representation</a></li><li class="chapter-item expanded "><a href="../implementation/subset.html"><strong aria-hidden="true">15.</strong> Core Subset</a></li><li class="chapter-item expanded "><a href="../implementation/specialisation.html"><strong aria-hidden="true">16.</strong> Specialisation</a></li><li class="chapter-item expanded affix "><li class="part-title">Design</li><li class="chapter-item expanded "><a href="../design/soundness.html"><strong aria-hidden="true">17.</strong> Soundness</a></li><li class="chapter-item expanded "><a href="../design/wadlers_law.html" class="active"><strong aria-hidden="true">18.</strong> Syntax Debates</a></li><li class="chapter-item expanded affix "><li class="part-title">Old</li><li class="chapter-item expanded "><a href="../old/allocators.html"><strong aria-hidden="true">19.</strong> Type Aware Allocators</a></li><li class="chapter-item expanded "><a href="../old/recursive_types.html"><strong aria-hidden="true">20.</strong> Recursive Types</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="../summary/introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded affix "><li class="part-title">Basic Concepts</li><li class="chapter-item expanded "><a href="../basic_concepts/core_types.html"><strong aria-hidden="true">2.</strong> Core Types</a></li><li class="chapter-item expanded "><a href="../basic_concepts/arrows.html"><strong aria-hidden="true">3.</strong> Core Type Operators</a></li><li class="chapter-item expanded "><a href="../basic_concepts/functions.html"><strong aria-hidden="true">4.</strong> Functions</a></li><li class="chapter-item expanded "><a href="../basic_concepts/records.html"><strong aria-hidden="true">5.</strong> Records</a></li><li class="chapter-item expanded "><a href="../basic_concepts/declarations.html"><strong aria-hidden="true">6.</strong> Declarations</a></li><li class="chapter-item expanded "><a href="../basic_concepts/erasure_visibility.html"><strong aria-hidden="true">7.</strong> Erasure and Visibility</a></li><li class="chapter-item expanded "><a href="../basic_concepts/coherence.html"><strong aria-hidden="true">8.</strong> Coherence</a></li><li class="chapter-item expanded "><a href="../basic_concepts/modules.html"><strong aria-hidden="true">9.</strong> Modules</a></li><li class="chapter-item expanded affix "><li class="part-title">Extra</li><li class="chapter-item expanded "><a href="../extra/utilities.html"><strong aria-hidden="true">10.</strong> Utilities</a></li><li class="chapter-item expanded affix "><li class="part-title">Dependent Types</li><li class="chapter-item expanded "><a href="../dependent_types/constraints.html"><strong aria-hidden="true">11.</strong> Constraints</a></li><li class="chapter-item expanded "><a href="../dependent_types/proofs.html"><strong aria-hidden="true">12.</strong> Proofs</a></li><li class="chapter-item expanded "><a href="../dependent_types/dependent_types.html"><strong aria-hidden="true">13.</strong> Dependent Types</a></li><li class="chapter-item expanded affix "><li class="part-title">Implementation</li><li class="chapter-item expanded "><a href="../implementation/low_level.html"><strong aria-hidden="true">14.</strong> Low-level Semantics</a></li><li class="chapter-item expanded "><a href="../implementation/run_rep.html"><strong aria-hidden="true">15.</strong> Runtime Representation</a></li><li class="chapter-item expanded "><a href="../implementation/subset.html"><strong aria-hidden="true">16.</strong> Core Subset</a></li><li class="chapter-item expanded "><a href="../implementation/specialisation.html"><strong aria-hidden="true">17.</strong> Specialisation</a></li><li class="chapter-item expanded affix "><li class="part-title">Design</li><li class="chapter-item expanded "><a href="../design/soundness.html"><strong aria-hidden="true">18.</strong> Soundness</a></li><li class="chapter-item expanded "><a href="../design/wadlers_law.html" class="active"><strong aria-hidden="true">19.</strong> Syntax Debates</a></li><li class="chapter-item expanded affix "><li class="part-title">Old</li><li class="chapter-item expanded "><a href="../old/allocators.html"><strong aria-hidden="true">20.</strong> Type Aware Allocators</a></li><li class="chapter-item expanded "><a href="../old/recursive_types.html"><strong aria-hidden="true">21.</strong> Recursive Types</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -195,41 +195,35 @@
 <p>The alternative is to use some dedicated keyword/symbol to disambuate. Perhaps <code>def</code> prefixing all variable bindings or <code>match</code> prefixing all irrefutable pattern matches.</p>
 <p>Using <code>def</code> keyword on functions</p>
 <pre><code class="language-WTy2">def takesFunctionAndMatches(def foo(Int): Int, MkFoo(x): Foo) := do {
-    def bar(y: Int) = foo(y);
-    MkBar(z) = x;
+    def bar(y: Int) := foo(y);
+    MkBar(z) := x;
 }
 </code></pre>
 <p>Using <code>match</code> keyword on matches</p>
 <pre><code>takesFunctionAndMatches(foo(Int): Int, match MkFoo(x): Foo) := do {
-    bar(y: Int) = foo(y);
-    match MkBar(z) = x;
+    bar(y: Int) := foo(y);
+    match MkBar(z) := x;
 }
 </code></pre>
-<p>Neither alternative feels great though coming from Haskell. There is no reward for following the capitalisation convention! My current plan is therefore a compromise: capitalised = assume match, lowercase = assume variable but the programmer can also use either keyword to override. This might be an overkill solution, but it seems promising.</p>
+<p>Neither alternative feels great though coming from Haskell. There is no reward for following the capitalisation convention! My current plan is therefore a compromise: capitalised = assume match, lowercase = assume variable, but the programmer can also use either keyword to override. This might be an overkill solution, but it seems promising (and actually quite easy to parse!).</p>
 <h2 id="bindingconstraint-operators"><a class="header" href="#bindingconstraint-operators">Binding/Constraint Operators</a></h2>
 <p>Currently, I am liking:</p>
 <div class="table-wrapper"><table><thead><tr><th>Binding</th><th>Constraint</th><th>Meaning</th></tr></thead><tbody>
-<tr><td><code>x : t</code></td><td><code>x :: t</code></td><td><code>x</code> is of type <code>t</code></td></tr>
-<tr><td><code>t &lt;=: u</code></td><td><code>t &lt;=| u</code></td><td><code>t</code> is an instance head of <code>u</code></td></tr>
+<tr><td><code>x : t</code></td><td><code>x :: t</code></td><td><code>x</code> has type <code>t</code></td></tr>
 <tr><td><code>t &lt;: u</code></td><td><code>t &lt;| </code></td><td><code>t</code> is a subtype of <code>u</code></td></tr>
-<tr><td><code>x : 'y</code></td><td><code>x ~ y</code></td><td><code>x</code> reduces to <code>y</code></td></tr>
+<tr><td><code>x : 'y</code></td><td><code>x ~ y</code></td><td><code>x</code> and <code>y</code> are propositionally equal</td></tr>
 </tbody></table>
 </div>
-<p>But it has a few problems:</p>
+<p>But there are a few possible alternatives and questions:</p>
 <ul>
-<li><code>(&lt;=:)</code>/<code>(&lt;=|)</code> can easily look either like a combo of less-than-equal <code>(&lt;=)</code> and <code>(:)</code>/<code>(|)</code>, which with the context of subtyping being a combo of <code>(&lt;)</code> and <code>(:)</code>/<code>(|)</code> doesn't make much sense (instance head is a MORE restrictive relation!) Alternatively they look a bit like a reversed implies <code>(=&gt;)</code> which they are ALSO unrelated to!</li>
-<li>The instance head operator <code>(&lt;=:)</code> is longer (in terms of characters) than subtyping <code>(&lt;:)</code>, but it will likely be used MORE in practice.</li>
+<li>Use keywords/infix functions instead of operators. E.g: <code>x is t</code>/<code>x in t</code> instead of <code>x :: t</code>.</li>
+<li>Make the common pattern for constraint (except for <code>(~)</code>) be to add a second colon. E.g: <code>(&lt;::)</code> instead of <code>(&lt;|)</code>.</li>
+<li>Add a dedicated binding operator for <code>(~)</code>, such as <code>(~:)</code>.</li>
+<li>Instead of <code>(::)</code>, all types could implement <code>Any -&gt; Constraint</code> so instead of <code>x :: Int</code> you would write <code>Int(x)</code> (a bit Verse-like).</li>
 <li>With <code>(:)</code>, <code>(::)</code>, and <code>(&lt;:)</code> taken, what should cons be? <code>(:&gt;)</code> could very easily be misinterpreted as a flipped version of <code>(&lt;:)</code>. Perhaps <code>(:;)</code> or <code>(:.)</code>?</li>
 </ul>
-<p>And there are a LOT of alternatives:</p>
-<ul>
-<li>Use keywords/infix functions instead of operators. E.g: <code>x is t</code> instead of <code>x :: t</code>, or <code>instance t for u</code> instead of <code>t &lt;=: u</code>.</li>
-<li>Make the common pattern for constraint (except for <code>(~)</code>) be to add a second colon. E.g: <code>(&lt;::)</code>, <code>(&lt;=::)</code> (note Fira Code ligatures does not display the latter as intended though!)</li>
-<li>Add a dedicated binding operator for <code>(~)</code> such as <code>(~:)</code>.</li>
-<li>Instead of <code>(::)</code>, all types types implement <code>Any -&gt; Constraint</code> so instead of <code>x :: Int</code> you would write <code>Int(x)</code>.</li>
-</ul>
 <h2 id="implicit-braces"><a class="header" href="#implicit-braces">Implicit Braces</a></h2>
-<p>WTy2 contains a few built-in dependent type operators (<code>(-&gt;)</code>, <code>(~&gt;)</code>, <code>(|-)</code>) which automatically add braces to the RHS if the type expression does not type-check without. The advantage is obvious: cleaner syntax. All non-dependent functions requiring braces around the result type (e.g: <code>Int -&gt; { Int }</code>) (or using a different arrow) is ugly.</p>
+<p>WTy2 contains a few built-in dependent type operators (<code>(-&gt;)</code>, <code>(~&gt;)</code>) which automatically add braces to the RHS if the type expression does not type-check without. The advantage is obvious: cleaner syntax. All non-dependent functions requiring braces around the result type (e.g: <code>Int -&gt; { Int }</code>) (or using a different arrow) is ugly.</p>
 <p>That said, this is clearly a special case, and special cases generally do not lead to a cleaner and easier-to-learn language. It might be worth considering if this implicit lambda-abstraction functionality is something that should be possible to opt into with other operators.</p>
 <h2 id="unicode"><a class="header" href="#unicode">Unicode</a></h2>
 <p>TODO</p>
@@ -240,6 +234,13 @@
 <p>Currently, for lambdas that bind variables, I like the look of the following syntax: <code>{ \Pat -&gt; ...}</code> for irrefutable patterns and <code>{ | Pat1 -&gt; ..., | Pat2 -&gt; ... }</code> for lambda-case expressions.</p>
 <p>However, this does overload the meaning of <code>-&gt;</code> somewhat. Lambda-calculus gives us an alternative separator <code>.</code> as in <code>{ \Pat. ... }</code> which I don't hate, but I find <code>{ | Pat1. ..., | Pat2. ... }</code> very ugly. <code>{ \Pat1. ..., \Pat2. ... }</code> is better but now no longer really looks like a pattern match.</p>
 <p>Yet another alternative is to use an arrow with a bar <code>|-&gt;</code>. This is justified via numerous FP papers which use the LaTeX equivalent of this symbol, but of course transliterated into ASCII, it does look somewhat ugly.</p>
+<h2 id="such-that-operator"><a class="header" href="#such-that-operator">&quot;Such That&quot; Operator</a></h2>
+<p>There appears to not really be a standard operator for &quot;such that&quot; in mathematics (except in set comprehensions, but <code>(:)</code> and <code>(|)</code> are already taken), and the most common, (<code>∋</code>)<sup class="footnote-reference"><a href="#note">1</a></sup>, does not have a reasonable ASCII approximation (at least that I can think of).</p>
+<p><code>(&lt;&lt;=)</code> I think has some advantages in that it is very clearly not symmetrical (IMO symmetrical-looking glyphs as operators should really only identify associative, if not commutative operations) and it is vaguely reminiscent of <code>(=&gt;)</code> which in Haskell is used to represent the curried version of a similar concept. On the other hand, it (surprisingly) doesn't appear to have a unicode equivalent (there are double-headed arrows, and double-lined arrows, but apparently no double-headed-double-lined arrows...).</p>
+<p>On the other hand, a very common operator being three-characters long is a bit unfortunate. <code>(-&lt;)</code> is IMO quite aesthetically nice and I do also quite like <code>($)</code> given how (if you squint) it looks a bit like an <code>S</code> and a <code>T</code> overlaid.</p>
+<div class="footnote-definition" id="note"><sup class="footnote-definition-label">1</sup>
+<p>A few examples of various &quot;such that&quot; operators can be found at https://math.stackexchange.com/a/2777911</p>
+</div>
 
                     </main>
 

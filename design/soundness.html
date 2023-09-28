@@ -84,7 +84,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="../summary/introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded affix "><li class="part-title">Basic Concepts</li><li class="chapter-item expanded "><a href="../basic_concepts/core_types.html"><strong aria-hidden="true">2.</strong> Core Types</a></li><li class="chapter-item expanded "><a href="../basic_concepts/arrows.html"><strong aria-hidden="true">3.</strong> Core Type Operators</a></li><li class="chapter-item expanded "><a href="../basic_concepts/functions.html"><strong aria-hidden="true">4.</strong> Functions</a></li><li class="chapter-item expanded "><a href="../basic_concepts/records.html"><strong aria-hidden="true">5.</strong> Records</a></li><li class="chapter-item expanded "><a href="../basic_concepts/declarations.html"><strong aria-hidden="true">6.</strong> Declarations</a></li><li class="chapter-item expanded "><a href="../basic_concepts/erasure_visibility.html"><strong aria-hidden="true">7.</strong> Erasure and Visibility</a></li><li class="chapter-item expanded "><a href="../basic_concepts/coherence.html"><strong aria-hidden="true">8.</strong> Coherence</a></li><li class="chapter-item expanded affix "><li class="part-title">Extra</li><li class="chapter-item expanded "><a href="../extra/utilities.html"><strong aria-hidden="true">9.</strong> Utilities</a></li><li class="chapter-item expanded affix "><li class="part-title">Dependent Types</li><li class="chapter-item expanded "><a href="../dependent_types/constraints.html"><strong aria-hidden="true">10.</strong> Constraints</a></li><li class="chapter-item expanded "><a href="../dependent_types/proofs.html"><strong aria-hidden="true">11.</strong> Proofs</a></li><li class="chapter-item expanded "><a href="../dependent_types/dependent_types.html"><strong aria-hidden="true">12.</strong> Dependent Types</a></li><li class="chapter-item expanded affix "><li class="part-title">Implementation</li><li class="chapter-item expanded "><a href="../implementation/low_level.html"><strong aria-hidden="true">13.</strong> Low-level Semantics</a></li><li class="chapter-item expanded "><a href="../implementation/run_rep.html"><strong aria-hidden="true">14.</strong> Runtime Representation</a></li><li class="chapter-item expanded "><a href="../implementation/subset.html"><strong aria-hidden="true">15.</strong> Core Subset</a></li><li class="chapter-item expanded "><a href="../implementation/specialisation.html"><strong aria-hidden="true">16.</strong> Specialisation</a></li><li class="chapter-item expanded affix "><li class="part-title">Design</li><li class="chapter-item expanded "><a href="../design/soundness.html" class="active"><strong aria-hidden="true">17.</strong> Soundness</a></li><li class="chapter-item expanded "><a href="../design/wadlers_law.html"><strong aria-hidden="true">18.</strong> Syntax Debates</a></li><li class="chapter-item expanded affix "><li class="part-title">Old</li><li class="chapter-item expanded "><a href="../old/allocators.html"><strong aria-hidden="true">19.</strong> Type Aware Allocators</a></li><li class="chapter-item expanded "><a href="../old/recursive_types.html"><strong aria-hidden="true">20.</strong> Recursive Types</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="../summary/introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded affix "><li class="part-title">Basic Concepts</li><li class="chapter-item expanded "><a href="../basic_concepts/core_types.html"><strong aria-hidden="true">2.</strong> Core Types</a></li><li class="chapter-item expanded "><a href="../basic_concepts/arrows.html"><strong aria-hidden="true">3.</strong> Core Type Operators</a></li><li class="chapter-item expanded "><a href="../basic_concepts/functions.html"><strong aria-hidden="true">4.</strong> Functions</a></li><li class="chapter-item expanded "><a href="../basic_concepts/records.html"><strong aria-hidden="true">5.</strong> Records</a></li><li class="chapter-item expanded "><a href="../basic_concepts/declarations.html"><strong aria-hidden="true">6.</strong> Declarations</a></li><li class="chapter-item expanded "><a href="../basic_concepts/erasure_visibility.html"><strong aria-hidden="true">7.</strong> Erasure and Visibility</a></li><li class="chapter-item expanded "><a href="../basic_concepts/coherence.html"><strong aria-hidden="true">8.</strong> Coherence</a></li><li class="chapter-item expanded "><a href="../basic_concepts/modules.html"><strong aria-hidden="true">9.</strong> Modules</a></li><li class="chapter-item expanded affix "><li class="part-title">Extra</li><li class="chapter-item expanded "><a href="../extra/utilities.html"><strong aria-hidden="true">10.</strong> Utilities</a></li><li class="chapter-item expanded affix "><li class="part-title">Dependent Types</li><li class="chapter-item expanded "><a href="../dependent_types/constraints.html"><strong aria-hidden="true">11.</strong> Constraints</a></li><li class="chapter-item expanded "><a href="../dependent_types/proofs.html"><strong aria-hidden="true">12.</strong> Proofs</a></li><li class="chapter-item expanded "><a href="../dependent_types/dependent_types.html"><strong aria-hidden="true">13.</strong> Dependent Types</a></li><li class="chapter-item expanded affix "><li class="part-title">Implementation</li><li class="chapter-item expanded "><a href="../implementation/low_level.html"><strong aria-hidden="true">14.</strong> Low-level Semantics</a></li><li class="chapter-item expanded "><a href="../implementation/run_rep.html"><strong aria-hidden="true">15.</strong> Runtime Representation</a></li><li class="chapter-item expanded "><a href="../implementation/subset.html"><strong aria-hidden="true">16.</strong> Core Subset</a></li><li class="chapter-item expanded "><a href="../implementation/specialisation.html"><strong aria-hidden="true">17.</strong> Specialisation</a></li><li class="chapter-item expanded affix "><li class="part-title">Design</li><li class="chapter-item expanded "><a href="../design/soundness.html" class="active"><strong aria-hidden="true">18.</strong> Soundness</a></li><li class="chapter-item expanded "><a href="../design/wadlers_law.html"><strong aria-hidden="true">19.</strong> Syntax Debates</a></li><li class="chapter-item expanded affix "><li class="part-title">Old</li><li class="chapter-item expanded "><a href="../old/allocators.html"><strong aria-hidden="true">20.</strong> Type Aware Allocators</a></li><li class="chapter-item expanded "><a href="../old/recursive_types.html"><strong aria-hidden="true">21.</strong> Recursive Types</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -175,60 +175,79 @@
                     <main>
                         <h1 id="soundness"><a class="header" href="#soundness">Soundness</a></h1>
 <p>WTy2 is a programming language with dependent types first and foremost, NOT a theorem prover.</p>
-<p>In fact, viewed as a logic, WTy2 as it currently exists is highly inconsistent. It is triviall to prove bottom and from there anything. The only guarantee making this somewhat palatable is that these are all cases where the program will loop or crash at runtime. WTy2 (when programs are ran in debug mode without optimisations) will never actually create values of bottom type.</p>
+<p>In fact, viewed as a logic, WTy2 as it currently exists is highly inconsistent. It is trivial to prove bottom and from there anything. The only guarantee making this somewhat palatable is that these are all cases where the program will loop or crash at runtime. WTy2 (when programs are ran in debug mode without optimisations) will never actually create values of bottom type.</p>
 <p>This is useful for programming (proving termination is tiresome and sometimes even impossible) but makes WTy2 effectively useless for theorem proving. In the far future if these holes were to be closed (likely opt-in with some sort of compiler pragma or flag, <code>safe</code>), then this would no longer be the case, and hence these holes are documented below:</p>
 <h2 id="non-terminating-recursive-functions"><a class="header" href="#non-terminating-recursive-functions">Non-terminating Recursive Functions</a></h2>
-<pre><code class="language-WTy2">foo() = foo()
+<pre><code class="language-WTy2">foo() := foo()
 </code></pre>
 <h2 id="type-in-type"><a class="header" href="#type-in-type">Type in Type</a></h2>
 <p>Similar to Haskell, WTy2 has the axiom <code>Type : Type</code>. Girard's paradox <sup class="footnote-reference"><a href="#note">1</a></sup> is almost certainly derivable from this.</p>
-<h2 id="russels-paradox---danger"><a class="header" href="#russels-paradox---danger">Russel's Paradox - DANGER!!</a></h2>
-<p>Unfortunately, WTy2 as currently designed has a much larger soundness hole than either of the above problems (both of which, while limiting its capabilities as a theorem prover, still <em>probably</em> still have the guarantee that if the program manages to execute the assignment of a variable, it's value is of the correct type - i.e: the program will either loop infinitely or produce crash before executing any unsound code).</p>
-<p>Due to the way subtyping and constraints work however, Russel's paradox can be encoded surprisingly easily, with bottom appearing to be derivable without the program even <em>doing</em> anything.</p>
-<pre><code class="language-WTy2">type Russel = (t: Type) &lt;&lt;= { t :: t =&gt; t :: Void };
-
-ohDear: Void = Russel;
+<h2 id="russels-paradox-directly"><a class="header" href="#russels-paradox-directly">Russel's Paradox, Directly</a></h2>
+<p>WTy2's expressivity and subtyping allows for a much more direct encoding of Russel's paradox (treating types as sets).</p>
+<pre><code class="language-WTy2">type Russel = (t: Type) &lt;&lt;= { t :: t =&gt; Bottom };
 </code></pre>
-<p>An informal sketch of how a constraint solver might check (and approve!) this is outlined below:</p>
-<p>Constraints are written in almost identical syntax to ordinary WTy2 source, but we elide types of <code>for</code> bound variables, instead prefering to write them as implications where necessary.</p>
+<p>The additional danger here is that a suffiently advanced constraint solver could derive bottom entirely on it's own just from this definition being in-scope.</p>
+<p>An informal sketch of how this might happen is outlined is below:</p>
+<p>Constraints are written in similar syntax to WTy2 source, but we elide types of <code>for</code> bound variables, instead prefering to write them as implications.</p>
 <pre><code class="language-WTy2CoSo"># From definition of Russel
 
-[G1] for(t) { t :: Russel /\ t :: t =&gt; t :: Void }
-[G2] for(t) { (t :: t =&gt; t :: Void) =&gt; t :: Russel }
+[G1] for(t) { t :: Russel /\ t :: t =&gt; Bottom }
+[G2] for(t) { (t :: t =&gt; Bottom) =&gt; t :: Russel }
 
-[W1] Russel :: Void
+[W1] Russel :: Russel
 
-# Head of G1 matches, instantiate with t = Russel
+# Head of G2 matches, so instantiate t = Russel
 
-[W2] Russel :: Russel /\ Russel :: Russel
+[W2] Russel :: Russel =&gt; Bottom
+
+# Need to show an implication, so assume LHS to reach RHS
+
+[G3] Russel :: Russel
+[W3] Bottom
+
+# Head of G1 matches, so instantiate t = Russel
+
+[W4] Russel :: Russel /\ Russel :: Russel
 
 # Simplify
 
-[W3] Russel :: Russel
-
-# Head of G2 matches, instantiate LHS with t = Russel
-
-[W4] Russel :: Russel =&gt; Russel :: Void
-
-# Wanted is an implication, so assume LHS and try to reach RHS
-# This is arguably the point where everything goes wrong!!
-
-[G3] Russel :: Russel
-
-[W5] Russel :: Void
-
-# Interesting to note we have reached the same wanted that we
-# started with, but we have made progress: we now have G3!
-
-# Head of G1 matches, again, so instantiate LHS with t = Russel
-
-[W6] Russel :: Russel /\ Russel :: Russel
+[W5] Russel :: Russel
 
 # Solve with G3
 </code></pre>
-<p>And so we conclude by deriving <code>Russel :: Void</code>, which is clearly unsound.</p>
-<p>I am currently unsure how to resolve this...</p>
+<p>And so we conclude by deriving <code>Russel :: Russel</code> (from which, we can trivially obtain <code>Bottom</code> via <code>G1</code>).</p>
+<p>That this is a real danger is illustrated by how we can encode exactly problem with Haskell typeclasses:</p>
+<pre><code class="language-hs">main :: IO ()
+main = case veryBad of MkDict -&gt; no @(IO ())
+
+class Bottom where
+  no :: a
+
+data Dict c where
+  MkDict :: c =&gt; Dict c
+
+data Set = Russel
+
+type In :: Set -&gt; Set -&gt; Constraint
+class ((a ~ b, In b Russel) =&gt; Bottom) =&gt; In a b
+
+instance (In s s =&gt; Bottom) =&gt; In s Russel
+
+bad :: Dict (In Russel Russel)
+bad = MkDict
+
+veryBad :: Dict Bottom
+veryBad = case bad of MkDict -&gt; MkDict
+</code></pre>
+<p>Indeed, Haskell runtime loops when executing this program, despite there being no explicit recursion in the code<sup class="footnote-reference"><a href="#note">1</a></sup>.</p>
+<p>IMO it is <em>pretty</em> important we avoid this. Mathematicians might argue the cause of the problem here is the typeclass declaration itself, but ruling it out would require a drastic reduction of WTy2's expressivity (e.g: removing an entire feature, like the <code>(&lt;&lt;=)</code> operator) or adding type universes.</p>
+<p>Luckily, there is a much easier fix: not giving the solver access to an implication-introduction rule. Instead implications should only be brought into scope via superclass constraints, instances and explicitly written <code>proof</code>s. We could of course write a <code>proof</code> of <code>Russel :: Russel =&gt; Bottom</code>, but that this would loop at runtime is fine - we at least have source code we can point to in a stack trace (<code>proof</code>s are not totality-checked in WTy2).</p>
 <p><sup class="footnote-reference"><a href="#note">1</a></sup> See http://liamoc.net/posts/2015-09-10-girards-paradox.html for a nice walkthrough of how to derive this in Agda.</p>
+<p><sup class="footnote-reference"><a href="#note">1</a></sup> Though do note that the loop in Haskell can be encoded much more simply (and arguably arises from using superclass constraints when checking instances):</p>
+<pre><code class="language-hs">class (ImpliesBottom =&gt; Bottom) =&gt; ImpliesBottom
+
+instance ImpliesBottom
+</code></pre>
 
                     </main>
 

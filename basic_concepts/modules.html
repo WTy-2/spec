@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Erasure and Visibility - The WTy2 Language Specification</title>
+        <title>Modules - The WTy2 Language Specification</title>
 
 
         <!-- Custom HTML head -->
@@ -84,7 +84,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="../summary/introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded affix "><li class="part-title">Basic Concepts</li><li class="chapter-item expanded "><a href="../basic_concepts/core_types.html"><strong aria-hidden="true">2.</strong> Core Types</a></li><li class="chapter-item expanded "><a href="../basic_concepts/arrows.html"><strong aria-hidden="true">3.</strong> Core Type Operators</a></li><li class="chapter-item expanded "><a href="../basic_concepts/functions.html"><strong aria-hidden="true">4.</strong> Functions</a></li><li class="chapter-item expanded "><a href="../basic_concepts/records.html"><strong aria-hidden="true">5.</strong> Records</a></li><li class="chapter-item expanded "><a href="../basic_concepts/declarations.html"><strong aria-hidden="true">6.</strong> Declarations</a></li><li class="chapter-item expanded "><a href="../basic_concepts/erasure_visibility.html" class="active"><strong aria-hidden="true">7.</strong> Erasure and Visibility</a></li><li class="chapter-item expanded "><a href="../basic_concepts/coherence.html"><strong aria-hidden="true">8.</strong> Coherence</a></li><li class="chapter-item expanded "><a href="../basic_concepts/modules.html"><strong aria-hidden="true">9.</strong> Modules</a></li><li class="chapter-item expanded affix "><li class="part-title">Extra</li><li class="chapter-item expanded "><a href="../extra/utilities.html"><strong aria-hidden="true">10.</strong> Utilities</a></li><li class="chapter-item expanded affix "><li class="part-title">Dependent Types</li><li class="chapter-item expanded "><a href="../dependent_types/constraints.html"><strong aria-hidden="true">11.</strong> Constraints</a></li><li class="chapter-item expanded "><a href="../dependent_types/proofs.html"><strong aria-hidden="true">12.</strong> Proofs</a></li><li class="chapter-item expanded "><a href="../dependent_types/dependent_types.html"><strong aria-hidden="true">13.</strong> Dependent Types</a></li><li class="chapter-item expanded affix "><li class="part-title">Implementation</li><li class="chapter-item expanded "><a href="../implementation/low_level.html"><strong aria-hidden="true">14.</strong> Low-level Semantics</a></li><li class="chapter-item expanded "><a href="../implementation/run_rep.html"><strong aria-hidden="true">15.</strong> Runtime Representation</a></li><li class="chapter-item expanded "><a href="../implementation/subset.html"><strong aria-hidden="true">16.</strong> Core Subset</a></li><li class="chapter-item expanded "><a href="../implementation/specialisation.html"><strong aria-hidden="true">17.</strong> Specialisation</a></li><li class="chapter-item expanded affix "><li class="part-title">Design</li><li class="chapter-item expanded "><a href="../design/soundness.html"><strong aria-hidden="true">18.</strong> Soundness</a></li><li class="chapter-item expanded "><a href="../design/wadlers_law.html"><strong aria-hidden="true">19.</strong> Syntax Debates</a></li><li class="chapter-item expanded affix "><li class="part-title">Old</li><li class="chapter-item expanded "><a href="../old/allocators.html"><strong aria-hidden="true">20.</strong> Type Aware Allocators</a></li><li class="chapter-item expanded "><a href="../old/recursive_types.html"><strong aria-hidden="true">21.</strong> Recursive Types</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="../summary/introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded affix "><li class="part-title">Basic Concepts</li><li class="chapter-item expanded "><a href="../basic_concepts/core_types.html"><strong aria-hidden="true">2.</strong> Core Types</a></li><li class="chapter-item expanded "><a href="../basic_concepts/arrows.html"><strong aria-hidden="true">3.</strong> Core Type Operators</a></li><li class="chapter-item expanded "><a href="../basic_concepts/functions.html"><strong aria-hidden="true">4.</strong> Functions</a></li><li class="chapter-item expanded "><a href="../basic_concepts/records.html"><strong aria-hidden="true">5.</strong> Records</a></li><li class="chapter-item expanded "><a href="../basic_concepts/declarations.html"><strong aria-hidden="true">6.</strong> Declarations</a></li><li class="chapter-item expanded "><a href="../basic_concepts/erasure_visibility.html"><strong aria-hidden="true">7.</strong> Erasure and Visibility</a></li><li class="chapter-item expanded "><a href="../basic_concepts/coherence.html"><strong aria-hidden="true">8.</strong> Coherence</a></li><li class="chapter-item expanded "><a href="../basic_concepts/modules.html" class="active"><strong aria-hidden="true">9.</strong> Modules</a></li><li class="chapter-item expanded affix "><li class="part-title">Extra</li><li class="chapter-item expanded "><a href="../extra/utilities.html"><strong aria-hidden="true">10.</strong> Utilities</a></li><li class="chapter-item expanded affix "><li class="part-title">Dependent Types</li><li class="chapter-item expanded "><a href="../dependent_types/constraints.html"><strong aria-hidden="true">11.</strong> Constraints</a></li><li class="chapter-item expanded "><a href="../dependent_types/proofs.html"><strong aria-hidden="true">12.</strong> Proofs</a></li><li class="chapter-item expanded "><a href="../dependent_types/dependent_types.html"><strong aria-hidden="true">13.</strong> Dependent Types</a></li><li class="chapter-item expanded affix "><li class="part-title">Implementation</li><li class="chapter-item expanded "><a href="../implementation/low_level.html"><strong aria-hidden="true">14.</strong> Low-level Semantics</a></li><li class="chapter-item expanded "><a href="../implementation/run_rep.html"><strong aria-hidden="true">15.</strong> Runtime Representation</a></li><li class="chapter-item expanded "><a href="../implementation/subset.html"><strong aria-hidden="true">16.</strong> Core Subset</a></li><li class="chapter-item expanded "><a href="../implementation/specialisation.html"><strong aria-hidden="true">17.</strong> Specialisation</a></li><li class="chapter-item expanded affix "><li class="part-title">Design</li><li class="chapter-item expanded "><a href="../design/soundness.html"><strong aria-hidden="true">18.</strong> Soundness</a></li><li class="chapter-item expanded "><a href="../design/wadlers_law.html"><strong aria-hidden="true">19.</strong> Syntax Debates</a></li><li class="chapter-item expanded affix "><li class="part-title">Old</li><li class="chapter-item expanded "><a href="../old/allocators.html"><strong aria-hidden="true">20.</strong> Type Aware Allocators</a></li><li class="chapter-item expanded "><a href="../old/recursive_types.html"><strong aria-hidden="true">21.</strong> Recursive Types</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -144,7 +144,7 @@
                         <a href="https://github.com/WTy-2/spec/" title="Git repository" aria-label="Git repository">
                             <i id="git-repository-button" class="fa fa-github"></i>
                         </a>
-                        <a href="https://github.com/WTy-2/spec/edit/trunk/src/basic_concepts/erasure_visibility.md" title="Suggest an edit" aria-label="Suggest an edit">
+                        <a href="https://github.com/WTy-2/spec/edit/trunk/src/basic_concepts/modules.md" title="Suggest an edit" aria-label="Suggest an edit">
                             <i id="git-edit-button" class="fa fa-edit"></i>
                         </a>
 
@@ -173,46 +173,32 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="erasure-and-visibility"><a class="header" href="#erasure-and-visibility">Erasure and Visibility</a></h1>
-<h1 id="runtime-relevance-of-types-and-constraints"><a class="header" href="#runtime-relevance-of-types-and-constraints">Runtime Relevance of Types and Constraints</a></h1>
-<p>In Haskell, runtime relevance can effectively be summarised as: types are erased, constraints are not. Even equality constraints like <code>a ~ b</code> which don't contain any fields often do not get fully optimised away as <code>Constraint</code> is lifted and so could point to a bottoming value (see discussion at https://github.com/ghc-proposals/ghc-proposals/pull/547).</p>
-<p>In WTy2, we take the opposite approach: constraints are erased but types are not. To perform dispatch, implementations will in all likelyhood need to implement some sort of runtime.</p>
-<h1 id="erasure-and-visibility-in-types-and-values"><a class="header" href="#erasure-and-visibility-in-types-and-values">Erasure and Visibility in Types and Values</a></h1>
-<p>Even though values and types must in general be kept around at runtime, in many specific cases, this is not necessary (consider a generic function which takes both a type <code>t :|=&gt; Animal</code> and an argument <code>a: t</code> - <code>t</code> can be recovered entirely from <code>a</code>). The key observation made here is that arguments we would like the typechecker infer for convenience generally correspond with ones recover.</p>
-<p>A type surrounded in parenthesis can be prefixed with something that looks similar to a record type but the bindings are placed inside brackets (<code>[]</code>) instead of parenthesis.</p>
-<p>A variable can be bound in the erased elements of a record only if:</p>
+                        <h1 id="modules"><a class="header" href="#modules">Modules</a></h1>
+<p>WTy2 programs are organised into modules, similar to Haskell (so modules are not first-class/intended as a method of abstraction - open <code>type</code>s suit that purpose well already).</p>
+<h2 id="importsexports"><a class="header" href="#importsexports">Imports/Exports</a></h2>
+<p>The public exports of a module are written in parens after the module declaration. Imports of a module are written in parens after the name of the imported module. Publically exported members are considered part of the public API of a module and breaking changes to them reflect semantic version changes for the module.</p>
+<p>If and only if the exact version of the dependended-upon module is specified in the package file is the programmer given the freedom to import members that are not publically exported (still with a warning).</p>
+<p>Requirement: Non-semantic version changes of upstream modules should never cause compile errors in downstream modules.</p>
+<h2 id="module-members"><a class="header" href="#module-members">Module Members</a></h2>
+<p>Module members include top-level variables, types, tags, instances and <code>proof</code>s.</p>
 <ul>
-<li>It occurs by itself in a matchable function application (i.e: as an argument or the function itself) to the right of a member constraint and the type (i.e: RHS object of member constraint) is <code>Closed</code> (the <code>Closed</code> constraint is inferred if the use of <code>[]</code>s require it, similar to definedness constraints which arise from function applications in types). <sup class="footnote-reference"><a href="#note">1</a></sup></li>
-<li>It is on the RHS of an equality constraint with a non-erased element (unclear if this is actually useful).</li>
+<li>Variables, <code>v : t = e</code>, and their types (<code>v : t</code>) can be exported/imported via their identifer. The RHS of their definition (<code>v ~ e</code>) can be exported/imported with <code>(..)</code>.</li>
+<li>Closed types, <code>type t = u</code>, can be exported/imported via their identifiers. The RHS (<code>t &lt;: u /\ u &lt;: t</code>) can be exported/imported with <code>(..)</code>.</li>
+<li>Open types, <code>type t { m0: t0; m1: t1; }</code>, can be exported/imported via their identifiers. Members of the type can be exported/imported in parens. Instances can only be made if all members are in scope via <code>(..)</code>.</li>
+<li>Instances,<code>impl t for u { m0 := e0; m1 := e1; }</code> , are exported/imported implicitly. How to signal intent for whether to export the definition of members of the instance (<code>m0 ~ e0</code>) can be done by writing the special syntax <code>m0(..) for u</code>.</li>
+<li>Tags can be exported via their identifers. Modifying the type of arguments to a tag is always a breaking change.</li>
+<li><code>proof</code>s <code>proof p := e</code> are exported/imported as functions via their identifiers and imported as unnamed <code>proof</code>s with <code>proof(p)</code> (they are always exported as unnamed <code>proof</code>s). A named <code>proof</code> can be imported as both a function and an unnamed <code>proof</code> by a downstream module. All proofs can be imported as unnamed at once with <code>proof(..)</code>.</li>
 </ul>
-<p>An example of erasure being useful is when working with length-indexed vectors:</p>
-<pre><code class="language-WTy2">vecLen[t: Type, n: Nat](v: Vec(t, n)): Nat &lt;&lt;= { it ~ n }
-
-returnsVecOfUnknownLen(...): [n: Nat] Vec[Bool, n]
-</code></pre>
-<p>In <code>vecLen</code>, binding <code>t</code> and <code>n</code> in the <code>[]</code>s allows them to be inferred, and makes it so there is no runtime cost of having to pass the type or length. Note if we had to pass the length explicitly, then the function would be entirely useless: we would need to know the length to calculate it!</p>
-<p>This combines nicely with functions like <code>returnsVecOfUnknownLen</code>. If we ever do actually need to know the length (perhaps to pattern match on it), then we can call <code>vecLen</code> on the result, and this all works out because we still have an erased <code>n: Nat</code> in scope.</p>
-<p>To be concrete, a term being erased means that it cannot be pattern matched on, or passed as an argument to somewhere where a non-erased term is expected.</p>
-<p>Unlike constraints in <code>&lt;&lt;=</code>, erased terms in records can be manually specified at construction or bound when matching.</p>
-<pre><code class="language-WTy2">[erasedLen=n] vec = returnsVecOfUnknownLen(...);
-len = vecLen[Bool, erasedLen](vec);
-
-// From the signature of 'vecLen', `erasedLen ~ len` is in the context
-_: () &lt;&lt;= { erasedLen ~ len } = ();
-</code></pre>
-<h2 id="bidirectional-type-inference"><a class="header" href="#bidirectional-type-inference">Bidirectional Type Inference</a></h2>
-<p>One unfortunate consequence of handling inference in this way is that setting up constraints based on the desired return type (bidirectional type inference) is not really possible. This can be a useful feature - for example, in languages like Haskell, numeric expressions can stay entirely in terms of <code>Num a =&gt; a</code> until finally being instantiated to a specific numeric type at call-site, but it also leads to many cases of potential ambiguity and arguably makes code harder to reason about.</p>
-<p><sup class="footnote-reference"><a href="#note">1</a></sup> Note this is less restrictive than it might initially sound. If we have <code>x: Animal</code> and a function <code>id[t: Type](x: t): t</code>, <code>id(x)</code> does indeed typecheck, with <code>t</code> instantiated to <code>x.head(Animal)</code>.</p>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="../basic_concepts/declarations.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="../basic_concepts/coherence.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
-                            <a rel="next" href="../basic_concepts/coherence.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next" href="../extra/utilities.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
 
@@ -222,11 +208,11 @@ _: () &lt;&lt;= { erasedLen ~ len } = ();
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="../basic_concepts/declarations.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="../basic_concepts/coherence.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
 
-                    <a rel="next" href="../basic_concepts/coherence.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next" href="../extra/utilities.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>

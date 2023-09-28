@@ -81,8 +81,6 @@ Ordinary terms like functions or constants can also be defined as top level bind
 
 ### Proof Declarations
 
-However, functions can be optionally be prefixed with the `proof` keyword. This changes the semantics of the binding, allowing calls to the function to be inserted automatically to aid typechecking. Proofs my also be anonymous. See the dedicated section on proofs for more information.
+However, functions can be optionally be prefixed with the `proof` keyword. This changes the semantics of the binding, allowing calls to the function to be inserted automatically to aid typechecking. `proof`s my also be anonymous. See the [dedicated section](../dependent_types/proofs.md) on `proof`s for more information.
 
-[^note]: Note that with function contravariance, we could also have `f: c -> b` in `fmap`, and if `MonadC` itself was contravariant, `x: self(c)` and then no need for `a`. WTy2 currently does not support variance due to added complexity, but code like this shows places where it could be very useful.
-
-Also note the the `a: c` and `b: c` constraints here are slightly tiresome. Arguably these could be inferred from their use as arguments to `self`. There has been some research in Haskell on doing this inference https://richarde.dev/papers/2020/partialdata/partialdata.pdf and it appears to be highly effective in practice (though it is unclear how well it will extend to a language with subtyping).
+[^note]: The the `a: c` and `b: c` constraints here are slightly tiresome. Arguably these could be inferred from their use as arguments to `self`. There has been some research in Haskell on doing this inference https://richarde.dev/papers/2020/partialdata/partialdata.pdf and it appears to be highly effective in practice. The downside of doing this in the general case (adding constraints implicitly to a type signature until the signature typechecks) is that more changes can become breaking (see [Rust FFC 2089](https://github.com/rust-lang/rfcs/blob/master/text/2089-implied-bounds.md))

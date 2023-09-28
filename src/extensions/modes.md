@@ -1,6 +1,6 @@
 # Modes
 
-As outlined in [Low-level Semantics](../implementation/low_level.md), current design for WTy2 does not focus on performance. Still, this is a hobby project, and sometimes I just find myself thinking about linear types. So this thought is not wasted, I will outline a partial design for some typing-esque features designed with the intention providing guarantees to the programmer about how some WTy2 code will actually be executed.
+As outlined in [Low-level Semantics](../implementation/low_level.md), current design for WTy2 does not focus on performance. Still, this is a hobby project, and sometimes I just find myself thinking about linear types. So this thought is not wasted, I will outline a partial design for some typing-esque features designed with the intention providing guarantees to the programmer about how WTy2 code will actually be executed.
 
 My current favourite point in the (quite large) design space is Jane Street's proposal of "modes" in OCAML [Oxidising OCAML](https://blog.janestreet.com/oxidizing-ocaml-ownership/) and so my current suggestion is to do something similar in WTy2, splitting different optimisation guarantees into different mode "axis".
 

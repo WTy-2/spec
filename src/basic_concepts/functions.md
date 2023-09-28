@@ -1,6 +1,6 @@
 # Functions
 
-Functions in WTy2 can be created with function declarations or lambda.
+WTy2 is a functional programming language, and as such, functions are first-class. Any variable that implements `Fun` is a function.
 
 ## Lambda-Blocks
 

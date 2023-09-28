@@ -6,21 +6,25 @@ WTy2 is a language with subtyping and with first-class types. This has an intere
 
 `Any` is the supertype of all types.
 
-## Type
+## Type (`Ty`)
 
 `Type` is the supertype of all "types". This includes anything which can appear on the RHS of a `:` binding.
 
 An automatic instance of `Type` is derived for every type declaration.
 
-## Constraint
+## Constraint (`Co`)
 
-`Constraint` represents "constraints". These can look syntactically similar to bindings (the constraint-versions of binding operators contain an extra `:` to disambiguate), but instead of bringing variables into scope, they constrain existing values.
+`Co` represents "constraints". These can look syntactically similar to bindings (the constraint-versions of binding operators contain an extra `:` to disambiguate), but instead of bringing variables into scope, they constrain existing values.
 
 Constraints can be created with the built-in `~`, `::` and `<::` operators.
 
-## Functions
+## Functions (`Fun`)
 
-See [Core Type Operators](./arrows.md)
+In WTy2, functions are defined as variables which implement the (`Open`) `Fun` type, which includes methods `arg` and `res` (which return the argument and return types of the function respectively).
+
+Normally, functions in WTy2 are uncurried. The exception is operators, which are always of the form `a -> b -> c`.
+
+See [Core Type Operators](./arrows.md) for the definition of the `(->)` type operator in terms of the built-in `Fun` type.
 
 ## Tuples/Records/Dependent Pairs/Lists and Telescopes
 

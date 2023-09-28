@@ -11,6 +11,7 @@
 - [Declarations](./basic_concepts/declarations.md)
 - [Erasure and Visibility](./basic_concepts/erasure_visibility.md)
 - [Coherence](./basic_concepts/coherence.md)
+- [Modules](./basic_concepts/modules.md)
 
 # Extra
 

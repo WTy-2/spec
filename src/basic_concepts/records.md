@@ -31,13 +31,15 @@ Where `permutation` is a type family that produces a type containing all record 
 WTy2 supports a nominal partial application syntax based on records, which leverages yet another primitive:
 
 ```WTy2
-makePartial: (f: a -> b) -> [a1] a0 <<= { concat(a0, a1): permutation(b) }
+partialise: (f: a -> b) -> [a1] a0 <<= { concat(a0, a1): permutation(b) }
            -> if(isUnit(a1)) { b }.else { a1 -> b };
 ```
 
 Where `concat` is a type family which concatenates two records in the obvious way and `isUnit` is a function on (record) types which decides if the type is `()` (one implementation would be `isUnit(a: Rec) = a.size() == 0`).
 
-As syntax sugar, WTy2 allows `(?) = makePartial` to be used a primitive operator which binds tighter than function application, allowing use like:
+One way to view this primitive is as a generalised `curry` which infers desired argument order based on record field names.
+
+As syntax sugar, WTy2 allows `(?) = makePartial` to be used a primitive operator which binds tighter than partialise application, allowing use like:
 
 ```WTy2
 f: (x: Int, y: Char, z: Bool) -> Int;

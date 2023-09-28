@@ -37,8 +37,8 @@ Using `def` keyword on functions
 
 ```WTy2
 def takesFunctionAndMatches(def foo(Int): Int, MkFoo(x): Foo) := do {
-    def bar(y: Int) = foo(y);
-    MkBar(z) = x;
+    def bar(y: Int) := foo(y);
+    MkBar(z) := x;
 }
 ```
 
@@ -46,40 +46,34 @@ Using `match` keyword on matches
 
 ```
 takesFunctionAndMatches(foo(Int): Int, match MkFoo(x): Foo) := do {
-    bar(y: Int) = foo(y);
-    match MkBar(z) = x;
+    bar(y: Int) := foo(y);
+    match MkBar(z) := x;
 }
 ```
 
-Neither alternative feels great though coming from Haskell. There is no reward for following the capitalisation convention! My current plan is therefore a compromise: capitalised = assume match, lowercase = assume variable but the programmer can also use either keyword to override. This might be an overkill solution, but it seems promising.
+Neither alternative feels great though coming from Haskell. There is no reward for following the capitalisation convention! My current plan is therefore a compromise: capitalised = assume match, lowercase = assume variable, but the programmer can also use either keyword to override. This might be an overkill solution, but it seems promising (and actually quite easy to parse!).
 
 ## Binding/Constraint Operators
 
 Currently, I am liking:
 
-| Binding   | Constraint            | Meaning                        |
-| --------- | --------------------- | ------------------------------ |
-| `x : t`   | `x :: t`              | `x` is of type `t`             |
-| `t <=: u` | <code>t <=\| u</code> | `t` is an instance head of `u` |
-| `t <: u`  | <code>t <\| </code>   | `t` is a subtype of `u`        |
-| `x : 'y`  | `x ~ y`               | `x` reduces to `y`             |
+| Binding  | Constraint          | Meaning                               |
+| -------- | ------------------- | ------------------------------------- |
+| `x : t`  | `x :: t`            | `x` has type `t`                      |
+| `t <: u` | <code>t <\| </code> | `t` is a subtype of `u`               |
+| `x : 'y` | `x ~ y`             | `x` and `y` are propositionally equal |
 
-But it has a few problems:
+But there are a few possible alternatives and questions:
 
-- `(<=:)`/`(<=|)` can easily look either like a combo of less-than-equal `(<=)` and `(:)`/`(|)`, which with the context of subtyping being a combo of `(<)` and `(:)`/`(|)` doesn't make much sense (instance head is a MORE restrictive relation!) Alternatively they look a bit like a reversed implies `(=>)` which they are ALSO unrelated to!
-- The instance head operator `(<=:)` is longer (in terms of characters) than subtyping `(<:)`, but it will likely be used MORE in practice.
+- Use keywords/infix functions instead of operators. E.g: `x is t`/`x in t` instead of `x :: t`.
+- Make the common pattern for constraint (except for `(~)`) be to add a second colon. E.g: `(<::)` instead of `(<|)`.
+- Add a dedicated binding operator for `(~)`, such as `(~:)`.
+- Instead of `(::)`, all types could implement `Any -> Constraint` so instead of `x :: Int` you would write `Int(x)` (a bit Verse-like).
 - With `(:)`, `(::)`, and `(<:)` taken, what should cons be? `(:>)` could very easily be misinterpreted as a flipped version of `(<:)`. Perhaps `(:;)` or `(:.)`?
-
-And there are a LOT of alternatives:
-
-- Use keywords/infix functions instead of operators. E.g: `x is t` instead of `x :: t`, or `instance t for u` instead of `t <=: u`.
-- Make the common pattern for constraint (except for `(~)`) be to add a second colon. E.g: `(<::)`, `(<=::)` (note Fira Code ligatures does not display the latter as intended though!)
-- Add a dedicated binding operator for `(~)` such as `(~:)`.
-- Instead of `(::)`, all types types implement `Any -> Constraint` so instead of `x :: Int` you would write `Int(x)`.
 
 ## Implicit Braces
 
-WTy2 contains a few built-in dependent type operators (`(->)`, `(~>)`, `(|-)`) which automatically add braces to the RHS if the type expression does not type-check without. The advantage is obvious: cleaner syntax. All non-dependent functions requiring braces around the result type (e.g: `Int -> { Int }`) (or using a different arrow) is ugly.
+WTy2 contains a few built-in dependent type operators (`(->)`, `(~>)`) which automatically add braces to the RHS if the type expression does not type-check without. The advantage is obvious: cleaner syntax. All non-dependent functions requiring braces around the result type (e.g: `Int -> { Int }`) (or using a different arrow) is ugly.
 
 That said, this is clearly a special case, and special cases generally do not lead to a cleaner and easier-to-learn language. It might be worth considering if this implicit lambda-abstraction functionality is something that should be possible to opt into with other operators.
 
@@ -96,3 +90,13 @@ Currently, for lambdas that bind variables, I like the look of the following syn
 However, this does overload the meaning of `->` somewhat. Lambda-calculus gives us an alternative separator `.` as in `{ \Pat. ... }` which I don't hate, but I find `{ | Pat1. ..., | Pat2. ... }` very ugly. `{ \Pat1. ..., \Pat2. ... }` is better but now no longer really looks like a pattern match.
 
 Yet another alternative is to use an arrow with a bar `|->`. This is justified via numerous FP papers which use the LaTeX equivalent of this symbol, but of course transliterated into ASCII, it does look somewhat ugly.
+
+## "Such That" Operator
+
+There appears to not really be a standard operator for "such that" in mathematics (except in set comprehensions, but `(:)` and `(|)` are already taken), and the most common, (`∋`)[^note], does not have a reasonable ASCII approximation (at least that I can think of).
+
+`(<<=)` I think has some advantages in that it is very clearly not symmetrical (IMO symmetrical-looking glyphs as operators should really only identify associative, if not commutative operations) and it is vaguely reminiscent of `(=>)` which in Haskell is used to represent the curried version of a similar concept. On the other hand, it (surprisingly) doesn't appear to have a unicode equivalent (there are double-headed arrows, and double-lined arrows, but apparently no double-headed-double-lined arrows...).
+
+On the other hand, a very common operator being three-characters long is a bit unfortunate. `(-<)` is IMO quite aesthetically nice and I do also quite like `($)` given how (if you squint) it looks a bit like an `S` and a `T` overlaid.
+
+[^note]: A few examples of various "such that" operators can be found at https://math.stackexchange.com/a/2777911

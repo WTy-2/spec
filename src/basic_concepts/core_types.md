@@ -32,7 +32,7 @@ In WTy2, the built-in tuples, records, dependent pairs, lists etc... all desugar
 
 ```WTy2
 datatype DepTup(tele: Tele) where
-  (:.) : [ty, rest] (head: ty, tail: rest(head))
+  (:.) : [ty, rest] (head: ty) -> (tail: rest(head))
        -> DepTup(ty .- rest)
   Nil  : DepTup(NilTele);
 ```
@@ -41,11 +41,9 @@ Where `Tele` is another built-in datatype, a telescope:
 
 ```WTy2
 datatype Tele
-  = (.-)    : (ty: Type, rest: t -> Type) -> Tele
+  = (.-)    : (ty: Type) -> (rest: t -> Type) -> Tele
   | NilTele : Tele;
 ```
-
-Of course, to even define a constructor which takes a pair of arguments, we need tuples in the language. A hack to make this work properly inside the typechecker is necessary, but it should not be visible to the user. [^note]
 
 Ordinary lists and tuples can be defined from `DepTup` pretty trivially:
 
@@ -86,13 +84,3 @@ In WTy2, the types of records can look syntactically identical to `Bind`ings (LH
 ## Void
 
 `Void` is the subtype of all types. It contains no inhabitants.
-
-[^note]: There is another possibility: make all operators genuinely arity two (i.e: `(+): Int -> Int -> Int`). This perhaps meshes nicer with function definition syntax sugar, allowing:
-
-```WTy2
-(x: Int) + (y: Int) = ...
-```
-
-Without the argument type having to be constructed by concatenating the LHS and RHS (gets more confusing if the RHS or LHS record contains multiple elements).
-
-I am letting this idea sit for a bit longer before committing to it (it might have some consequences I have not thought of yet), but it seems at least conceptually neat, and removes the need for a weird internal compiler hack of having cons be the only genuinely arity-two constructor in the language.

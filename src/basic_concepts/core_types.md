@@ -63,10 +63,10 @@ More convenient list/tuple syntax and records are implemented as syntax-sugar on
 
 ### Unit (`()`)
 
-The unit type is also defined in terms of `DepTup`, with `()` being a valid identifier:
+The unit type is also defined in terms of `DepTup`, with `()` parsed as an ordinary identifier:
 
 ```
-pattern () = Nil;
+() = Nil;
 type Unit = '();
 ```
 
@@ -75,11 +75,12 @@ type Unit = '();
 WTy2 also supports singleton tuples. The parsing ambiguity of expression in parens vs a singleton tuple is resolved as follows:
 `(E)` where `E` is an expression - parenthesised expression
 `(E,)` where `E` is an expression - singleton tuple
-`(i: E)` where `i` is an identifier and `E` is an expression - singleton record
+`(i: E)` where `i` is an identifer and `E` is an expression - named value (`t <: (i: t)`)
+`(i: E,)` where `i` is an identifier and `E` is an expression - named singleton tuple/singleton record
 
 ### Design Note: Bindings
 
-In WTy2, the types of records can look syntactically identical to `Bind`ings (LHS of assignments). However, `Bind`ings are NOT first-class. `return (x: Int)` returns a `Type` which is equal to the record type `(x: Int)`. `{x: Int}() = 4` (perhaps intending the LHS expression to reduce down to `x: Int`) is nonsense.
+In WTy2, the types of records can look syntactically identical to bindings (LHS of assignments). However, bindings are NOT first-class. `return (x: Int)` returns a `Ty` which is equal to the record type `(x: Int)`. `do {x: Int} = 4` (perhaps intending the LHS expression to reduce down to `x: Int`) is nonsense.
 
 ## Void
 

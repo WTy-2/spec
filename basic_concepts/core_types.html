@@ -190,16 +190,15 @@
 <h2 id="tuplesrecordsdependent-pairslists-and-telescopes"><a class="header" href="#tuplesrecordsdependent-pairslists-and-telescopes">Tuples/Records/Dependent Pairs/Lists and Telescopes</a></h2>
 <p>In WTy2, the built-in tuples, records, dependent pairs, lists etc... all desugar down to the same datatype - a dependent inductively-defined tuple:</p>
 <pre><code class="language-WTy2">datatype DepTup(tele: Tele) where
-  (:.) : [ty, rest] (head: ty, tail: rest(head))
+  (:.) : [ty, rest] (head: ty) -&gt; (tail: rest(head))
        -&gt; DepTup(ty .- rest)
   Nil  : DepTup(NilTele);
 </code></pre>
 <p>Where <code>Tele</code> is another built-in datatype, a telescope:</p>
 <pre><code class="language-WTy2">datatype Tele
-  = (.-)    : (ty: Type, rest: t -&gt; Type) -&gt; Tele
+  = (.-)    : (ty: Type) -&gt; (rest: t -&gt; Type) -&gt; Tele
   | NilTele : Tele;
 </code></pre>
-<p>Of course, to even define a constructor which takes a pair of arguments, we need tuples in the language. A hack to make this work properly inside the typechecker is necessary, but it should not be visible to the user. <sup class="footnote-reference"><a href="#note">1</a></sup></p>
 <p>Ordinary lists and tuples can be defined from <code>DepTup</code> pretty trivially:</p>
 <pre><code class="language-WTy2">type List(ty: Type)
   = [head: ty, tail: List(ty)]
@@ -226,13 +225,6 @@ type Unit = '();
 <p>In WTy2, the types of records can look syntactically identical to <code>Bind</code>ings (LHS of assignments). However, <code>Bind</code>ings are NOT first-class. <code>return (x: Int)</code> returns a <code>Type</code> which is equal to the record type <code>(x: Int)</code>. <code>{x: Int}() = 4</code> (perhaps intending the LHS expression to reduce down to <code>x: Int</code>) is nonsense.</p>
 <h2 id="void"><a class="header" href="#void">Void</a></h2>
 <p><code>Void</code> is the subtype of all types. It contains no inhabitants.</p>
-<div class="footnote-definition" id="note"><sup class="footnote-definition-label">1</sup>
-<p>There is another possibility: make all operators genuinely arity two (i.e: <code>(+): Int -&gt; Int -&gt; Int</code>). This perhaps meshes nicer with function definition syntax sugar, allowing:</p>
-</div>
-<pre><code class="language-WTy2">(x: Int) + (y: Int) = ...
-</code></pre>
-<p>Without the argument type having to be constructed by concatenating the LHS and RHS (gets more confusing if the RHS or LHS record contains multiple elements).</p>
-<p>I am letting this idea sit for a bit longer before committing to it (it might have some consequences I have not thought of yet), but it seems at least conceptually neat, and removes the need for a weird internal compiler hack of having cons be the only genuinely arity-two constructor in the language.</p>
 
                     </main>
 

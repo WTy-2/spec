@@ -26,9 +26,9 @@ shuffle: [a](x: a, b: Type) <<= { a: permutation(b) } -> b;
 
 Where `permutation` is a type family that produces a type containing all record types that are permuations of the fields of the argument record.
 
-## Partial Application (`?`)
+## Partial Application ("`?`")
 
-WTy2 supports a nominal partial application syntax based on records, which leverages yet another primitive:
+WTy2 supports a _nominal_ [^note] partial application syntax based on records, which leverages yet another primitive:
 
 ```WTy2
 partialise: (f: a -> b) -> [a1] a0 <<= { concat(a0, a1): permutation(b) }
@@ -39,7 +39,7 @@ Where `concat` is a type family which concatenates two records in the obvious wa
 
 One way to view this primitive is as a generalised `curry` which infers desired argument order based on record field names.
 
-As syntax sugar, WTy2 allows `(?) = makePartial` to be used a primitive operator which binds tighter than partialise application, allowing use like:
+As syntax sugar, WTy2 allows `(?) = partialise` to be used a primitive operator which binds tighter than function application, allowing use like:
 
 ```WTy2
 f: (x: Int, y: Char, z: Bool) -> Int;
@@ -54,3 +54,5 @@ w: Int = ?f(y='a', z=False, x=3);
 ```
 
 It is likely inference for this primitive will need to be special-cased in the typechecker (i.e: to take advantage how `a1` can be inferred by removing fields of `b` that occur in `a0`).
+
+[^note] As opposed to _positional_, which is the usual approach in languages supporting partial application, such as Haskell. For example, given the Haskell function `foo a b = a / b` we can easily partially apply `foo` to a numerator, `n`, with `foo n`, but partially applying to a denominator, `d`, requires more clunky syntax such as `` (`foo` a) `` or a combinator like `flip` or `(&)`. This problem gets worse as the arity of functions increases.

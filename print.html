@@ -281,30 +281,28 @@ t &lt;: u = for(x: t) { x :: u }
 <p>In WTy2, braces (<code>{}</code>) are used to denote a lambda. Inside the braces, there can be:</p>
 <ul>
 <li>Just an expression. In this case the argument type is inferred, and can be referred to in the expression as <code>it</code>. The really powerful part here is that variables <code>varName</code> are attempted to be resolved as fields of <code>it</code> first (as in <code>it.varName</code>). This is similar to <code>this</code> being in scope allowing access to fields and methods of the class without needing to specify the receiver in OOP languages.</li>
-<li>A &quot;<code>\</code>&quot; followed by an irrefutable pattern which is bound to by the argument, an <code>.</code><sup class="footnote-reference"><a href="#note">1</a></sup> and the return expression.</li>
-<li>Multiple <code>|</code>s, each followed by a pattern, a <code>.</code> and a return expression for if that match succeeds.</li>
+<li>A &quot;<code>\</code>&quot; followed by an irrefutable pattern which is bound to by the argument, a &quot;<code>|-&gt;</code>&quot;, and the return expression.</li>
+<li>Multiple <code>|</code>s, each followed by a pattern, a <code>|-&gt;</code> and a return expression for if that match succeeds.</li>
 </ul>
 <h2 id="function-definitions"><a class="header" href="#function-definitions">Function Definitions</a></h2>
 <p>WTy2 is a functional programming language, meaning functions are first class and can be bound to variables. Using only existing introduced syntax, a function that adds three integers can be defined like so:</p>
-<pre><code class="language-wty2">addThree: Tuple(Int, Int, Int) -&gt; Int = { \(x, y, z). x + y + z };
+<pre><code class="language-wty2">addTriple: Tuple(Int, Int, Int) -&gt; Int = { \(x, y, z) |-&gt; x + y + z };
 </code></pre>
-<p>Using record syntax, we can achieve this in a slightly cleaner way as</p>
-<pre><code class="language-wty2">addThree: (x: Int, y: Int, z: Int) -&gt; Int = { x + y + z };
+<p>Using record syntax (and implicit <code>it</code> scoping), we can achieve this in a slightly cleaner way as</p>
+<pre><code class="language-wty2">addTriple: (x: Int, y: Int, z: Int) -&gt; Int = { x + y + z };
 </code></pre>
 <p>WTy2 introduces an additional way to define functions, which looks closer to imperative programming languages:</p>
-<pre><code class="language-wty2">addThree(x: Int, y: Int, z: Int): Int = x + y + z;
+<pre><code class="language-wty2">addTriple(x: Int, y: Int, z: Int): Int = x + y + z;
 </code></pre>
 <p>In general <code>f(t): u</code> can be thought of as equivalent to...</p>
 <ul>
 <li>If <code>t</code> is a type (including record types), <code>f: t -&gt; u</code></li>
-<li>If <code>t</code> is a list of types, <code>f: Tuple(t) -&gt; u</code></li>
+<li>If <code>t</code> is a list of types, <code>f: Tuple(t) -&gt; u</code> <sup class="footnote-reference"><a href="#note">1</a></sup></li>
 </ul>
-<p>With one difference: if it is the LHS of an assignment (like above) then the braces around the RHS expression are implicit.</p>
+<p>With one extra special case: if the syntax is used as the LHS of an assignment (like above) then the braces around the RHS expression are implicit.</p>
 <h2 id="recursion"><a class="header" href="#recursion">Recursion</a></h2>
 <p>TODO</p>
-<div class="footnote-definition" id="note"><sup class="footnote-definition-label">1</sup>
-<p>A seemingly more natural (and more popular) choice here is to use an arrow like <code>-&gt;</code> or <code>=&gt;</code> as the separator. WTy2 instead follows lambda calculus with <code>.</code> to avoid unnecessary punning (<code>(-&gt;)</code>/<code>(=&gt;)</code> are already type operator used to construct function types/constraint implications). <code>.</code> on the other hand is never parsed as an operator, already being used for record field access and uniform calling syntax.</p>
-</div>
+<p><sup class="footnote-reference"><a href="#note">1</a></sup> This rule is specifically intended to make signatures of higher-order functions easier to write.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="records"><a class="header" href="#records">Records</a></h1>
 <p>Records in WTy2 are internally compiled down to ordinary dependent tuples, but have a few extra features.</p>
 <h2 id="construction"><a class="header" href="#construction">Construction</a></h2>
@@ -319,14 +317,14 @@ t &lt;: u = for(x: t) { x :: u }
 <pre><code class="language-WTy2">shuffle: [a](x: a, b: Type) &lt;&lt;= { a: permutation(b) } -&gt; b;
 </code></pre>
 <p>Where <code>permutation</code> is a type family that produces a type containing all record types that are permuations of the fields of the argument record.</p>
-<h2 id="partial-application-"><a class="header" href="#partial-application-">Partial Application (<code>?</code>)</a></h2>
-<p>WTy2 supports a nominal partial application syntax based on records, which leverages yet another primitive:</p>
+<h2 id="partial-application-"><a class="header" href="#partial-application-">Partial Application (&quot;<code>?</code>&quot;)</a></h2>
+<p>WTy2 supports a <em>nominal</em> <sup class="footnote-reference"><a href="#note">1</a></sup> partial application syntax based on records, which leverages yet another primitive:</p>
 <pre><code class="language-WTy2">partialise: (f: a -&gt; b) -&gt; [a1] a0 &lt;&lt;= { concat(a0, a1): permutation(b) }
            -&gt; if(isUnit(a1)) { b }.else { a1 -&gt; b };
 </code></pre>
 <p>Where <code>concat</code> is a type family which concatenates two records in the obvious way and <code>isUnit</code> is a function on (record) types which decides if the type is <code>()</code> (one implementation would be <code>isUnit(a: Rec) = a.size() == 0</code>).</p>
 <p>One way to view this primitive is as a generalised <code>curry</code> which infers desired argument order based on record field names.</p>
-<p>As syntax sugar, WTy2 allows <code>(?) = makePartial</code> to be used a primitive operator which binds tighter than partialise application, allowing use like:</p>
+<p>As syntax sugar, WTy2 allows <code>(?) = partialise</code> to be used a primitive operator which binds tighter than function application, allowing use like:</p>
 <pre><code class="language-WTy2">f: (x: Int, y: Char, z: Bool) -&gt; Int;
 
 g: (y: Char) -&gt; Int = ?f(x=3, z=True);
@@ -335,6 +333,7 @@ g: (y: Char) -&gt; Int = ?f(x=3, z=True);
 <pre><code class="language-WTy2">w: Int = ?f(y='a', z=False, x=3);
 </code></pre>
 <p>It is likely inference for this primitive will need to be special-cased in the typechecker (i.e: to take advantage how <code>a1</code> can be inferred by removing fields of <code>b</code> that occur in <code>a0</code>).</p>
+<p><sup class="footnote-reference"><a href="#note">1</a></sup> As opposed to <em>positional</em>, which is the usual approach in languages supporting partial application, such as Haskell. For example, given the Haskell function <code>foo a b = a / b</code> we can easily partially apply <code>foo</code> to a numerator, <code>n</code>, with <code>foo n</code>, but partially applying to a denominator, <code>d</code>, requires more clunky syntax such as <code>(`foo` a)</code> or a combinator like <code>flip</code> or <code>(&amp;)</code>. This problem gets worse as the arity of functions increases.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="declarations"><a class="header" href="#declarations">Declarations</a></h1>
 <p>WTy2 supports top-level bindings in the form of &quot;declarations&quot;.</p>
 <p>All named declarations can be prefixed with visibility annotations.</p>

@@ -192,14 +192,14 @@
 <pre><code class="language-WTy2">shuffle: [a](x: a, b: Type) &lt;&lt;= { a: permutation(b) } -&gt; b;
 </code></pre>
 <p>Where <code>permutation</code> is a type family that produces a type containing all record types that are permuations of the fields of the argument record.</p>
-<h2 id="partial-application-"><a class="header" href="#partial-application-">Partial Application (<code>?</code>)</a></h2>
-<p>WTy2 supports a nominal partial application syntax based on records, which leverages yet another primitive:</p>
+<h2 id="partial-application-"><a class="header" href="#partial-application-">Partial Application (&quot;<code>?</code>&quot;)</a></h2>
+<p>WTy2 supports a <em>nominal</em> <sup class="footnote-reference"><a href="#note">1</a></sup> partial application syntax based on records, which leverages yet another primitive:</p>
 <pre><code class="language-WTy2">partialise: (f: a -&gt; b) -&gt; [a1] a0 &lt;&lt;= { concat(a0, a1): permutation(b) }
            -&gt; if(isUnit(a1)) { b }.else { a1 -&gt; b };
 </code></pre>
 <p>Where <code>concat</code> is a type family which concatenates two records in the obvious way and <code>isUnit</code> is a function on (record) types which decides if the type is <code>()</code> (one implementation would be <code>isUnit(a: Rec) = a.size() == 0</code>).</p>
 <p>One way to view this primitive is as a generalised <code>curry</code> which infers desired argument order based on record field names.</p>
-<p>As syntax sugar, WTy2 allows <code>(?) = makePartial</code> to be used a primitive operator which binds tighter than partialise application, allowing use like:</p>
+<p>As syntax sugar, WTy2 allows <code>(?) = partialise</code> to be used a primitive operator which binds tighter than function application, allowing use like:</p>
 <pre><code class="language-WTy2">f: (x: Int, y: Char, z: Bool) -&gt; Int;
 
 g: (y: Char) -&gt; Int = ?f(x=3, z=True);
@@ -208,6 +208,7 @@ g: (y: Char) -&gt; Int = ?f(x=3, z=True);
 <pre><code class="language-WTy2">w: Int = ?f(y='a', z=False, x=3);
 </code></pre>
 <p>It is likely inference for this primitive will need to be special-cased in the typechecker (i.e: to take advantage how <code>a1</code> can be inferred by removing fields of <code>b</code> that occur in <code>a0</code>).</p>
+<p><sup class="footnote-reference"><a href="#note">1</a></sup> As opposed to <em>positional</em>, which is the usual approach in languages supporting partial application, such as Haskell. For example, given the Haskell function <code>foo a b = a / b</code> we can easily partially apply <code>foo</code> to a numerator, <code>n</code>, with <code>foo n</code>, but partially applying to a denominator, <code>d</code>, requires more clunky syntax such as <code>(`foo` a)</code> or a combinator like <code>flip</code> or <code>(&amp;)</code>. This problem gets worse as the arity of functions increases.</p>
 
                     </main>
 

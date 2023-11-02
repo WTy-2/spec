@@ -181,17 +181,17 @@
                         <h1 id="common-type-operators"><a class="header" href="#common-type-operators">Common Type Operators</a></h1>
 <p>WTy2 quite a few common type operators (mostly arrows), they are summarised here.</p>
 <h2 id="function--"><a class="header" href="#function--">Function (<code>-&gt;</code>)</a></h2>
-<pre><code class="language-WTy2">(-&gt;): (t: Ty) -&gt; (t -&gt; Ty) -&gt; Type
+<pre><code class="language-WTy2">(-&gt;): (t: Type) -&gt; (t -&gt; Type) -&gt; Type
 a -&gt; b = (f: Fun) &lt;&lt;= { a &lt;: arg(f) /\ res(f) &lt;: b }
 </code></pre>
 <p>Dependent function arrow.</p>
 <p>In the source language, braces are implicitly added around RHS if necessary.</p>
 <h2 id="such-that-"><a class="header" href="#such-that-">Such That (<code>&lt;&lt;=</code>)</a></h2>
-<pre><code class="language-WTy2">(&lt;&lt;=): (t: Ty) -&gt; (t -&gt; Constraint) -&gt; Ty
+<pre><code class="language-WTy2">(&lt;&lt;=): (t: Type) -&gt; (t -&gt; Constraint) -&gt; Type
 </code></pre>
 <p>Narrows a type, requiring the constraint to be satisfiable for all member values. When pattern matching on values of the type, the constraint is brought into scope.</p>
 <h2 id="constructor-"><a class="header" href="#constructor-">Constructor (<code>~&gt;</code>)</a></h2>
-<pre><code class="language-WTy2">(~&gt;): (t: Ty) -&gt; (t -&gt; Ty) -&gt; Ty
+<pre><code class="language-WTy2">(~&gt;): (t: Type) -&gt; (t -&gt; Type) -&gt; Type
 a ~&gt; b = (a -&gt; b) &amp; Con
 </code></pre>
 <p>Similar to function arrow, but must be &quot;matchable&quot;. i.e:</p>
@@ -200,18 +200,20 @@ a ~&gt; b = (a -&gt; b) &amp; Con
   }
 </code></pre>
 <p>In the source language, braces are implicitly added around RHS if necessary.</p>
+<h3 id="design-question-is-generativity-necessary"><a class="header" href="#design-question-is-generativity-necessary">Design Question: Is Generativity Necessary?</a></h3>
+<p>Haskell assumes type constructors are both injective, and generative, and the work on unsaturated type families still separates functions into those that are both injective and generative, and those that are not necessarily either. However, the benefit of injectivity (for unification) is generally much more useful than generativity, and furthermore, it could be argued that injectivity meshes better with a notion of constructing/matchability anyway (given pattern synonyms are clearly not generative!). Of course, an arbitrary function paired with a proof of injectivity does not provide a strategy to invert it (which is what is <em>really</em> required for pattern matching) but perhaps that just justifies for two types: injective functions, and matchable constructors (the inference and checking of the latter being built-in to the compiler).</p>
 <h2 id="subtype-"><a class="header" href="#subtype-">Subtype (<code>&lt;:</code>)</a></h2>
-<pre><code class="language-WTy2">(&lt;:): Ty -&gt; Ty -&gt; Co
+<pre><code class="language-WTy2">(&lt;:): Type -&gt; Type -&gt; Constraint
 t &lt;: u = for(x: t) { x :: u }
 </code></pre>
 <p>Values of the LHS type can be upcast into ones of the RHS type.</p>
 <h2 id="implies-"><a class="header" href="#implies-">Implies (<code>=&gt;</code>)</a></h2>
-<pre><code class="language-WTy2">(=&gt;): Co -&gt; Co -&gt; Co
+<pre><code class="language-WTy2">(=&gt;): Constraint -&gt; Constraint -&gt; Constraint
 </code></pre>
 <p>The RHS constraint can be obtained from the LHS constraint.</p>
 <h2 id="forall-for--derivable--"><a class="header" href="#forall-for--derivable--">Forall (<code>for</code>) / Derivable (<code>|-</code>)</a></h2>
-<pre><code class="language-WTy2">for : (t: Ty, c: t -&gt; Co) -&gt; Co
-(|-): (t: Ty, c: t -&gt; Co) -&gt; Co
+<pre><code class="language-WTy2">for : (t: Type, c: t -&gt; Constraint) -&gt; Constraint
+(|-): (t: Type, c: t -&gt; Constraint) -&gt; Constraint
 </code></pre>
 <p>The constraint <code>c(t)</code> is derivable from the typing context <code>t</code> - i.e: quantified constraints. The operator version <code>(|-)</code> exists predominately to allow use of <code>(&lt;&lt;=)</code> on the quantified-over type without requiring additional parenthesis.</p>
 <p>In the source language, braces are implicitly added around RHS of (<code>|-</code>) if necessary.</p>

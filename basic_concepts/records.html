@@ -207,7 +207,7 @@ g: (y: Char) -&gt; Int = ?f(x=3, z=True);
 <p>In the case <code>a0: permutation(b)</code>, we have <code>a1 :: () =&gt; isUnit(a1) ~ True</code>. We special-case this situation in the type signature to allow for convenient passing of records with shuffled field order to functions:</p>
 <pre><code class="language-WTy2">w: Int = ?f(y='a', z=False, x=3);
 </code></pre>
-<p>It is likely inference for this primitive will need to be special-cased in the typechecker (i.e: to take advantage how <code>a1</code> can be inferred by removing fields of <code>b</code> that occur in <code>a0</code>).</p>
+<p>It is likely inference for this primitive will need to be handled specifically in the typechecker (i.e: to take advantage how <code>a1</code> can be inferred by removing fields of <code>b</code> that occur in <code>a0</code>).</p>
 <p><sup class="footnote-reference"><a href="#note">1</a></sup> As opposed to <em>positional</em>, which is the usual approach in languages supporting partial application, such as Haskell. For example, given the Haskell function <code>foo a b = a / b</code> we can easily partially apply <code>foo</code> to a numerator, <code>n</code>, with <code>foo n</code>, but partially applying to a denominator, <code>d</code>, requires more clunky syntax such as <code>(`foo` a)</code> or a combinator like <code>flip</code> or <code>(&amp;)</code>. This problem gets worse as the arity of functions increases.</p>
 
                     </main>

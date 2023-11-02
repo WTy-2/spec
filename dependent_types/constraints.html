@@ -179,8 +179,8 @@
                 <div id="content" class="content">
                     <main>
                         <h1 id="constraints"><a class="header" href="#constraints">Constraints</a></h1>
-<p>Constraints (<code>Co</code>) in WTy2 are used to pass evidence of equality or type membership, inspired by Haskell's <code>Constraint</code> kind.
-Unlike Haskell, WTy2 retaining tags at runtime means that dictionary-passing is not the only sensible implementation strategy (we can instead just dispatch on tags) but viewing <code>Co</code> as the set of types which are guaranteed to only have one value (i.e, if we were allowed to name members of constraints in WTy2, we would have <code>for(c: Co, x: c, y: c) { x ~ y }</code>), with appropriate inference rules, is still sensible.</p>
+<p>Constraints (<code>Constraint</code>) in WTy2 are used to pass evidence of equality or type membership, inspired by Haskell's <code>Constraint</code> kind.
+Unlike Haskell, WTy2 retaining tags at runtime means that dictionary-passing is not the only sensible implementation strategy (we can instead just dispatch on tags) but viewing <code>Constraint</code> as the set of types which are guaranteed to only have one value (i.e, if we were allowed to name members of constraints in WTy2, we would have <code>for(c: Constraint, x: c, y: c) { x ~ y }</code>), with appropriate inference rules, is still sensible.</p>
 <h2 id="constraint-operators"><a class="header" href="#constraint-operators">Constraint Operators:</a></h2>
 <ul>
 <li><code>x :: t</code> = Dual to the binding operator <code>:</code>. Variable <code>x</code> is a member of the type <code>t</code>.</li>
@@ -191,12 +191,12 @@ This is actually not built-in. We can define it as <code>t &lt;| u := for(x: t) 
 <li><code>c =&gt; d</code> = A <strong>constraint implication</strong>. Constraint <code>d</code> is derivable if constraint <code>c</code> is assumed.</li>
 <li><code>for(t, f)</code> = A <strong>quantified constraint</strong>. Function taking argument of type <code>t</code> and returning a constraint, <code>f</code> returns a derivable constraint for every value of type <code>t</code>.
 Example usage: <code>for(x: Int, y: Int) { x + y ~ y + x }</code> represents the constraint that <code>(+)</code> on <code>Int</code>s is commutative.</li>
-<li>Constraints, like types, are first-class. The type of constraints is <code>Co</code> and so arbitrary expressions of this type can also appear inside constraints.</li>
+<li>Constraints, like types, are first-class. The type of constraints is <code>Constraint</code> and so arbitrary expressions of this type can also appear inside constraints.</li>
 </ul>
 <h2 id="such-that-"><a class="header" href="#such-that-">Such That <code>(&lt;&lt;=)</code></a></h2>
 <p>WTy2 features a built-in dependent operator that places additional constraints on values of a type. When used on the argument and return type of a function, this has the interpretation of defining <strong>requires</strong> and <strong>ensures</strong> contracts, respectively.</p>
 <p>The <code>&lt;&lt;=</code> operator has the following type signature:</p>
-<pre><code class="language-WTy2">(&lt;&lt;=) : (a: Ty, f: a -&gt; Co) -&gt; Ty
+<pre><code class="language-WTy2">(&lt;&lt;=) : (a: Type, f: a -&gt; Constraint) -&gt; Type
 </code></pre>
 <p>To construct a value of type <code>a &lt;&lt;= b</code> from a value <code>x</code> of type <code>a</code>, <code>b(x)</code> must be in the context. Matching on a value of type <code>(x: a) &lt;&lt;= b</code> is equivalent in syntax to matching on a value of type <code>a</code>, but <code>b(x)</code> is implicitly added to the typing context.</p>
 <p>Another interpretation of this operator that might be more intuitive for programmers who have used languages with dependent types before is as a dependent pair, where the second element must be a constraint dictionary.</p>

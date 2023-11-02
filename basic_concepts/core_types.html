@@ -179,15 +179,14 @@
                 <div id="content" class="content">
                     <main>
                         <h1 id="core-types"><a class="header" href="#core-types">Core Types</a></h1>
-<p>WTy2 is a language with subtyping and with first-class types. This has an interesting consequence: instead of having a &quot;kind&quot; system, different language constructs are simply members of different types.</p>
 <h2 id="any"><a class="header" href="#any">Any</a></h2>
 <p><code>Any</code> is the supertype of all types.</p>
-<h2 id="type-ty"><a class="header" href="#type-ty">Type (<code>Ty</code>)</a></h2>
+<h2 id="type-type"><a class="header" href="#type-type">Type (<code>Type</code>)</a></h2>
 <p><code>Type</code> is the supertype of all &quot;types&quot;. This includes anything which can appear on the RHS of a <code>:</code> binding.</p>
 <p>An automatic instance of <code>Type</code> is derived for every type declaration.</p>
-<h2 id="constraint-co"><a class="header" href="#constraint-co">Constraint (<code>Co</code>)</a></h2>
-<p><code>Co</code> represents &quot;constraints&quot;. These can look syntactically similar to bindings (the constraint-versions of binding operators contain an extra <code>:</code> to disambiguate), but instead of bringing variables into scope, they constrain existing values.</p>
-<p>Constraints can be created with the built-in <code>~</code>, <code>::</code> and <code>&lt;::</code> operators.</p>
+<h2 id="constraint-constraint"><a class="header" href="#constraint-constraint">Constraint (<code>Constraint</code>)</a></h2>
+<p><code>Constraint</code> represents &quot;constraints&quot;. These can look syntactically similar to bindings (the constraint-versions of binding operators contain an extra <code>:</code> to disambiguate), but instead of bringing variables into scope, they constrain existing values.</p>
+<p>Constraints can be created with the built-in <code>~</code>, <code>::</code> and <code>&lt;|</code> operators.</p>
 <h2 id="functions-fun"><a class="header" href="#functions-fun">Functions (<code>Fun</code>)</a></h2>
 <p>In WTy2, functions are defined as variables which implement the (<code>Open</code>) <code>Fun</code> type, which includes methods <code>arg</code> and <code>res</code> (which return the argument and return types of the function respectively).</p>
 <p>Normally, functions in WTy2 are uncurried. The exception is operators, which are always of the form <code>a -&gt; b -&gt; c</code>.</p>
@@ -228,7 +227,7 @@ type Unit = '();
 <code>(i: E)</code> where <code>i</code> is an identifer and <code>E</code> is an expression - named value (<code>t &lt;: (i: t)</code>)
 <code>(i: E,)</code> where <code>i</code> is an identifier and <code>E</code> is an expression - named singleton tuple/singleton record</p>
 <h3 id="design-note-bindings"><a class="header" href="#design-note-bindings">Design Note: Bindings</a></h3>
-<p>In WTy2, the types of records can look syntactically identical to bindings (LHS of assignments). However, bindings are NOT first-class. <code>return (x: Int)</code> returns a <code>Ty</code> which is equal to the record type <code>(x: Int)</code>. <code>do {x: Int} = 4</code> (perhaps intending the LHS expression to reduce down to <code>x: Int</code>) is nonsense.</p>
+<p>In WTy2, the types of records can look syntactically identical to bindings (LHS of assignments). However, bindings are NOT first-class. <code>return (x: Int)</code> returns a <code>Type</code> which is equal to the record type <code>(x: Int)</code>. <code>do {x: Int} = 4</code> (perhaps intending the LHS expression to reduce down to <code>x: Int</code>) is nonsense.</p>
 <h2 id="void"><a class="header" href="#void">Void</a></h2>
 <p><code>Void</code> is the subtype of all types. It contains no inhabitants.</p>
 

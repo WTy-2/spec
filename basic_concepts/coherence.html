@@ -233,8 +233,8 @@ for(t: Open, u: Open)     { t &amp; u :: Open   }
 <pre><code class="language-WTy2">type T = U;
 </code></pre>
 <p>...is translated into:</p>
-<pre><code class="language-WTy2">type T { } &lt;: U;
-inst T for U;
+<pre><code class="language-WTy2">type T { } &lt;&lt;= { self &lt;| impl(U) };
+inst T for impl(U); // Or an instance for every value if `U` is not open.
 </code></pre>
 <p>So for type-alias syntax, the defined type is closed iff the RHS type is closed.</p>
 <p>A type may have exactly one &quot;open&quot; instance, or many &quot;closed&quot; instances.</p>

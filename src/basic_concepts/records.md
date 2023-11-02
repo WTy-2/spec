@@ -53,6 +53,6 @@ In the case `a0: permutation(b)`, we have `a1 :: () => isUnit(a1) ~ True`. We sp
 w: Int = ?f(y='a', z=False, x=3);
 ```
 
-It is likely inference for this primitive will need to be special-cased in the typechecker (i.e: to take advantage how `a1` can be inferred by removing fields of `b` that occur in `a0`).
+It is likely inference for this primitive will need to be handled specifically in the typechecker (i.e: to take advantage how `a1` can be inferred by removing fields of `b` that occur in `a0`).
 
 [^note] As opposed to _positional_, which is the usual approach in languages supporting partial application, such as Haskell. For example, given the Haskell function `foo a b = a / b` we can easily partially apply `foo` to a numerator, `n`, with `foo n`, but partially applying to a denominator, `d`, requires more clunky syntax such as `` (`foo` a) `` or a combinator like `flip` or `(&)`. This problem gets worse as the arity of functions increases.

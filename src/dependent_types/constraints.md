@@ -1,7 +1,7 @@
 # Constraints
 
-Constraints (`Co`) in WTy2 are used to pass evidence of equality or type membership, inspired by Haskell's `Constraint` kind.
-Unlike Haskell, WTy2 retaining tags at runtime means that dictionary-passing is not the only sensible implementation strategy (we can instead just dispatch on tags) but viewing `Co` as the set of types which are guaranteed to only have one value (i.e, if we were allowed to name members of constraints in WTy2, we would have `for(c: Co, x: c, y: c) { x ~ y }`), with appropriate inference rules, is still sensible.
+Constraints (`Constraint`) in WTy2 are used to pass evidence of equality or type membership, inspired by Haskell's `Constraint` kind.
+Unlike Haskell, WTy2 retaining tags at runtime means that dictionary-passing is not the only sensible implementation strategy (we can instead just dispatch on tags) but viewing `Constraint` as the set of types which are guaranteed to only have one value (i.e, if we were allowed to name members of constraints in WTy2, we would have `for(c: Constraint, x: c, y: c) { x ~ y }`), with appropriate inference rules, is still sensible.
 
 ## Constraint Operators:
 
@@ -13,7 +13,7 @@ Unlike Haskell, WTy2 retaining tags at runtime means that dictionary-passing is 
 - `c => d` = A **constraint implication**. Constraint `d` is derivable if constraint `c` is assumed.
 - `for(t, f)` = A **quantified constraint**. Function taking argument of type `t` and returning a constraint, `f` returns a derivable constraint for every value of type `t`.
   Example usage: `for(x: Int, y: Int) { x + y ~ y + x }` represents the constraint that `(+)` on `Int`s is commutative.
-- Constraints, like types, are first-class. The type of constraints is `Co` and so arbitrary expressions of this type can also appear inside constraints.
+- Constraints, like types, are first-class. The type of constraints is `Constraint` and so arbitrary expressions of this type can also appear inside constraints.
 
 ## Such That `(<<=)`
 
@@ -22,7 +22,7 @@ WTy2 features a built-in dependent operator that places additional constraints o
 The `<<=` operator has the following type signature:
 
 ```WTy2
-(<<=) : (a: Ty, f: a -> Co) -> Ty
+(<<=) : (a: Type, f: a -> Constraint) -> Type
 ```
 
 To construct a value of type `a <<= b` from a value `x` of type `a`, `b(x)` must be in the context. Matching on a value of type `(x: a) <<= b` is equivalent in syntax to matching on a value of type `a`, but `b(x)` is implicitly added to the typing context.

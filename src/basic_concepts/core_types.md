@@ -1,22 +1,20 @@
 # Core Types
 
-WTy2 is a language with subtyping and with first-class types. This has an interesting consequence: instead of having a "kind" system, different language constructs are simply members of different types.
-
 ## Any
 
 `Any` is the supertype of all types.
 
-## Type (`Ty`)
+## Type (`Type`)
 
 `Type` is the supertype of all "types". This includes anything which can appear on the RHS of a `:` binding.
 
 An automatic instance of `Type` is derived for every type declaration.
 
-## Constraint (`Co`)
+## Constraint (`Constraint`)
 
-`Co` represents "constraints". These can look syntactically similar to bindings (the constraint-versions of binding operators contain an extra `:` to disambiguate), but instead of bringing variables into scope, they constrain existing values.
+`Constraint` represents "constraints". These can look syntactically similar to bindings (the constraint-versions of binding operators contain an extra `:` to disambiguate), but instead of bringing variables into scope, they constrain existing values.
 
-Constraints can be created with the built-in `~`, `::` and `<::` operators.
+Constraints can be created with the built-in `~`, `::` and `<|` operators.
 
 ## Functions (`Fun`)
 
@@ -80,7 +78,7 @@ WTy2 also supports singleton tuples. The parsing ambiguity of expression in pare
 
 ### Design Note: Bindings
 
-In WTy2, the types of records can look syntactically identical to bindings (LHS of assignments). However, bindings are NOT first-class. `return (x: Int)` returns a `Ty` which is equal to the record type `(x: Int)`. `do {x: Int} = 4` (perhaps intending the LHS expression to reduce down to `x: Int`) is nonsense.
+In WTy2, the types of records can look syntactically identical to bindings (LHS of assignments). However, bindings are NOT first-class. `return (x: Int)` returns a `Type` which is equal to the record type `(x: Int)`. `do {x: Int} = 4` (perhaps intending the LHS expression to reduce down to `x: Int`) is nonsense.
 
 ## Void
 

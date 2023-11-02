@@ -81,8 +81,8 @@ type T = U;
 ...is translated into:
 
 ```WTy2
-type T { } <: U;
-inst T for U;
+type T { } <<= { self <| impl(U) };
+inst T for impl(U); // Or an instance for every value if `U` is not open.
 ```
 
 So for type-alias syntax, the defined type is closed iff the RHS type is closed.

@@ -8,7 +8,7 @@ WTy2 attempts to separate out these "proof" functions from the code that require
 
 The `proof` keyword can be written before a variable definition, with the name of the variable optionally elided. Named `proof`s can be called just like normal functions.
 
-Variables annotated as `proof`s must be functions that return something of type `Proof(c)` for some `c: Co`.
+Variables annotated as `proof`s must be functions that return something of type `Proof(c)` for some `c: Constraint`.
 
 ## Semantics
 

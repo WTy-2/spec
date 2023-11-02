@@ -25,14 +25,14 @@ foo(x: Int, y: Int): Int = do {
 Inspired by oh-so-many programming languages, maybe Algol 60 was first?
 
 ```WTy2
-if[t: Ty](c: Bool, e: () -> t): Maybe(t) = with(c) {
+if[t: Type](c: Bool, e: () -> t): Maybe(t) = with(c) {
 | True  -> Just(e()),
 | False -> Nothing
 }
 ```
 
 ```
-elif[t: Ty](x: Maybe(t), c: Bool, e: () -> t): Maybe(t) = with(x, c) {
+elif[t: Type](x: Maybe(t), c: Bool, e: () -> t): Maybe(t) = with(x, c) {
 | (Just(y), _)     |-> x,
 | (Nothing, True)  |-> Just(e()),
 | (Nothing, False) |-> Nothing,
@@ -40,7 +40,7 @@ elif[t: Ty](x: Maybe(t), c: Bool, e: () -> t): Maybe(t) = with(x, c) {
 ```
 
 ```WTy2
-else[t: Ty](x: Maybe(t), e: () -> t): t = with(x) {
+else[t: Type](x: Maybe(t), e: () -> t): t = with(x) {
 | Just(y) |-> y,
 | Nothing |-> e()
 }
@@ -63,7 +63,7 @@ _ := if(True) {
 Inspired by Kotlin
 
 ```WTy2
-fun[r: Ty](t: Ty, f: t -> r): t -> r = f
+fun[r: Type](t: Type, f: t -> r): t -> r = f
 ```
 
 In WTy2, serves to annotate the argument type of a function without having to use arrow-lambda syntax.
@@ -73,7 +73,7 @@ In WTy2, serves to annotate the argument type of a function without having to us
 Inspired by Scala
 
 ```WTy2
-lazy[t: Ty](f: () -> t): () -> t = f
+lazy[t: Type](f: () -> t): () -> t = f
 ```
 
 Note this does not perform any memoisation (call-by-need). This would require some form of mutability to implement.
@@ -83,7 +83,7 @@ Note this does not perform any memoisation (call-by-need). This would require so
 Inspired by Idris
 
 ```
-the(t: Ty, x: t): t = x
+the(t: Type, x: t): t = x
 ```
 
 Annotates the type of `x`.
@@ -93,11 +93,11 @@ Annotates the type of `x`.
 Inspired by Kotlin
 
 ```WTy2
-with[t: Ty, r: Ty](x: t, f: t -> r): r = f(x)
+with[t: Type, r: Type](x: t, f: t -> r): r = f(x)
 ```
 
 ```WTy2
-also[t: Ty, m: Applicative](x: t, f: t -> m()): m(t) = f(x) $> x
+also[t: Type, m: Applicative](x: t, f: t -> m()): m(t) = f(x) $> x
 ```
 
 `with` combines well with lambda-case syntax as a way to pattern match on a variable. E.g:
@@ -113,7 +113,7 @@ _ := with(x) {
 ## Tagged
 
 ```WTy2
-tagged[a: Ty](f: a ~> Any): Ty = [x: a] 'f(x)
+tagged[a: Type](f: a ~> Any): Type = [x: a] 'f(x)
 ```
 
 Returns the set of all values tagged with the constructor.
@@ -121,7 +121,7 @@ Returns the set of all values tagged with the constructor.
 ## Impl
 
 ```WTy2
-impl(t: Ty): Ty = [u: t] u
+impl(t: Type): Type = [u: t] u
 ```
 
 The union of all types which implement an open type.

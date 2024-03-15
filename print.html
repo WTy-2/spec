@@ -179,7 +179,7 @@
                         <h1 id="dependent-pattern-matching-without-green-slime"><a class="header" href="#dependent-pattern-matching-without-green-slime">Dependent Pattern Matching, Without Green Slime</a></h1>
 <p>Disclaimer: This is basically a blog post. I should start hosting my own website so I can write real blog posts...</p>
 <p>TODO: Add footnotes/references</p>
-<p>A classic pain point in proof assistents based on ITT is problems with &quot;green slime&quot;.</p>
+<p>A classic pain point in proof assistants based on ITT is problems with &quot;green slime&quot;.</p>
 <pre><code class="language-agda">foo : (x y : ℕ) → Fin (x + y) → ⊤
 foo x y fz = {!!}
 foo x y (fs _) = {!!}
@@ -286,7 +286,7 @@ foo x y (coe p (fs n)) = {!!}
 <li>The culprit is that an expression in the context relied on the rewrite rule but the match made it invalid. Therefore blame the <code>Pred x y n</code> and the match on <code>x</code> and <code>y</code>.</li>
 <li>The culprit was that the match on <code>x</code> and <code>y</code> unblocked the LHS of the rewrite rule which forced it to be discarded (i.e. the problem is unrelated to whether such a rewrite rule was necessary validity for the context). Therefore blame the <code>x + y -&gt; suc n</code> rewrite rule and the match on <code>x</code> and <code>y</code>.</li>
 </ul>
-<p>I'll admit that I am partial to the latter here: I think erroring for any type that could possibly yield an undecidable unification puzzle is too conservative, given this must include any inductive datatype which might contain a function (and of course functions themselves), and also general QITs/HITs (which are pretty exotic constructions, but are also very exciting features which I would like a modern proof assistent to support), and I don't like the idea that adding stuff to your context could cause an error (typechecking being stable under weakening seems desirable).</p>
+<p>I'll admit that I am partial to the latter here: I think erroring for any type that could possibly yield an undecidable unification puzzle is too conservative, given this must include any inductive datatype which might contain a function (and of course functions themselves), and also general QITs/HITs (which are pretty exotic constructions, but are also very exciting features which I would like a modern proof assistant to support), and I don't like the idea that adding stuff to your context could cause an error (typechecking being stable under weakening seems desirable).</p>
 <p>Now to actually try and implement such a feature! (just kidding, I'm a type theorist, I would never write code)</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="introduction"><a class="header" href="#introduction">Introduction</a></h1>
 <p>WTy2 is a pure, strict, functional programming language based on extrinsic dependent types.</p>

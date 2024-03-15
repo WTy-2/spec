@@ -11,8 +11,9 @@ foo : (x y : ℕ) → Fin (x + y) → ⊤
 foo x y fz = {!!}
 foo x y (fs _) = {!!}
 
---------------------------------------------------------------------------------
+```
 
+```
 I'm not sure if there should be a case for the constructor fz,
 because I get stuck when trying to solve the following unification
 problems (inferred index ≟ expected index):
@@ -83,9 +84,9 @@ foo : (x y : ℕ) (n : Fin (x + y)) → Pred x y n → ⊤
 foo x y n p with x + y
 foo x y fz p | .(suc _) = {!!}
 foo x y (fs n) p | .(suc _) = {!!}
+```
 
---------------------------------------------------------------------------------
-
+```
 w != x + y of type ℕ
 when checking that the type
 (x y w : ℕ) (n : Fin w) (p : Pred x y n) → ⊤ of the generated with

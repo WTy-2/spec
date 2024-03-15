@@ -23,7 +23,7 @@ when checking that the pattern fz has type Fin (x + y)
 
 These arise from how unification problems between neutrals and values are undecidable.
 
-Unification between neutrals are variables is easy: all we need to do is perform a substitution, which is what allows
+Unification between neutrals and variables is easy: all we need to do is perform a substitution, which is what allows
 
 ```agda
 foo : (x : ℕ) → Fin x → ⊤
@@ -114,15 +114,15 @@ More than this, I think my frustration with the manual translations is that they
 
 is a complete waste of effort.
 
-Fixing the first bullet is harder - we must improve the power of definitional equality. Note it might sound less important (it certainly did to me), but in larger examples, having rewrites apply only once, immediately, can end up giving rise to so-called `with`-jenga where the order of `with` abstractions needs to be chosen extremely carefully to have the types work out (i.e. without resorting to copious amounts of manual coercing). Again, in my opinion, time spent finding solutions to puzzles like these is time wasted (even if solving puzzles can sometimes be fun).
+Fixing the first bullet is harder - we must increase the power of definitional equality. Note it might sound less important (it certainly did to me), but in larger examples, having rewrites apply only once, immediately, can end up giving rise to so-called `with`-jenga where the order of `with` abstractions needs to be chosen extremely carefully to have the types work out (i.e. without resorting to copious amounts of manual coercing). Again, in my opinion, time spent finding solutions to puzzles like these is time wasted (even if solving puzzles can sometimes be fun).
 
-Before I proceed to the proposal, I must give credit where it is due. I originally heard this idea from Ollef, and worked through a lot of the tricky details with Iurii - thanks for the interesting discussions!
+Before I proceed to the proposal, I must give credit where it is due. I originally heard this idea from Ollef on the r/ProgrammingLanguages Discord, and worked through a lot of the tricky details with Iurii - thanks for the interesting discussions!
 
 Without further ado, the core idea is thus: Make it possible for the context to contain local rewrite rules (from neutrals to values), subject to an occurs check to prevent loops. We can then define dependent pattern matching as a process which adds such rewrite rules to the context (i.e. as opposed to the usual one-time-substitutions-of-variables-for-patterns).
 
 An important note: the solution here is not "complete". I believe this is by necessity (a perfect solution would give arbitrary equality reflection and naturally make typechecking undecidable). It is simply designed to handle a majority of easy cases, with the fall-back of transport-patterns (or manual fording) always in reach.
 
-TODO: Add paragraph on occurs check and why it is necessary
+TODO: Add paragraph on the occurs check and why it is necessary
 
 Of course, the scrutinee of a pattern match will not always be a neutral. More severely, what might have started as a mapping from a neutral might become not so if some other pattern match causes the neutral to unblock. Our proposed scheme for handling such cases is as follows:
 

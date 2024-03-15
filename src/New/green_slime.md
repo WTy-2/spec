@@ -4,7 +4,7 @@ Disclaimer: This is basically a blog post. I should start hosting my own website
 
 TODO: Add footnotes/references
 
-A classic pain point in proof assistents based on ITT is problems with "green slime".
+A classic pain point in proof assistants based on ITT is problems with "green slime".
 
 ```agda
 foo : (x y : ℕ) → Fin (x + y) → ⊤
@@ -144,6 +144,6 @@ So, how do we resolve these cases? I think this has to be some sort of type erro
 - The culprit is that an expression in the context relied on the rewrite rule but the match made it invalid. Therefore blame the `Pred x y n` and the match on `x` and `y`.
 - The culprit was that the match on `x` and `y` unblocked the LHS of the rewrite rule which forced it to be discarded (i.e. the problem is unrelated to whether such a rewrite rule was necessary validity for the context). Therefore blame the `x + y -> suc n` rewrite rule and the match on `x` and `y`.
 
-I'll admit that I am partial to the latter here: I think erroring for any type that could possibly yield an undecidable unification puzzle is too conservative, given this must include any inductive datatype which might contain a function (and of course functions themselves), and also general QITs/HITs (which are pretty exotic constructions, but are also very exciting features which I would like a modern proof assistent to support), and I don't like the idea that adding stuff to your context could cause an error (typechecking being stable under weakening seems desirable).
+I'll admit that I am partial to the latter here: I think erroring for any type that could possibly yield an undecidable unification puzzle is too conservative, given this must include any inductive datatype which might contain a function (and of course functions themselves), and also general QITs/HITs (which are pretty exotic constructions, but are also very exciting features which I would like a modern proof assistant to support), and I don't like the idea that adding stuff to your context could cause an error (typechecking being stable under weakening seems desirable).
 
 Now to actually try and implement such a feature! (just kidding, I'm a type theorist, I would never write code)

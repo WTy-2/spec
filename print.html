@@ -178,8 +178,8 @@
                     <main>
                         <h1 id="dependent-pattern-matching-without-green-slime"><a class="header" href="#dependent-pattern-matching-without-green-slime">Dependent Pattern Matching, Without Green Slime</a></h1>
 <p>Disclaimer: This is basically a blog post. I should start hosting my own website so I can write real blog posts...</p>
-<p>TODO: Add footnotes/references</p>
-<p>A classic pain point in proof assistants based on ITT is problems with &quot;green slime&quot;.</p>
+<h2 id="motivation"><a class="header" href="#motivation">Motivation</a></h2>
+<p>A classic pain point in proof assistants based on ITT is problems with &quot;green slime&quot; <sup class="footnote-reference"><a href="#slime">1</a></sup>.</p>
 <pre><code class="language-agda">foo : (x y : ℕ) → Fin (x + y) → ⊤
 foo x y fz = {!!}
 foo x y (fs _) = {!!}
@@ -191,18 +191,19 @@ problems (inferred index ≟ expected index):
   suc n ≟ x + y
 when checking that the pattern fz has type Fin (x + y)
 </code></pre>
-<p>These arise from how unification problems between neutrals and values are undecidable.</p>
-<p>Unification between neutrals and variables is easy: all we need to do is perform a substitution, which is what allows</p>
+<p>These arise from how dependent pattern matching requires patterns to definitionally have the type of the scrutinee variable (so it is safe to substitute the variable for the pattern everywhere in the context).</p>
+<p>As we'll see next, if the &quot;inferred&quot; (i.e. from the signature of the constructor) and &quot;expected&quot; (i.e. from the type of variable being matched on) indices can be unified to produce a single solution, we can easily elaborate this into a match where the indices coincide, and the pattern has the desired type (and if they anti-unify, we know the branch is impossible and can be elided); however, oftentimes, unification problems can yield multiple solutions, or worse, are undecidable.</p>
+<p>Unification between patterns<sup class="footnote-reference"><a href="#pattern">2</a></sup> and <em>variables</em> is easy: all we need to do is perform a substitution, which is what allows</p>
 <pre><code class="language-agda">foo : (x : ℕ) → Fin x → ⊤
 foo x fz = {!!}
 foo x (fs _) = {!!}
 </code></pre>
-<p>to be elaborated into</p>
+<p>to be painlessly elaborated into</p>
 <pre><code class="language-agda">foo : (x : ℕ) → Fin x → ⊤
 foo x@.(suc _) fz = {!!}
 foo x@.(suc _) (fs \_) = {!!}
 </code></pre>
-<p>We could attempt a similar translation for more complicated indices, using a <code>with</code>-abstraction</p>
+<p>We <em>could</em> attempt a similar translation for more complicated indices, using a <code>with</code>-abstraction<sup class="footnote-reference"><a href="#with">3</a></sup></p>
 <pre><code class="language-agda">foo : (x y : ℕ) → Fin (x + y) → ⊤
 foo x y n with x + y
 foo x y fz | x+y = {!!}
@@ -214,8 +215,8 @@ foo x y n with x + y
 foo x y fz | x+y@.(suc _) = {!!}
 foo x y (fs n) | x+y@.(suc _) = {!!}
 </code></pre>
-<p>This typechecks, but we have lost all connection between the index of the <code>Fin</code> and <code>x + y</code>. Such a <code>with</code> abstraction only works by replacing all occurences of <code>x + y</code> in the context with a new variable, so this is an inherent limitation.</p>
-<p>Luckily, using Agda's <code>with ... in ...</code> syntax (or the <code>inspect</code> idiom) we can retain propositional evidence of this connection</p>
+<p>This typechecks, but we have lost all connection between the index of the <code>Fin</code> and <code>x + y</code>. Such a <code>with</code> abstraction only works by indiscriminately replacing all occurences of <code>x + y</code> in the context with a new variable, so this is an inherent limitation.</p>
+<p>Luckily, using Agda's <code>with ... in ...</code> syntax (or the <code>inspect</code> idiom) <sup class="footnote-reference"><a href="#inspect">4</a></sup> we can retain propositional evidence of this connection</p>
 <pre><code class="language-agda">foo : (x y : ℕ) → Fin (x + y) → ⊤
 foo x y n with x + y in p
 foo x y fz | .(suc _) = {!!} -- Here, p : x + y ≡ suc n
@@ -228,7 +229,7 @@ foo x y (fs n) | .(suc _) = {!!}
 </ol>
 <p>There is also a third, more subtle issue:</p>
 <ol start="3">
-<li>Sometimes, with abstractions in Agda become &quot;ill-typed&quot;. In the case of <code>foo</code>, this can happen if some expression in the context relies on the <code>Fin</code> being indexed by <code>x + y</code> definitionally to typecheck.</li>
+<li>Sometimes, <code>with</code>-abstractions in Agda become &quot;ill-typed&quot;. In the case of <code>foo</code>, this can happen if some expression in the context relies on the <code>Fin</code> being indexed by <code>x + y</code> definitionally to typecheck.</li>
 </ol>
 <pre><code class="language-agda">Pred : ∀ x y → Fin (x + y) → Set
 
@@ -243,26 +244,35 @@ when checking that the type
 function is well-formed
 (https://agda.readthedocs.io/en/v2.6.4.2/language/with-abstraction.html#ill-typed-with-abstractions)
 </code></pre>
-<p>To resolve these last two points, I propose a new syntax: &quot;transport-patterns&quot;. Simply put: we allow a built-in transport operator to appear in patterns, allowing us to match without fear of &quot;green slime&quot; while also binding propositional equality of the indices.</p>
+<h2 id="solution-1-transport-patterns"><a class="header" href="#solution-1-transport-patterns">Solution 1: Transport-Patterns</a></h2>
+<p>To resolve these last two points, I propose a new syntax, which I call &quot;transport-patterns&quot;. Simply put: we allow a built-in transport operator to appear in patterns, allowing us to match without fear of &quot;green slime&quot; while also binding propositional equality of the indices.</p>
 <pre><code class="language-agda">foo : (x y : ℕ) → Fin (x + y) → ⊤
-foo x y (coe p fz) = {!!}
-foo x y (coe p (fs n)) = {!!}
+-- I use a coercion operator inspired by Cubical Agda's transpX here because
+-- ideally we would like to be able to refer to a transport operator specific to
+-- the inductive family (so we can bind p to suc n ≡ x + y rather than
+-- Fin (suc n) ≡ Fin (x + y))
+foo x y (Fin.coeX p fz) = {!!} -- Here, p : suc n ≡ x + y
+foo x y (Fin.coeX p (fs n)) = {!!}
 </code></pre>
 <p>In contrast to with-abstractions, we don't try to replace the index expression in the context. Instead, we just replace the variable we matched on with a transported value.</p>
-<p>Personally, I think this feature alone is already a huge improvement on the status quo. Of course the user could always resort to doing their own fording transformations, but this often infects many other parts of the development with unnecessary clutter (passing and matching on <code>refl</code>s), i.e. in the cases where unification would have worked out.</p>
-<p>More than this, I think my frustration with the manual translations is that they force the user to put thought into what ought to be irrelevant, low-level, implementation details, distracting from the larger developments. i.e. in my opinion, time spent pondering question such as:</p>
+<p>Personally, I think this feature alone is already a huge ergonomic improvement on the status quo. Of course the user could always resort to doing their own fording transformations, but this often infects many other parts of the development with unnecessary clutter (passing and matching on <code>refl</code>s), i.e. in the cases where unification would have worked out.</p>
+<details>
+<summary>Short Rant</summary>
+More than the boilerplate, I think my frustration with the manual translations is that they force the user to put thought into what ought to be irrelevant, low-level, implementation details, distracting from their larger developments. i.e. in my opinion, time spent pondering question such as:
 <ul>
 <li>&quot;Can I abstract over the index here or will that be ill-typed?&quot;</li>
-<li>&quot;When a function matches on a datatype indexed by a neutral AND the constructor is <em>also</em> indexed by a neutral, should I do a fording translation of the function or the constructor?&quot;</li>
-<li>and &quot;What about if in some cases, one of the neutrals ends up being allowed to reduce to a value just in time for the matches to work out?&quot;</li>
+<li>&quot;When a function matches on a datatype indexed by a neutral AND the constructor is <em>also</em> indexed by a neutral, should I do a fording translation on the function or the constructor, or both?&quot;</li>
+<li>and &quot;What about if in some cases, the neutral ends up being unblocked and reduces to a value just in time for the match to work out? Does that change things?&quot;</li>
 </ul>
-<p>is a complete waste of effort.</p>
-<p>Fixing the first bullet is harder - we must increase the power of definitional equality. Note it might sound less important (it certainly did to me), but in larger examples, having rewrites apply only once, immediately, can end up giving rise to so-called <code>with</code>-jenga where the order of <code>with</code> abstractions needs to be chosen extremely carefully to have the types work out (i.e. without resorting to copious amounts of manual coercing). Again, in my opinion, time spent finding solutions to puzzles like these is time wasted (even if solving puzzles can sometimes be fun).</p>
-<p>Before I proceed to the proposal, I must give credit where it is due. I originally heard this idea from Ollef on the r/ProgrammingLanguages Discord, and worked through a lot of the tricky details with Iurii - thanks for the interesting discussions!</p>
-<p>Without further ado, the core idea is thus: Make it possible for the context to contain local rewrite rules (from neutrals to values), subject to an occurs check to prevent loops. We can then define dependent pattern matching as a process which adds such rewrite rules to the context (i.e. as opposed to the usual one-time-substitutions-of-variables-for-patterns).</p>
-<p>An important note: the solution here is not &quot;complete&quot;. I believe this is by necessity (a perfect solution would give arbitrary equality reflection and naturally make typechecking undecidable). It is simply designed to handle a majority of easy cases, with the fall-back of transport-patterns (or manual fording) always in reach.</p>
+<p>is a complete waste of effort. In general, I think there should be more focus in the PL community (especially in the area of dependent types) on building easier-to-use languages which don't force the user to do the work of an elaborator/compiler. i.e. rather than accepting that the status quo as how these languages must work and maintaining a folklore of &quot;design patterns&quot; to help bypass these problems, let's put in the work to make such expert knowledge unnecessary! Without this, how can we ever hope for dependent types to &quot;go mainstream&quot;?</p>
+</details>
+<p>Fixing the first bullet is harder - we must increase the power of definitional equality. Note this problem might sound less important (it certainly did to me at first), but in larger examples, having rewrites apply only once, immediately, can end up giving rise to so-called &quot;<code>with</code>-jenga&quot;<sup class="footnote-reference"><a href="#jenga">5</a></sup> where the order of <code>with</code> abstractions needs to be chosen extremely carefully to have the types work out (i.e. without resorting to copious amounts of manual coercing). Again, in my opinion, time spent finding solutions to puzzles like these is time wasted (even if solving puzzles can sometimes be fun).</p>
+<p>Before I proceed to the proposal, I must give credit where it is due. I originally heard this idea from <a href="https://github.com/ollef">Ollef</a> on the r/ProgrammingLanguages Discord, and worked through a lot of the tricky details with <a href="https://github.com/RiscInside">Iurii</a> - thanks for the interesting discussions!</p>
+<h2 id="solution-2-neutral---value-mappings"><a class="header" href="#solution-2-neutral---value-mappings">Solution 2: Neutral -&gt; Value Mappings</a></h2>
+<p>Without further ado, the core idea is thus: Make it possible for the context to contain local rewrite rules (from neutrals to values), subject to an occurs check to prevent loops. We can then define dependent pattern matching where the scrutinee is a neutral as a process which adds such rewrite rules to the context (i.e. as opposed to the usual one-time-substitutions-of-variables-for-patterns).</p>
+<p>An important note: the solution here is not &quot;complete&quot;. I believe this is by necessity (a perfect solution would give arbitrary equality reflection and naturally make typechecking undecidable). It is simply designed to handle a majority of easy cases, with the fall-back of transport-patterns (or manual fording I suppose) always in reach.</p>
 <p>TODO: Add paragraph on the occurs check and why it is necessary</p>
-<p>Of course, the scrutinee of a pattern match will not always be a neutral. More severely, what might have started as a mapping from a neutral might become not so if some other pattern match causes the neutral to unblock. Our proposed scheme for handling such cases is as follows:</p>
+<p>Of course, the scrutinee of a pattern match may not always be a neutral or variable. It could be a <em>canonical value</em>. More severely, what might have started as a mapping from a neutral might become not so if some later pattern match causes the neutral to unblock. Our proposed scheme for handling such cases is as follows:</p>
 <ul>
 <li>First check if the RHS is a value.</li>
 <li>RHS is a neutral: Invert the direction of the rewrite rule and continue (TODO: justify why this shouldn't lead to loops)</li>
@@ -274,17 +284,40 @@ foo x y (coe p (fs n)) = {!!}
 </ul>
 </li>
 </ul>
-<p>The final case, (*), is tricky situation. In the case that this was a new rewrite rule we just attempted to add, we are almost definitely screwed; however, if we have reached this case by reducing the LHS of a previously valid rewrite, then we might hope that applying the rewrite eagerly to everything in the context will mean we are allowed to now discard the rewrite rule and everything will continue to typecheck (even if previously definitionally equal things might now not be definitionally equal - which is odd, but not the end of the world).</p>
-<p>However, recall the subtlety highlighted above as problem (3.). Conveniently, the neutral -&gt; value mappings often can help us in these sorts of cases; one perspective on how is that <code>Pred x y : Fin (x + y) → Set</code>, so in the <code>fz</code> branch, we will check <code>fz</code> against <code>Fin (x + y)</code>. As long as we apply our <code>x + y -&gt; suc n</code> rewrite to the goal type, this will succeed!</p>
-<p>But of course <code>Pred x y</code> is not a variable, and therefore we cannot record the rewritten type in our context (hence why Agda's <code>with</code>-abstraction immediate one-off rewrites don't work here). Therefore, if we later match on <code>x</code> and <code>y</code> revealing them to both be <code>zero</code>, we will have a problem on our hands. Discarding the rewrite (which now would have the form <code>zero -&gt; suc n</code>) will result in <code>Pred x y fz</code> no longer typechecking! Of course, <code>zero</code> and <code>suc _</code> anti-unify, so we can report an impossible much, but if the problem was more subtle (perhaps we used Church numerals instead of <code>ℕ</code>s) then we would be truly screwed.</p>
+<p>The final case, (*), is tricky situation. In the case that this was a new rewrite rule which we just attempted to add, we are probably screwed (the context is very likely reliant on this rewrite to typecheck, but adding a definitional rewrite between potentially not-equal values is BAD <sup class="footnote-reference"><a href="#bad">6</a></sup>).</p>
+<p>However, if we have reached this case by reducing the LHS of a previously valid rewrite, then we might hope that applying the rewrite eagerly to everything in the context will mean that we might discard the rewrite rule and everything will continue to typecheck (even if prior definitional equalities might no longer hold equal - which is odd, but not the end of the world).</p>
+<p>However, recall the subtlety highlighted above as problem (3.):</p>
+<pre><code class="language-agda">Pred : ∀ x y → Fin (x + y) → Set
+
+foo : (x y : ℕ) (n : Fin (x + y)) → Pred x y n → ⊤
+foo x y n p with x + y
+foo x y fz p | .(suc _) = {!!}
+foo x y (fs n) p | .(suc _) = {!!}
+</code></pre>
+<pre><code>w != x + y of type ℕ
+when checking that the type
+(x y w : ℕ) (n : Fin w) (p : Pred x y n) → ⊤ of the generated with
+function is well-formed
+(https://agda.readthedocs.io/en/v2.6.4.2/language/with-abstraction.html#ill-typed-with-abstractions)
+</code></pre>
+<p>The <code>neutral -&gt; value</code> mapping idea is powerful enough to resolve <em>many</em> of these sorts of cases. To see how, note that <code>Pred x y : Fin (x + y) → Set</code>, so in the <code>fz</code> branch, we will check <code>fz</code> against <code>Fin (x + y)</code>. As long as we apply our <code>x + y -&gt; suc n</code> rewrite to the goal type, this will succeed!</p>
+<p>But of course <code>Pred x y</code> is not a variable, and therefore we cannot <em>record</em> the rewritten type in our context (hence why Agda's <code>with</code>-abstraction immediate one-off rewrites don't work here). Therefore, if we later match on <code>x</code> and <code>y</code>, revealing them to both be <code>zero</code>, we will have a problem on our hands. Discarding the rewrite (which now would have the form <code>zero -&gt; suc n</code>) will result in <code>Pred x y fz</code> no longer typechecking! Of course, checking <code>zero</code> and <code>suc _</code> anti-unify is trivial, so we can report an impossible match, BUT if the problem was just slightly more subtle (perhaps we used Church numerals instead of <code>ℕ</code>s) then we would be truly screwed.</p>
 <p>So, how do we resolve these cases? I think this has to be some sort of type error, but exactly where to error and what to blame is somewhat debatable. I can think of three different reasonable-ish perspectives:</p>
 <ul>
-<li>The culprit was that the rewrite rule related values whos type can yield undecidable unification problems. Therefore error much earlier, at the original match.</li>
-<li>The culprit is that an expression in the context relied on the rewrite rule but the match made it invalid. Therefore blame the <code>Pred x y n</code> and the match on <code>x</code> and <code>y</code>.</li>
+<li>The culprit was that the rewrite rule related values whos type can yield undecidable unification problems. Therefore error much earlier, at the original match which introduced the rewrite.</li>
+<li>The culprit is that an expression in the context relied on the rewrite rule but the match made it invalid. Therefore blame the <code>p : Pred x y n</code> and the match on <code>x</code> and <code>y</code>.</li>
 <li>The culprit was that the match on <code>x</code> and <code>y</code> unblocked the LHS of the rewrite rule which forced it to be discarded (i.e. the problem is <em>unrelated</em> to whether such a rewrite rule was <em>necessary</em> for validity for the context). Therefore blame the <code>x + y -&gt; suc n</code> rewrite rule and the match on <code>x</code> and <code>y</code>.</li>
 </ul>
-<p>I'll admit that I am partial to the latter here: I think erroring for any type that could possibly yield an undecidable unification puzzle is too conservative, given this must include not just functions, but also any inductive datatype which might contain a function, and also general QITs/HITs (which are pretty exotic constructions, but are also very exciting features which I would like a modern proof assistant to support). I also don't like the idea that adding stuff to your context could cause an error when there was none previously (typechecking being stable under weakening seems highly desirable).</p>
+<p>I'll admit that I am partial to the latter here: I think erroring for any type that could possibly yield an undecidable unification puzzle is too conservative, given this must include not just functions, but also any inductive datatype which might contain a function, and also general QITs/HITs (which are pretty exotic constructions, but are also very exciting features which I would like a modern proof assistant to support well). I also don't like the idea that adding stuff to your context could trigger an error when there was none previously (validity of typechecking being stable under weakening seems highly desirable).</p>
 <p>Now to actually try and implement such a feature! (just kidding, I'm a type theorist, I would never write code)</p>
+<div class="footnote-definition" id="slime"><sup class="footnote-definition-label">1</sup>
+<p><a href="https://personal.cis.strath.ac.uk/conor.mcbride/PolyTest.pdf">A polynomial testing principle</a>
+<sup class="footnote-reference"><a href="#pattern">2</a></sup>: Note that the concept of a &quot;pattern&quot; in dependently typed languages is much more flexible than in mainstream PLs: constructors of inductive families are allowed to be indexed by arbitrary expressions, and so &quot;inaccessible patterns&quot; can take the form of such arbitrary expressions. There are a ton of great papers on the topic of dependent matching, but I don't think you could go wrong with <a href="https://static.googleusercontent.com/media/research.google.com/en//pubs/archive/99.pdf">Eliminating Dependent Pattern Matching</a> as an introduction.
+<sup class="footnote-reference"><a href="#with">3</a></sup>: <a href="https://agda.readthedocs.io/en/v2.6.4.3/language/with-abstraction.html">With-Abstraction | Agda Docs</a>
+<sup class="footnote-reference"><a href="#inspect">4</a></sup>: <a href="https://agda.readthedocs.io/en/v2.6.4.3/language/with-abstraction.html#with-abstraction-equality">With-Abstraction Equality | Agda Docs</a> <a href="https://agda.github.io/agda-stdlib/README.Inspect.html">README.Inspect | Agda standard library</a>
+<sup class="footnote-reference"><a href="#jenga">5</a></sup>: Coined (as far as I know) by Connor McBride, see https://types.pl/@pigworker/112005915524041848, and some discussion of some (IMO very clunky) solutions https://types.pl/@pigworker/112006024839462007, https://types.pl/@pigworker/112016097261103609
+<sup class="footnote-reference"><a href="#bad">6</a></sup>: Whether such a rule would lead to subject reduction failure or undecidable typechecking probably depends on niche implementation details of conversion checking and evaluation order, but for a sample of the problems, consider the rewrite rule <code>(λ x y → x) -&gt; (λ x y → y) : Set → Set → Set</code>. I would argue that a complete implementation of definitional equality should then give us <code>(λ x y → x) ⊤ (⊤ → ⊤) ≡ ⊤ ≡ ⊤ → ⊤</code>, at which point we can type self-application and write a fixpoint combinator. Oh dear...</p>
+</div>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="introduction"><a class="header" href="#introduction">Introduction</a></h1>
 <p>WTy2 is a pure, strict, functional programming language based on extrinsic dependent types.</p>
 <p>It is being designed with a few goals in mind:</p>

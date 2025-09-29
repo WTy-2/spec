@@ -37,7 +37,7 @@ Instead, it is hoped that the WTy2 programmer writes code assuming all obvious i
 
 ## Design Note: Provisional Definitions
 
-Idris has a feature with a similar goal (that of splitting proofs and code relying on them) known as "Provisional Definitions" https://docs.idris-lang.org/en/latest/tutorial/provisional.html. The main disadvantage is that you do not get the reuse of proofs that comes from WTy2 (i.e: proofs must be specifically named based on the function they are required in).
+Idris has a feature with a similar goal (that of splitting proofs and code relying on them) known as ["Provisional Definitions"](https://docs.idris-lang.org/en/latest/tutorial/provisional.html). The main disadvantage is that you do not get the reuse of proofs that comes from WTy2 (i.e: proofs must be specifically named based on the function they are required in).
 
 The obvious benefit here is that the Idris compiler does not have to search through all possible implicit proofs, meaning the impact on typechecking performance is lessened. Right now, it is somewhat unclear how often implicit proofs will be able to be reused, but it is hoped that this will be a significant quality-of-life benefit for ordinary programs, perhaps even near the scale of much more heavyweight features, say, tactics (the convenience of not needing any explicit user-interaction when relying on properties like `m + n ~ n + m`, I think should not be understated).
 
@@ -45,7 +45,7 @@ The obvious benefit here is that the Idris compiler does not have to search thro
 
 A naive implementation of the implicit proof searching algorithm will have a pretty devastating impact on typechecking performance. Hopefully some good method of pruning the search space can be found. It is also suggested that when `proof`s are successfully found, that information is cached somehow so on future compilation it does not need to be rediscovered.
 
-Note the process of searching in-scope terms to find something that will allow the program to typecheck is not at all a new idea. Idris, for example, allows for writing explicit "holes" in programs https://docs.idris-lang.org/en/latest/elaboratorReflection/holes.html, where the compiler can automatically search for expressions that fit the desired type signature using functions labelled with `#hint` pragmas. Compared to this, WTy2 holes are relatively modest: the expressions are limited to single function calls.
+Note the process of searching in-scope terms to find something that will allow the program to typecheck is not at all a new idea. Idris, for example, allows for writing explicit "holes" in programs (<https://docs.idris-lang.org/en/latest/elaboratorReflection/holes.html>), where the compiler can automatically search for expressions that fit the desired type signature using functions labelled with `#hint` pragmas. Compared to this, WTy2 holes are relatively modest: the expressions are limited to single function calls.
 
 ## Implementation Note: Runtime Performance
 

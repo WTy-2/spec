@@ -31,4 +31,4 @@ TODO - Come up with some tag-elision system that actually works, and supports al
     I think packing tags in memory might actually be possible if we added a special tag denoting a reference which could appear in any place in a value, but I need to think this over more.
     In any case, this packing definitely would make implementation more complicated, and for an initial compiler I really want something easy and consistent, not necessarily fast.
 
-[^being_stupid]: https://youtu.be/BcC3KScZ-yA?t=2150
+[^being_stupid]: <https://youtu.be/BcC3KScZ-yA?t=2150>

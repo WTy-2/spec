@@ -99,4 +99,4 @@ There appears to not really be a standard operator for "such that" in mathematic
 
 On the other hand, a very common operator being three-characters long is a bit unfortunate. `(-<)` is IMO quite aesthetically nice and I do also quite like `($)` given how (if you squint) it looks a bit like an `S` and a `T` overlaid.
 
-[^note]: A few examples of various "such that" operators can be found at https://math.stackexchange.com/a/2777911
+[^note]: A few examples of various "such that" operators can be found at <https://math.stackexchange.com/a/2777911>

@@ -92,7 +92,7 @@ IMO it is _pretty_ important we avoid this. Mathematicians might argue the cause
 
 Luckily, there is a much easier fix: not giving the solver access to an implication-introduction rule. Instead implications should only be brought into scope via superclass constraints, instances and explicitly written `proof`s. We could of course write a `proof` of `Russel :: Russel => Bottom`, but that this would loop at runtime is fine - we at least have source code we can point to in a stack trace (`proof`s are not totality-checked in WTy2).
 
-[^note] See http://liamoc.net/posts/2015-09-10-girards-paradox.html for a nice walkthrough of how to derive this in Agda.
+[^note] See <http://liamoc.net/posts/2015-09-10-girards-paradox.html> for a nice walkthrough of how to derive this in Agda.
 
 [^note] Though do note that the loop in Haskell can be encoded much more simply (and arguably arises from using superclass constraints when checking instances):
 

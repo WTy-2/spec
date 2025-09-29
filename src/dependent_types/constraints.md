@@ -29,7 +29,7 @@ To construct a value of type `a <<= b` from a value `x` of type `a`, `b(x)` must
 
 Another interpretation of this operator that might be more intuitive for programmers who have used languages with dependent types before is as a dependent pair, where the second element must be a constraint dictionary.
 
-An approximation of this operator in Idris2 could be defined like so (using boolean predicates lifted to the type level instead of Haskell-style constraints, which Idris2 does not really have https://www.idris-lang.org/docs/idris2/current/base_docs/docs/Data.So.html):
+An approximation of this operator in Idris2 could be defined like so (using boolean predicates lifted to the type level instead of Haskell-style constraints, which Idris2 does not really have <https://www.idris-lang.org/docs/idris2/current/base_docs/docs/Data.So.html>):
 
 ```idris
 data (<<=) : (a: Type) -> (p: a -> Bool) -> Type where

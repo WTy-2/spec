@@ -181,17 +181,17 @@
                         <h1 id="modules"><a class="header" href="#modules">Modules</a></h1>
 <p>WTy2 programs are organised into modules, similar to Haskell (so modules are not first-class/intended as a method of abstraction - open <code>type</code>s suit that purpose well already).</p>
 <h2 id="importsexports"><a class="header" href="#importsexports">Imports/Exports</a></h2>
-<p>The public exports of a module are written in parens after the module declaration. Imports of a module are written in parens after the name of the imported module. Publically exported members are considered part of the public API of a module and breaking changes to them reflect semantic version changes for the module.</p>
-<p>If and only if the exact version of the dependended-upon module is specified in the package file is the programmer given the freedom to import members that are not publically exported (still with a warning).</p>
+<p>The public exports of a module are written in parens after the module declaration. Imports of a module are written in parens after the name of the imported module. Publicly exported members are considered part of the public API of a module and breaking changes to them reflect semantic version changes for the module.</p>
+<p>If and only if the exact version of the dependended-upon module is specified in the package file is the programmer given the freedom to import members that are not publicly exported (still with a warning).</p>
 <p>Requirement: Non-semantic version changes of upstream modules should never cause compile errors in downstream modules.</p>
 <h2 id="module-members"><a class="header" href="#module-members">Module Members</a></h2>
 <p>Module members include top-level variables, types, tags, instances and <code>proof</code>s.</p>
 <ul>
-<li>Variables, <code>v : t = e</code>, and their types (<code>v : t</code>) can be exported/imported via their identifer. The RHS of their definition (<code>v ~ e</code>) can be exported/imported with <code>(..)</code>.</li>
+<li>Variables, <code>v : t = e</code>, and their types (<code>v : t</code>) can be exported/imported via their identifier. The RHS of their definition (<code>v ~ e</code>) can be exported/imported with <code>(..)</code>.</li>
 <li>Closed types, <code>type t = u</code>, can be exported/imported via their identifiers. The RHS (<code>t &lt;: u /\ u &lt;: t</code>) can be exported/imported with <code>(..)</code>.</li>
 <li>Open types, <code>type t { m0: t0; m1: t1; }</code>, can be exported/imported via their identifiers. Members of the type can be exported/imported in parens. Instances can only be made if all members are in scope via <code>(..)</code>.</li>
 <li>Instances,<code>impl t for u { m0 := e0; m1 := e1; }</code> , are exported/imported implicitly. How to signal intent for whether to export the definition of members of the instance (<code>m0 ~ e0</code>) can be done by writing the special syntax <code>m0(..) for u</code>.</li>
-<li>Tags can be exported via their identifers. Modifying the type of arguments to a tag is always a breaking change.</li>
+<li>Tags can be exported via their identifiers. Modifying the type of arguments to a tag is always a breaking change.</li>
 <li><code>proof</code>s <code>proof p := e</code> are exported/imported as functions via their identifiers and imported as unnamed <code>proof</code>s with <code>proof(p)</code> (they are always exported as unnamed <code>proof</code>s). A named <code>proof</code> can be imported as both a function and an unnamed <code>proof</code> by a downstream module. All proofs can be imported as unnamed at once with <code>proof(..)</code>.</li>
 </ul>
 

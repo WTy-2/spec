@@ -217,7 +217,7 @@ foo x y n with x + y
 foo x y fz | x+y@.(suc _) = {!!}
 foo x y (fs n) | x+y@.(suc _) = {!!}
 </code></pre>
-<p>This typechecks, but we have lost all connection between the index of the <code>Fin</code> and <code>x + y</code>. Such a <code>with</code> abstraction only works by indiscriminately replacing all occurences of <code>x + y</code> in the context with a new variable, so this is an inherent limitation.</p>
+<p>This typechecks, but we have lost all connection between the index of the <code>Fin</code> and <code>x + y</code>. Such a <code>with</code> abstraction only works by indiscriminately replacing all occurrences of <code>x + y</code> in the context with a new variable, so this is an inherent limitation.</p>
 <p>Luckily, using Agda's <code>with ... in ...</code> syntax (or the <code>inspect</code> idiom) <sup class="footnote-reference"><a href="#inspect">4</a></sup> we can retain propositional evidence of this connection</p>
 <pre><code class="language-agda">foo : (x y : ℕ) → Fin (x + y) → ⊤
 foo x y n with x + y in p
@@ -306,7 +306,7 @@ function is well-formed
 <p>But of course <code>Pred x y</code> is not a variable, and therefore we cannot <em>record</em> the rewritten type in our context (hence why Agda's <code>with</code>-abstraction immediate one-off rewrites don't work here). Therefore, if we later match on <code>x</code> and <code>y</code>, revealing them to both be <code>zero</code>, we will have a problem on our hands. Discarding the rewrite (which now would have the form <code>zero -&gt; suc n</code>) will result in <code>Pred x y fz</code> no longer typechecking! Of course, checking <code>zero</code> and <code>suc _</code> anti-unify is trivial, so we can report an impossible match, BUT if the problem was just slightly more subtle (perhaps we used Church numerals instead of <code>ℕ</code>s) then we would be truly screwed.</p>
 <p>So, how do we resolve these cases? I think this has to be some sort of type error, but exactly where to error and what to blame is somewhat debatable. I can think of three different reasonable-ish perspectives:</p>
 <ul>
-<li>The culprit was that the rewrite rule related values whos type can yield undecidable unification problems. Therefore error much earlier, at the original match which introduced the rewrite.</li>
+<li>The culprit was that the rewrite rule related values whose type can yield undecidable unification problems. Therefore error much earlier, at the original match which introduced the rewrite.</li>
 <li>The culprit is that an expression in the context relied on the rewrite rule but the match made it invalid. Therefore blame the <code>p : Pred x y n</code> and the match on <code>x</code> and <code>y</code>.</li>
 <li>The culprit was that the match on <code>x</code> and <code>y</code> unblocked the LHS of the rewrite rule which forced it to be discarded (i.e. the problem is <em>unrelated</em> to whether such a rewrite rule was <em>necessary</em> for validity for the context). Therefore blame the <code>x + y -&gt; suc n</code> rewrite rule and the match on <code>x</code> and <code>y</code>.</li>
 </ul>

@@ -220,7 +220,7 @@ inst C for [x: Foo] 'Mk(x) { };
 inst C for [x: Bar] 'Mk(x) { };
 </code></pre>
 <p>The check for overlap between closed types then becomes quite simple. The instance head types are reduced into form <code>[...] 'C0(...) | [...] 'C1(...) | ...</code> and the sets of outermost constructors are compared.</p>
-<p>As well as making overlap rules MUCH simpler, this has a really poweful benefit for implementation. (I believe that) with it, we can fully erase constraints (instead keeping tags around at runtime, and dispatching based off the outer tag).</p>
+<p>As well as making overlap rules MUCH simpler, this has a really powerful benefit for implementation. (I believe that) with it, we can fully erase constraints (instead keeping tags around at runtime, and dispatching based off the outer tag).</p>
 <p>I further argue (though more loosely) that this has a further advantage in program reasoning, similar to parametricity. Consider defining a <code>Num</code> instance for lists. Haskell would allow defining a <code>Num</code> instance for <code>List Int</code> which operates with <code>zipWith</code> and <code>List SomethingElse</code> which concatenates lists with <code>(+)</code>, removes elements from the first list on <code>(-)</code> etc... I personally believe the solution mandated by WTy2 of defining a separate list datatype to correspond with each of the instances behaviours (or at the very least a newtype wrapper) leads to clearer code.</p>
 <h2 id="openclosed-rules"><a class="header" href="#openclosed-rules">Open/Closed Rules</a></h2>
 <p>Types can either be open or closed. These properties interact with the <code>(|)</code> and <code>(&amp;)</code> type operators like so:</p>

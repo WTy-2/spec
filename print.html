@@ -215,7 +215,7 @@ foo x y n with x + y
 foo x y fz | x+y@.(suc _) = {!!}
 foo x y (fs n) | x+y@.(suc _) = {!!}
 </code></pre>
-<p>This typechecks, but we have lost all connection between the index of the <code>Fin</code> and <code>x + y</code>. Such a <code>with</code> abstraction only works by indiscriminately replacing all occurences of <code>x + y</code> in the context with a new variable, so this is an inherent limitation.</p>
+<p>This typechecks, but we have lost all connection between the index of the <code>Fin</code> and <code>x + y</code>. Such a <code>with</code> abstraction only works by indiscriminately replacing all occurrences of <code>x + y</code> in the context with a new variable, so this is an inherent limitation.</p>
 <p>Luckily, using Agda's <code>with ... in ...</code> syntax (or the <code>inspect</code> idiom) <sup class="footnote-reference"><a href="#inspect">4</a></sup> we can retain propositional evidence of this connection</p>
 <pre><code class="language-agda">foo : (x y : ℕ) → Fin (x + y) → ⊤
 foo x y n with x + y in p
@@ -304,7 +304,7 @@ function is well-formed
 <p>But of course <code>Pred x y</code> is not a variable, and therefore we cannot <em>record</em> the rewritten type in our context (hence why Agda's <code>with</code>-abstraction immediate one-off rewrites don't work here). Therefore, if we later match on <code>x</code> and <code>y</code>, revealing them to both be <code>zero</code>, we will have a problem on our hands. Discarding the rewrite (which now would have the form <code>zero -&gt; suc n</code>) will result in <code>Pred x y fz</code> no longer typechecking! Of course, checking <code>zero</code> and <code>suc _</code> anti-unify is trivial, so we can report an impossible match, BUT if the problem was just slightly more subtle (perhaps we used Church numerals instead of <code>ℕ</code>s) then we would be truly screwed.</p>
 <p>So, how do we resolve these cases? I think this has to be some sort of type error, but exactly where to error and what to blame is somewhat debatable. I can think of three different reasonable-ish perspectives:</p>
 <ul>
-<li>The culprit was that the rewrite rule related values whos type can yield undecidable unification problems. Therefore error much earlier, at the original match which introduced the rewrite.</li>
+<li>The culprit was that the rewrite rule related values whose type can yield undecidable unification problems. Therefore error much earlier, at the original match which introduced the rewrite.</li>
 <li>The culprit is that an expression in the context relied on the rewrite rule but the match made it invalid. Therefore blame the <code>p : Pred x y n</code> and the match on <code>x</code> and <code>y</code>.</li>
 <li>The culprit was that the match on <code>x</code> and <code>y</code> unblocked the LHS of the rewrite rule which forced it to be discarded (i.e. the problem is <em>unrelated</em> to whether such a rewrite rule was <em>necessary</em> for validity for the context). Therefore blame the <code>x + y -&gt; suc n</code> rewrite rule and the match on <code>x</code> and <code>y</code>.</li>
 </ul>
@@ -374,7 +374,7 @@ type Unit = '();
 <p>WTy2 also supports singleton tuples. The parsing ambiguity of expression in parens vs a singleton tuple is resolved as follows:
 <code>(E)</code> where <code>E</code> is an expression - parenthesised expression
 <code>(E,)</code> where <code>E</code> is an expression - singleton tuple
-<code>(i: E)</code> where <code>i</code> is an identifer and <code>E</code> is an expression - named value (<code>t &lt;: (i: t)</code>)
+<code>(i: E)</code> where <code>i</code> is an identifier and <code>E</code> is an expression - named value (<code>t &lt;: (i: t)</code>)
 <code>(i: E,)</code> where <code>i</code> is an identifier and <code>E</code> is an expression - named singleton tuple/singleton record</p>
 <h3 id="design-note-bindings"><a class="header" href="#design-note-bindings">Design Note: Bindings</a></h3>
 <p>In WTy2, the types of records can look syntactically identical to bindings (LHS of assignments). However, bindings are NOT first-class. <code>return (x: Int)</code> returns a <code>Type</code> which is equal to the record type <code>(x: Int)</code>. <code>do {x: Int} = 4</code> (perhaps intending the LHS expression to reduce down to <code>x: Int</code>) is nonsense.</p>
@@ -460,7 +460,7 @@ t &lt;: u = for(x: t) { x :: u }
 <p>WTy2 defines a primitive <code>shuffle</code> to work with records with different orders of field names:</p>
 <pre><code class="language-WTy2">shuffle: [a](x: a, b: Type) &lt;&lt;= { a: permutation(b) } -&gt; b;
 </code></pre>
-<p>Where <code>permutation</code> is a type family that produces a type containing all record types that are permuations of the fields of the argument record.</p>
+<p>Where <code>permutation</code> is a type family that produces a type containing all record types that are permutations of the fields of the argument record.</p>
 <h2 id="partial-application-"><a class="header" href="#partial-application-">Partial Application (&quot;<code>?</code>&quot;)</a></h2>
 <p>WTy2 supports a <em>nominal</em> <sup class="footnote-reference"><a href="#note">1</a></sup> partial application syntax based on records, which leverages yet another primitive:</p>
 <pre><code class="language-WTy2">partialise: (f: a -&gt; b) -&gt; [a1] a0 &lt;&lt;= { concat(a0, a1): permutation(b) }
@@ -545,7 +545,7 @@ y: Foo = Foo(x)
 <div style="break-before: page; page-break-before: always;"></div><h1 id="erasure-and-visibility"><a class="header" href="#erasure-and-visibility">Erasure and Visibility</a></h1>
 <h1 id="runtime-relevance-of-types-and-constraints"><a class="header" href="#runtime-relevance-of-types-and-constraints">Runtime Relevance of Types and Constraints</a></h1>
 <p>In Haskell, runtime relevance can effectively be summarised as: types are erased, constraints are not. Even equality constraints like <code>a ~ b</code> which don't contain any fields often do not get fully optimised away as <code>Constraint</code> is lifted and so could point to a bottoming value (see discussion at https://github.com/ghc-proposals/ghc-proposals/pull/547).</p>
-<p>In WTy2, we take the opposite approach: constraints are erased but types are not. To perform dispatch, implementations will in all likelyhood need to implement some sort of runtime.</p>
+<p>In WTy2, we take the opposite approach: constraints are erased but types are not. To perform dispatch, implementations will in all likelihood need to implement some sort of runtime.</p>
 <h1 id="erasure-and-visibility-in-types-and-values"><a class="header" href="#erasure-and-visibility-in-types-and-values">Erasure and Visibility in Types and Values</a></h1>
 <p>Even though values and types must in general be kept around at runtime, in many specific cases, this is not necessary (consider a generic function which takes both a type <code>t :|=&gt; Animal</code> and an argument <code>a: t</code> - <code>t</code> can be recovered entirely from <code>a</code>). The key observation made here is that arguments we would like the typechecker infer for convenience generally correspond with ones recover.</p>
 <p>A type surrounded in parenthesis can be prefixed with something that looks similar to a record type but the bindings are placed inside brackets (<code>[]</code>) instead of parenthesis.</p>
@@ -614,7 +614,7 @@ inst C for [x: Foo] 'Mk(x) { };
 inst C for [x: Bar] 'Mk(x) { };
 </code></pre>
 <p>The check for overlap between closed types then becomes quite simple. The instance head types are reduced into form <code>[...] 'C0(...) | [...] 'C1(...) | ...</code> and the sets of outermost constructors are compared.</p>
-<p>As well as making overlap rules MUCH simpler, this has a really poweful benefit for implementation. (I believe that) with it, we can fully erase constraints (instead keeping tags around at runtime, and dispatching based off the outer tag).</p>
+<p>As well as making overlap rules MUCH simpler, this has a really powerful benefit for implementation. (I believe that) with it, we can fully erase constraints (instead keeping tags around at runtime, and dispatching based off the outer tag).</p>
 <p>I further argue (though more loosely) that this has a further advantage in program reasoning, similar to parametricity. Consider defining a <code>Num</code> instance for lists. Haskell would allow defining a <code>Num</code> instance for <code>List Int</code> which operates with <code>zipWith</code> and <code>List SomethingElse</code> which concatenates lists with <code>(+)</code>, removes elements from the first list on <code>(-)</code> etc... I personally believe the solution mandated by WTy2 of defining a separate list datatype to correspond with each of the instances behaviours (or at the very least a newtype wrapper) leads to clearer code.</p>
 <h2 id="openclosed-rules"><a class="header" href="#openclosed-rules">Open/Closed Rules</a></h2>
 <p>Types can either be open or closed. These properties interact with the <code>(|)</code> and <code>(&amp;)</code> type operators like so:</p>
@@ -661,17 +661,17 @@ impl T1 for S2 {}
 <div style="break-before: page; page-break-before: always;"></div><h1 id="modules"><a class="header" href="#modules">Modules</a></h1>
 <p>WTy2 programs are organised into modules, similar to Haskell (so modules are not first-class/intended as a method of abstraction - open <code>type</code>s suit that purpose well already).</p>
 <h2 id="importsexports"><a class="header" href="#importsexports">Imports/Exports</a></h2>
-<p>The public exports of a module are written in parens after the module declaration. Imports of a module are written in parens after the name of the imported module. Publically exported members are considered part of the public API of a module and breaking changes to them reflect semantic version changes for the module.</p>
-<p>If and only if the exact version of the dependended-upon module is specified in the package file is the programmer given the freedom to import members that are not publically exported (still with a warning).</p>
+<p>The public exports of a module are written in parens after the module declaration. Imports of a module are written in parens after the name of the imported module. Publicly exported members are considered part of the public API of a module and breaking changes to them reflect semantic version changes for the module.</p>
+<p>If and only if the exact version of the dependended-upon module is specified in the package file is the programmer given the freedom to import members that are not publicly exported (still with a warning).</p>
 <p>Requirement: Non-semantic version changes of upstream modules should never cause compile errors in downstream modules.</p>
 <h2 id="module-members"><a class="header" href="#module-members">Module Members</a></h2>
 <p>Module members include top-level variables, types, tags, instances and <code>proof</code>s.</p>
 <ul>
-<li>Variables, <code>v : t = e</code>, and their types (<code>v : t</code>) can be exported/imported via their identifer. The RHS of their definition (<code>v ~ e</code>) can be exported/imported with <code>(..)</code>.</li>
+<li>Variables, <code>v : t = e</code>, and their types (<code>v : t</code>) can be exported/imported via their identifier. The RHS of their definition (<code>v ~ e</code>) can be exported/imported with <code>(..)</code>.</li>
 <li>Closed types, <code>type t = u</code>, can be exported/imported via their identifiers. The RHS (<code>t &lt;: u /\ u &lt;: t</code>) can be exported/imported with <code>(..)</code>.</li>
 <li>Open types, <code>type t { m0: t0; m1: t1; }</code>, can be exported/imported via their identifiers. Members of the type can be exported/imported in parens. Instances can only be made if all members are in scope via <code>(..)</code>.</li>
 <li>Instances,<code>impl t for u { m0 := e0; m1 := e1; }</code> , are exported/imported implicitly. How to signal intent for whether to export the definition of members of the instance (<code>m0 ~ e0</code>) can be done by writing the special syntax <code>m0(..) for u</code>.</li>
-<li>Tags can be exported via their identifers. Modifying the type of arguments to a tag is always a breaking change.</li>
+<li>Tags can be exported via their identifiers. Modifying the type of arguments to a tag is always a breaking change.</li>
 <li><code>proof</code>s <code>proof p := e</code> are exported/imported as functions via their identifiers and imported as unnamed <code>proof</code>s with <code>proof(p)</code> (they are always exported as unnamed <code>proof</code>s). A named <code>proof</code> can be imported as both a function and an unnamed <code>proof</code> by a downstream module. All proofs can be imported as unnamed at once with <code>proof(..)</code>.</li>
 </ul>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="summary-1"><a class="header" href="#summary-1">Summary</a></h1>
@@ -883,7 +883,7 @@ data True0
 data False0
 type Bool1 = True1 | False1
 </code></pre>
-<p><code>x: Bool0 = True0</code> and <code>y: Bool1 = True1</code> (in the absense of other optimisations) will have differently lengthed tag lists at runtime - <code>x</code> will have a tag list of length two (<code>T_Bool0</code> and <code>T_True0</code>), while <code>y</code> will just be a single tag (<code>T_True1</code>).</p>
+<p><code>x: Bool0 = True0</code> and <code>y: Bool1 = True1</code> (in the absence of other optimisations) will have differently lengthed tag lists at runtime - <code>x</code> will have a tag list of length two (<code>T_Bool0</code> and <code>T_True0</code>), while <code>y</code> will just be a single tag (<code>T_True1</code>).</p>
 <p>In order to &quot;be not stupid&quot; <sup class="footnote-reference"><a href="#note">1</a></sup>, tags which are known to be fixed at compile time really should be elided. Achieving this is subtle though. Consider that WTy2 allows writing extensional proofs about functions like <code>for(x: Int) { foo(x) :: Int }</code> - does this mean we must elide the <code>T_Int0</code> tag from <code>foo</code>-returned values? Achieving this consistently in general is catastrophically undecidable (for the same reason WTy2 bounds the number of automatic proof insertions to one per goal constraint).</p>
 <p>TODO - Come up with some tag-elision system that actually works, and supports aliasing (HARD).</p>
 <div class="footnote-definition" id="note"><sup class="footnote-definition-label">1</sup>
@@ -948,9 +948,9 @@ In any case, this packing definitely would make implementation more complicated,
 <p>WTy2's expressivity and subtyping allows for a much more direct encoding of Russel's paradox (treating types as sets).</p>
 <pre><code class="language-WTy2">type Russel = (t: Type) &lt;&lt;= { t :: t =&gt; Bottom };
 </code></pre>
-<p>The additional danger here is that a suffiently advanced constraint solver could derive bottom entirely on it's own just from this definition being in-scope.</p>
+<p>The additional danger here is that a sufficiently advanced constraint solver could derive bottom entirely on it's own just from this definition being in-scope.</p>
 <p>An informal sketch of how this might happen is outlined is below:</p>
-<p>Constraints are written in similar syntax to WTy2 source, but we elide types of <code>for</code> bound variables, instead prefering to write them as implications.</p>
+<p>Constraints are written in similar syntax to WTy2 source, but we elide types of <code>for</code> bound variables, instead preferring to write them as implications.</p>
 <pre><code class="language-WTy2CoSo"># From definition of Russel
 
 [G1] for(t) { t :: Russel /\ t :: t =&gt; Bottom }

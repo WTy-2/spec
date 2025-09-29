@@ -191,7 +191,7 @@
 <p>WTy2 defines a primitive <code>shuffle</code> to work with records with different orders of field names:</p>
 <pre><code class="language-WTy2">shuffle: [a](x: a, b: Type) &lt;&lt;= { a: permutation(b) } -&gt; b;
 </code></pre>
-<p>Where <code>permutation</code> is a type family that produces a type containing all record types that are permuations of the fields of the argument record.</p>
+<p>Where <code>permutation</code> is a type family that produces a type containing all record types that are permutations of the fields of the argument record.</p>
 <h2 id="partial-application-"><a class="header" href="#partial-application-">Partial Application (&quot;<code>?</code>&quot;)</a></h2>
 <p>WTy2 supports a <em>nominal</em> <sup class="footnote-reference"><a href="#note">1</a></sup> partial application syntax based on records, which leverages yet another primitive:</p>
 <pre><code class="language-WTy2">partialise: (f: a -&gt; b) -&gt; [a1] a0 &lt;&lt;= { concat(a0, a1): permutation(b) }

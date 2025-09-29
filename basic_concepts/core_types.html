@@ -224,7 +224,7 @@ type Unit = '();
 <p>WTy2 also supports singleton tuples. The parsing ambiguity of expression in parens vs a singleton tuple is resolved as follows:
 <code>(E)</code> where <code>E</code> is an expression - parenthesised expression
 <code>(E,)</code> where <code>E</code> is an expression - singleton tuple
-<code>(i: E)</code> where <code>i</code> is an identifer and <code>E</code> is an expression - named value (<code>t &lt;: (i: t)</code>)
+<code>(i: E)</code> where <code>i</code> is an identifier and <code>E</code> is an expression - named value (<code>t &lt;: (i: t)</code>)
 <code>(i: E,)</code> where <code>i</code> is an identifier and <code>E</code> is an expression - named singleton tuple/singleton record</p>
 <h3 id="design-note-bindings"><a class="header" href="#design-note-bindings">Design Note: Bindings</a></h3>
 <p>In WTy2, the types of records can look syntactically identical to bindings (LHS of assignments). However, bindings are NOT first-class. <code>return (x: Int)</code> returns a <code>Type</code> which is equal to the record type <code>(x: Int)</code>. <code>do {x: Int} = 4</code> (perhaps intending the LHS expression to reduce down to <code>x: Int</code>) is nonsense.</p>

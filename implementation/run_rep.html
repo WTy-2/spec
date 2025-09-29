@@ -191,7 +191,7 @@ data True0
 data False0
 type Bool1 = True1 | False1
 </code></pre>
-<p><code>x: Bool0 = True0</code> and <code>y: Bool1 = True1</code> (in the absense of other optimisations) will have differently lengthed tag lists at runtime - <code>x</code> will have a tag list of length two (<code>T_Bool0</code> and <code>T_True0</code>), while <code>y</code> will just be a single tag (<code>T_True1</code>).</p>
+<p><code>x: Bool0 = True0</code> and <code>y: Bool1 = True1</code> (in the absence of other optimisations) will have differently lengthed tag lists at runtime - <code>x</code> will have a tag list of length two (<code>T_Bool0</code> and <code>T_True0</code>), while <code>y</code> will just be a single tag (<code>T_True1</code>).</p>
 <p>In order to &quot;be not stupid&quot; <sup class="footnote-reference"><a href="#note">1</a></sup>, tags which are known to be fixed at compile time really should be elided. Achieving this is subtle though. Consider that WTy2 allows writing extensional proofs about functions like <code>for(x: Int) { foo(x) :: Int }</code> - does this mean we must elide the <code>T_Int0</code> tag from <code>foo</code>-returned values? Achieving this consistently in general is catastrophically undecidable (for the same reason WTy2 bounds the number of automatic proof insertions to one per goal constraint).</p>
 <p>TODO - Come up with some tag-elision system that actually works, and supports aliasing (HARD).</p>
 <div class="footnote-definition" id="note"><sup class="footnote-definition-label">1</sup>

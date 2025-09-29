@@ -1,5 +1,5 @@
 <!DOCTYPE HTML>
-<html lang="en" class="light" dir="ltr">
+<html lang="en" class="light sidebar-visible" dir="ltr">
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
@@ -7,7 +7,7 @@
 
 
         <!-- Custom HTML head -->
-        
+
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff">
@@ -24,27 +24,42 @@
         <link rel="stylesheet" href="../fonts/fonts.css">
 
         <!-- Highlight.js Stylesheets -->
-        <link rel="stylesheet" href="../highlight.css">
-        <link rel="stylesheet" href="../tomorrow-night.css">
-        <link rel="stylesheet" href="../ayu-highlight.css">
+        <link rel="stylesheet" id="highlight-css" href="../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../ayu-highlight.css">
 
         <!-- Custom theme stylesheets -->
         <link rel="stylesheet" href="../theme/custom.css">
 
-    </head>
-    <body class="sidebar-visible no-js">
-    <div id="body-container">
-        <!-- Provide site root to javascript -->
-        <script>
-            var path_to_root = "../";
-            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
-        </script>
 
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
         <!-- Work around some values being stored in localStorage wrapped in quotes -->
         <script>
             try {
-                var theme = localStorage.getItem('mdbook-theme');
-                var sidebar = localStorage.getItem('mdbook-sidebar');
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
 
                 if (theme.startsWith('"') && theme.endsWith('"')) {
                     localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
@@ -58,68 +73,51 @@
 
         <!-- Set the theme before any content is loaded, prevents flash -->
         <script>
-            var theme;
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
             try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
             if (theme === null || theme === undefined) { theme = default_theme; }
-            var html = document.querySelector('html');
+            const html = document.documentElement;
             html.classList.remove('light')
             html.classList.add(theme);
-            var body = document.querySelector('body');
-            body.classList.remove('no-js')
-            body.classList.add('js');
+            html.classList.add("js");
         </script>
 
         <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
 
         <!-- Hide / unhide sidebar before it is displayed -->
         <script>
-            var body = document.querySelector('body');
-            var sidebar = null;
-            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
             if (document.body.clientWidth >= 1080) {
                 try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
                 sidebar = sidebar || 'visible';
             } else {
                 sidebar = 'hidden';
+                sidebar_toggle.checked = false;
             }
-            sidebar_toggle.checked = sidebar === 'visible';
-            body.classList.remove('sidebar-visible');
-            body.classList.add("sidebar-" + sidebar);
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
         </script>
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
-            <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded affix "><li class="part-title">Posts</li><li class="chapter-item expanded "><a href="../New/green_slime.html"><strong aria-hidden="true">1.</strong> Green Slime</a></li><li class="chapter-item expanded affix "><li class="part-title">WTy2 (Some OLD Ideas Here)</li><li class="chapter-item expanded "><a href="../summary/introduction.html"><strong aria-hidden="true">2.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="../summary/SUMMARY.html"><strong aria-hidden="true">3.</strong> Basic Concepts</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../basic_concepts/core_types.html"><strong aria-hidden="true">3.1.</strong> Core Types</a></li><li class="chapter-item expanded "><a href="../basic_concepts/arrows.html"><strong aria-hidden="true">3.2.</strong> Common Type Operators</a></li><li class="chapter-item expanded "><a href="../basic_concepts/functions.html"><strong aria-hidden="true">3.3.</strong> Functions</a></li><li class="chapter-item expanded "><a href="../basic_concepts/records.html"><strong aria-hidden="true">3.4.</strong> Records</a></li><li class="chapter-item expanded "><a href="../basic_concepts/declarations.html"><strong aria-hidden="true">3.5.</strong> Declarations</a></li><li class="chapter-item expanded "><a href="../basic_concepts/erasure_visibility.html"><strong aria-hidden="true">3.6.</strong> Erasure and Visibility</a></li><li class="chapter-item expanded "><a href="../basic_concepts/coherence.html"><strong aria-hidden="true">3.7.</strong> Coherence</a></li><li class="chapter-item expanded "><a href="../basic_concepts/modules.html"><strong aria-hidden="true">3.8.</strong> Modules</a></li></ol></li><li class="chapter-item expanded "><a href="../summary/SUMMARY.html"><strong aria-hidden="true">4.</strong> Extra</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../extra/utilities.html"><strong aria-hidden="true">4.1.</strong> Utilities</a></li></ol></li><li class="chapter-item expanded "><a href="../summary/SUMMARY.html"><strong aria-hidden="true">5.</strong> Dependent Types</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../dependent_types/constraints.html"><strong aria-hidden="true">5.1.</strong> Constraints</a></li><li class="chapter-item expanded "><a href="../dependent_types/proofs.html" class="active"><strong aria-hidden="true">5.2.</strong> Proofs</a></li><li class="chapter-item expanded "><a href="../dependent_types/dependent_types.html"><strong aria-hidden="true">5.3.</strong> Dependent Types</a></li></ol></li><li class="chapter-item expanded "><a href="../summary/SUMMARY.html"><strong aria-hidden="true">6.</strong> Implementation</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../implementation/low_level.html"><strong aria-hidden="true">6.1.</strong> Low-level Semantics</a></li><li class="chapter-item expanded "><a href="../implementation/run_rep.html"><strong aria-hidden="true">6.2.</strong> Runtime Representation</a></li><li class="chapter-item expanded "><a href="../implementation/subset.html"><strong aria-hidden="true">6.3.</strong> Core Subset</a></li><li class="chapter-item expanded "><a href="../implementation/specialisation.html"><strong aria-hidden="true">6.4.</strong> Specialisation</a></li></ol></li><li class="chapter-item expanded "><a href="../summary/SUMMARY.html"><strong aria-hidden="true">7.</strong> Design</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../design/soundness.html"><strong aria-hidden="true">7.1.</strong> Soundness</a></li><li class="chapter-item expanded "><a href="../design/wadlers_law.html"><strong aria-hidden="true">7.2.</strong> Syntax Debates</a></li></ol></li><li class="chapter-item expanded "><li class="part-title">Extremely Old</li><li class="chapter-item expanded "><a href="../old/allocators.html"><strong aria-hidden="true">8.</strong> Type Aware Allocators</a></li><li class="chapter-item expanded "><a href="../old/recursive_types.html"><strong aria-hidden="true">9.</strong> Recursive Types</a></li></ol>
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
             </div>
-            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
-
-        <!-- Track and set sidebar scroll position -->
-        <script>
-            var sidebarScrollbox = document.querySelector('#sidebar .sidebar-scrollbox');
-            sidebarScrollbox.addEventListener('click', function(e) {
-                if (e.target.tagName === 'A') {
-                    sessionStorage.setItem('sidebar-scroll', sidebarScrollbox.scrollTop);
-                }
-            }, { passive: true });
-            var sidebarScrollTop = sessionStorage.getItem('sidebar-scroll');
-            sessionStorage.removeItem('sidebar-scroll');
-            if (sidebarScrollTop) {
-                // preserve sidebar scroll position when navigating via links within sidebar
-                sidebarScrollbox.scrollTop = sidebarScrollTop;
-            } else {
-                // scroll sidebar to current active section when navigating via "next/previous chapter" buttons
-                var activeSection = document.querySelector('#sidebar .active');
-                if (activeSection) {
-                    activeSection.scrollIntoView({ block: 'center' });
-                }
-            }
-        </script>
 
         <div id="page-wrapper" class="page-wrapper">
 
             <div class="page">
-                                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar-hover-placeholder"></div>
                 <div id="menu-bar" class="menu-bar sticky">
                     <div class="left-buttons">
                         <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
@@ -129,13 +127,14 @@
                             <i class="fa fa-paint-brush"></i>
                         </button>
                         <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
                         </ul>
-                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
                             <i class="fa fa-search"></i>
                         </button>
                     </div>
@@ -149,7 +148,7 @@
                         <a href="https://github.com/WTy-2/spec/" title="Git repository" aria-label="Git repository">
                             <i id="git-repository-button" class="fa fa-github"></i>
                         </a>
-                        <a href="https://github.com/WTy-2/spec/edit/trunk/src/dependent_types/proofs.md" title="Suggest an edit" aria-label="Suggest an edit">
+                        <a href="https://github.com/WTy-2/spec/edit/trunk/src/dependent_types/proofs.md" title="Suggest an edit" aria-label="Suggest an edit" rel="edit">
                             <i id="git-edit-button" class="fa fa-edit"></i>
                         </a>
 
@@ -158,7 +157,12 @@
 
                 <div id="search-wrapper" class="hidden">
                     <form id="searchbar-outer" class="searchbar-outer">
-                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
                     </form>
                     <div id="searchresults-outer" class="searchresults-outer hidden">
                         <div id="searchresults-header" class="searchresults-header"></div>
@@ -180,7 +184,7 @@
                     <main>
                         <h1 id="proofs"><a class="header" href="#proofs">Proofs</a></h1>
 <p>In many dependently typed language, an unfortunate side effect of needing to translate between different constraints is that code must be cluttered with calls to functions that do effectively nothing except prove that some constraint implies another.</p>
-<p>WTy2 attempts to separate out these &quot;proof&quot; functions from the code that requires them through the mechanism of implicit <code>proof</code>s.</p>
+<p>WTy2 attempts to separate out these "proof" functions from the code that requires them through the mechanism of implicit <code>proof</code>s.</p>
 <h2 id="syntax"><a class="header" href="#syntax">Syntax</a></h2>
 <p>The <code>proof</code> keyword can be written before a variable definition, with the name of the variable optionally elided. Named <code>proof</code>s can be called just like normal functions.</p>
 <p>Variables annotated as <code>proof</code>s must be functions that return something of type <code>Proof(c)</code> for some <code>c: Constraint</code>.</p>
@@ -201,11 +205,11 @@ proof(Proof(A)): Proof(C) = do {
 <p>While needing to write transitive proofs might seem slightly painful, note it is NOT intended that every single possible valid proof function is written. First of all, this is likely impossible (for the same reason typechecking would loop: infinite valid proofs can be obtained while starting from a finite number), but also, it is unnecessary! Why prove anything that isn't helpful?</p>
 <p>Instead, it is hoped that the WTy2 programmer writes code assuming all obvious implications are known to the typechecker, and then if a type error is encountered, the programmer writes the <code>proof</code> that fixes that specific error. The benefit is that now all future times that same error would appear, the in-scope <code>proof</code> is implicitly reused.</p>
 <h2 id="design-note-provisional-definitions"><a class="header" href="#design-note-provisional-definitions">Design Note: Provisional Definitions</a></h2>
-<p>Idris has a feature with a similar goal (that of splitting proofs and code relying on them) known as &quot;Provisional Definitions&quot; https://docs.idris-lang.org/en/latest/tutorial/provisional.html. The main disadvantage is that you do not get the reuse of proofs that comes from WTy2 (i.e: proofs must be specifically named based on the function they are required in).</p>
+<p>Idris has a feature with a similar goal (that of splitting proofs and code relying on them) known as "Provisional Definitions" https://docs.idris-lang.org/en/latest/tutorial/provisional.html. The main disadvantage is that you do not get the reuse of proofs that comes from WTy2 (i.e: proofs must be specifically named based on the function they are required in).</p>
 <p>The obvious benefit here is that the Idris compiler does not have to search through all possible implicit proofs, meaning the impact on typechecking performance is lessened. Right now, it is somewhat unclear how often implicit proofs will be able to be reused, but it is hoped that this will be a significant quality-of-life benefit for ordinary programs, perhaps even near the scale of much more heavyweight features, say, tactics (the convenience of not needing any explicit user-interaction when relying on properties like <code>m + n ~ n + m</code>, I think should not be understated).</p>
 <h2 id="implementation-note-typechecking-performance"><a class="header" href="#implementation-note-typechecking-performance">Implementation Note: Typechecking Performance</a></h2>
 <p>A naive implementation of the implicit proof searching algorithm will have a pretty devastating impact on typechecking performance. Hopefully some good method of pruning the search space can be found. It is also suggested that when <code>proof</code>s are successfully found, that information is cached somehow so on future compilation it does not need to be rediscovered.</p>
-<p>Note the process of searching in-scope terms to find something that will allow the program to typecheck is not at all a new idea. Idris, for example, allows for writing explicit &quot;holes&quot; in programs https://docs.idris-lang.org/en/latest/elaboratorReflection/holes.html, where the compiler can automatically search for expressions that fit the desired type signature using functions labelled with <code>#hint</code> pragmas. Compared to this, WTy2 holes are relatively modest: the expressions are limited to single function calls.</p>
+<p>Note the process of searching in-scope terms to find something that will allow the program to typecheck is not at all a new idea. Idris, for example, allows for writing explicit "holes" in programs https://docs.idris-lang.org/en/latest/elaboratorReflection/holes.html, where the compiler can automatically search for expressions that fit the desired type signature using functions labelled with <code>#hint</code> pragmas. Compared to this, WTy2 holes are relatively modest: the expressions are limited to single function calls.</p>
 <h2 id="implementation-note-runtime-performance"><a class="header" href="#implementation-note-runtime-performance">Implementation Note: Runtime Performance</a></h2>
 <p>WTy2 does not assume totality of functions. This includes proofs, and so it is entirely possible for a proof to typecheck, but then at runtime loop infinitely or crash.</p>
 <p>For this reason, to preserve safety, running these proofs is unfortunately necessary. Execution these proofs can have severe performance impacts however (to the point of changing the time complexity of many algorithms). It is therefore suggested that WTy2 implementations allow compiling with an option that skips over calls to <code>proof</code>s, assuming totality. This has the consequence of ,aking infinite loops/runtime crashes in <code>proof</code>s undefined behaviour.</p>
@@ -261,6 +265,7 @@ proof(Proof(A)): Proof(C) = do {
 
         <!-- Custom JS scripts -->
         <script src="../theme/ligature_toggle.js"></script>
+
 
 
     </div>

@@ -1,5 +1,5 @@
 <!DOCTYPE HTML>
-<html lang="en" class="light" dir="ltr">
+<html lang="en" class="light sidebar-visible" dir="ltr">
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
@@ -7,7 +7,7 @@
 
 
         <!-- Custom HTML head -->
-        
+
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff">
@@ -24,27 +24,42 @@
         <link rel="stylesheet" href="../fonts/fonts.css">
 
         <!-- Highlight.js Stylesheets -->
-        <link rel="stylesheet" href="../highlight.css">
-        <link rel="stylesheet" href="../tomorrow-night.css">
-        <link rel="stylesheet" href="../ayu-highlight.css">
+        <link rel="stylesheet" id="highlight-css" href="../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../ayu-highlight.css">
 
         <!-- Custom theme stylesheets -->
         <link rel="stylesheet" href="../theme/custom.css">
 
-    </head>
-    <body class="sidebar-visible no-js">
-    <div id="body-container">
-        <!-- Provide site root to javascript -->
-        <script>
-            var path_to_root = "../";
-            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
-        </script>
 
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
         <!-- Work around some values being stored in localStorage wrapped in quotes -->
         <script>
             try {
-                var theme = localStorage.getItem('mdbook-theme');
-                var sidebar = localStorage.getItem('mdbook-sidebar');
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
 
                 if (theme.startsWith('"') && theme.endsWith('"')) {
                     localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
@@ -58,68 +73,51 @@
 
         <!-- Set the theme before any content is loaded, prevents flash -->
         <script>
-            var theme;
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
             try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
             if (theme === null || theme === undefined) { theme = default_theme; }
-            var html = document.querySelector('html');
+            const html = document.documentElement;
             html.classList.remove('light')
             html.classList.add(theme);
-            var body = document.querySelector('body');
-            body.classList.remove('no-js')
-            body.classList.add('js');
+            html.classList.add("js");
         </script>
 
         <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
 
         <!-- Hide / unhide sidebar before it is displayed -->
         <script>
-            var body = document.querySelector('body');
-            var sidebar = null;
-            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
             if (document.body.clientWidth >= 1080) {
                 try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
                 sidebar = sidebar || 'visible';
             } else {
                 sidebar = 'hidden';
+                sidebar_toggle.checked = false;
             }
-            sidebar_toggle.checked = sidebar === 'visible';
-            body.classList.remove('sidebar-visible');
-            body.classList.add("sidebar-" + sidebar);
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
         </script>
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
-            <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded affix "><li class="part-title">Posts</li><li class="chapter-item expanded "><a href="../New/green_slime.html" class="active"><strong aria-hidden="true">1.</strong> Green Slime</a></li><li class="chapter-item expanded affix "><li class="part-title">WTy2 (Some OLD Ideas Here)</li><li class="chapter-item expanded "><a href="../summary/introduction.html"><strong aria-hidden="true">2.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="../summary/SUMMARY.html"><strong aria-hidden="true">3.</strong> Basic Concepts</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../basic_concepts/core_types.html"><strong aria-hidden="true">3.1.</strong> Core Types</a></li><li class="chapter-item expanded "><a href="../basic_concepts/arrows.html"><strong aria-hidden="true">3.2.</strong> Common Type Operators</a></li><li class="chapter-item expanded "><a href="../basic_concepts/functions.html"><strong aria-hidden="true">3.3.</strong> Functions</a></li><li class="chapter-item expanded "><a href="../basic_concepts/records.html"><strong aria-hidden="true">3.4.</strong> Records</a></li><li class="chapter-item expanded "><a href="../basic_concepts/declarations.html"><strong aria-hidden="true">3.5.</strong> Declarations</a></li><li class="chapter-item expanded "><a href="../basic_concepts/erasure_visibility.html"><strong aria-hidden="true">3.6.</strong> Erasure and Visibility</a></li><li class="chapter-item expanded "><a href="../basic_concepts/coherence.html"><strong aria-hidden="true">3.7.</strong> Coherence</a></li><li class="chapter-item expanded "><a href="../basic_concepts/modules.html"><strong aria-hidden="true">3.8.</strong> Modules</a></li></ol></li><li class="chapter-item expanded "><a href="../summary/SUMMARY.html"><strong aria-hidden="true">4.</strong> Extra</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../extra/utilities.html"><strong aria-hidden="true">4.1.</strong> Utilities</a></li></ol></li><li class="chapter-item expanded "><a href="../summary/SUMMARY.html"><strong aria-hidden="true">5.</strong> Dependent Types</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../dependent_types/constraints.html"><strong aria-hidden="true">5.1.</strong> Constraints</a></li><li class="chapter-item expanded "><a href="../dependent_types/proofs.html"><strong aria-hidden="true">5.2.</strong> Proofs</a></li><li class="chapter-item expanded "><a href="../dependent_types/dependent_types.html"><strong aria-hidden="true">5.3.</strong> Dependent Types</a></li></ol></li><li class="chapter-item expanded "><a href="../summary/SUMMARY.html"><strong aria-hidden="true">6.</strong> Implementation</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../implementation/low_level.html"><strong aria-hidden="true">6.1.</strong> Low-level Semantics</a></li><li class="chapter-item expanded "><a href="../implementation/run_rep.html"><strong aria-hidden="true">6.2.</strong> Runtime Representation</a></li><li class="chapter-item expanded "><a href="../implementation/subset.html"><strong aria-hidden="true">6.3.</strong> Core Subset</a></li><li class="chapter-item expanded "><a href="../implementation/specialisation.html"><strong aria-hidden="true">6.4.</strong> Specialisation</a></li></ol></li><li class="chapter-item expanded "><a href="../summary/SUMMARY.html"><strong aria-hidden="true">7.</strong> Design</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../design/soundness.html"><strong aria-hidden="true">7.1.</strong> Soundness</a></li><li class="chapter-item expanded "><a href="../design/wadlers_law.html"><strong aria-hidden="true">7.2.</strong> Syntax Debates</a></li></ol></li><li class="chapter-item expanded "><li class="part-title">Extremely Old</li><li class="chapter-item expanded "><a href="../old/allocators.html"><strong aria-hidden="true">8.</strong> Type Aware Allocators</a></li><li class="chapter-item expanded "><a href="../old/recursive_types.html"><strong aria-hidden="true">9.</strong> Recursive Types</a></li></ol>
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
             </div>
-            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
-
-        <!-- Track and set sidebar scroll position -->
-        <script>
-            var sidebarScrollbox = document.querySelector('#sidebar .sidebar-scrollbox');
-            sidebarScrollbox.addEventListener('click', function(e) {
-                if (e.target.tagName === 'A') {
-                    sessionStorage.setItem('sidebar-scroll', sidebarScrollbox.scrollTop);
-                }
-            }, { passive: true });
-            var sidebarScrollTop = sessionStorage.getItem('sidebar-scroll');
-            sessionStorage.removeItem('sidebar-scroll');
-            if (sidebarScrollTop) {
-                // preserve sidebar scroll position when navigating via links within sidebar
-                sidebarScrollbox.scrollTop = sidebarScrollTop;
-            } else {
-                // scroll sidebar to current active section when navigating via "next/previous chapter" buttons
-                var activeSection = document.querySelector('#sidebar .active');
-                if (activeSection) {
-                    activeSection.scrollIntoView({ block: 'center' });
-                }
-            }
-        </script>
 
         <div id="page-wrapper" class="page-wrapper">
 
             <div class="page">
-                                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar-hover-placeholder"></div>
                 <div id="menu-bar" class="menu-bar sticky">
                     <div class="left-buttons">
                         <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
@@ -129,13 +127,14 @@
                             <i class="fa fa-paint-brush"></i>
                         </button>
                         <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
                         </ul>
-                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
                             <i class="fa fa-search"></i>
                         </button>
                     </div>
@@ -149,7 +148,7 @@
                         <a href="https://github.com/WTy-2/spec/" title="Git repository" aria-label="Git repository">
                             <i id="git-repository-button" class="fa fa-github"></i>
                         </a>
-                        <a href="https://github.com/WTy-2/spec/edit/trunk/src/New/green_slime.md" title="Suggest an edit" aria-label="Suggest an edit">
+                        <a href="https://github.com/WTy-2/spec/edit/trunk/src/New/green_slime.md" title="Suggest an edit" aria-label="Suggest an edit" rel="edit">
                             <i id="git-edit-button" class="fa fa-edit"></i>
                         </a>
 
@@ -158,7 +157,12 @@
 
                 <div id="search-wrapper" class="hidden">
                     <form id="searchbar-outer" class="searchbar-outer">
-                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
                     </form>
                     <div id="searchresults-outer" class="searchresults-outer hidden">
                         <div id="searchresults-header" class="searchresults-header"></div>
@@ -181,7 +185,7 @@
                         <h1 id="dependent-pattern-matching-without-green-slime"><a class="header" href="#dependent-pattern-matching-without-green-slime">Dependent Pattern Matching, Without Green Slime</a></h1>
 <p>Disclaimer: This is basically a blog post. I should start hosting my own website so I can write real blog posts...</p>
 <h2 id="motivation"><a class="header" href="#motivation">Motivation</a></h2>
-<p>A classic pain point in proof assistants based on ITT is problems with &quot;green slime&quot; <sup class="footnote-reference"><a href="#slime">1</a></sup>.</p>
+<p>A classic pain point in proof assistants based on ITT is problems with "green slime" <sup class="footnote-reference" id="fr-slime-1"><a href="#footnote-slime">1</a></sup>.</p>
 <pre><code class="language-agda">foo : (x y : ℕ) → Fin (x + y) → ⊤
 foo x y fz = {!!}
 foo x y (fs _) = {!!}
@@ -194,8 +198,8 @@ problems (inferred index ≟ expected index):
 when checking that the pattern fz has type Fin (x + y)
 </code></pre>
 <p>These arise from how dependent pattern matching requires patterns to definitionally have the type of the scrutinee variable (so it is safe to substitute the variable for the pattern everywhere in the context).</p>
-<p>As we'll see next, if the &quot;inferred&quot; (i.e. from the signature of the constructor) and &quot;expected&quot; (i.e. from the type of variable being matched on) indices can be unified to produce a single solution, we can easily elaborate this into a match where the indices coincide, and the pattern has the desired type (and if they anti-unify, we know the branch is impossible and can be elided); however, oftentimes, unification problems can yield multiple solutions, or worse, are undecidable.</p>
-<p>Unification between patterns<sup class="footnote-reference"><a href="#pattern">2</a></sup> and <em>variables</em> is easy: all we need to do is perform a substitution, which is what allows</p>
+<p>As we'll see next, if the "inferred" (i.e. from the signature of the constructor) and "expected" (i.e. from the type of variable being matched on) indices can be unified to produce a single solution, we can easily elaborate this into a match where the indices coincide, and the pattern has the desired type (and if they anti-unify, we know the branch is impossible and can be elided); however, oftentimes, unification problems can yield multiple solutions, or worse, are undecidable.</p>
+<p>Unification between patterns<sup class="footnote-reference" id="fr-pattern-1"><a href="#footnote-pattern">2</a></sup> and <em>variables</em> is easy: all we need to do is perform a substitution, which is what allows</p>
 <pre><code class="language-agda">foo : (x : ℕ) → Fin x → ⊤
 foo x fz = {!!}
 foo x (fs _) = {!!}
@@ -205,7 +209,7 @@ foo x (fs _) = {!!}
 foo x@.(suc _) fz = {!!}
 foo x@.(suc _) (fs \_) = {!!}
 </code></pre>
-<p>We <em>could</em> attempt a similar translation for more complicated indices, using a <code>with</code>-abstraction<sup class="footnote-reference"><a href="#with">3</a></sup></p>
+<p>We <em>could</em> attempt a similar translation for more complicated indices, using a <code>with</code>-abstraction<sup class="footnote-reference" id="fr-with-1"><a href="#footnote-with">3</a></sup></p>
 <pre><code class="language-agda">foo : (x y : ℕ) → Fin (x + y) → ⊤
 foo x y n with x + y
 foo x y fz | x+y = {!!}
@@ -218,7 +222,7 @@ foo x y fz | x+y@.(suc _) = {!!}
 foo x y (fs n) | x+y@.(suc _) = {!!}
 </code></pre>
 <p>This typechecks, but we have lost all connection between the index of the <code>Fin</code> and <code>x + y</code>. Such a <code>with</code> abstraction only works by indiscriminately replacing all occurrences of <code>x + y</code> in the context with a new variable, so this is an inherent limitation.</p>
-<p>Luckily, using Agda's <code>with ... in ...</code> syntax (or the <code>inspect</code> idiom) <sup class="footnote-reference"><a href="#inspect">4</a></sup> we can retain propositional evidence of this connection</p>
+<p>Luckily, using Agda's <code>with ... in ...</code> syntax (or the <code>inspect</code> idiom) <sup class="footnote-reference" id="fr-inspect-1"><a href="#footnote-inspect">4</a></sup> we can retain propositional evidence of this connection</p>
 <pre><code class="language-agda">foo : (x y : ℕ) → Fin (x + y) → ⊤
 foo x y n with x + y in p
 foo x y fz | .(suc _) = {!!} -- Here, p : x + y ≡ suc n
@@ -231,7 +235,7 @@ foo x y (fs n) | .(suc _) = {!!}
 </ol>
 <p>There is also a third, more subtle issue:</p>
 <ol start="3">
-<li>Sometimes, <code>with</code>-abstractions in Agda become &quot;ill-typed&quot;. In the case of <code>foo</code>, this can happen if some expression in the context relies on the <code>Fin</code> being indexed by <code>x + y</code> definitionally to typecheck.</li>
+<li>Sometimes, <code>with</code>-abstractions in Agda become "ill-typed". In the case of <code>foo</code>, this can happen if some expression in the context relies on the <code>Fin</code> being indexed by <code>x + y</code> definitionally to typecheck.</li>
 </ol>
 <pre><code class="language-agda">Pred : ∀ x y → Fin (x + y) → Set
 
@@ -247,7 +251,7 @@ function is well-formed
 (https://agda.readthedocs.io/en/v2.6.4.2/language/with-abstraction.html#ill-typed-with-abstractions)
 </code></pre>
 <h2 id="solution-1-transport-patterns"><a class="header" href="#solution-1-transport-patterns">Solution 1: Transport-Patterns</a></h2>
-<p>To resolve these last two points, I propose a new syntax, which I call &quot;transport-patterns&quot;. Simply put: we allow a built-in transport operator to appear in patterns, allowing us to match without fear of &quot;green slime&quot; while also binding propositional equality of the indices.</p>
+<p>To resolve these last two points, I propose a new syntax, which I call "transport-patterns". Simply put: we allow a built-in transport operator to appear in patterns, allowing us to match without fear of "green slime" while also binding propositional equality of the indices.</p>
 <pre><code class="language-agda">foo : (x y : ℕ) → Fin (x + y) → ⊤
 -- I use a coercion operator inspired by Cubical Agda's transpX here because
 -- ideally we would like to be able to refer to a transport operator specific to
@@ -262,17 +266,17 @@ foo x y (Fin.coeX p (fs n)) = {!!}
 <summary>Short Rant</summary>
 More than the boilerplate, I think my frustration with the manual translations is that they force the user to put thought into what ought to be irrelevant, low-level, implementation details, distracting from their larger developments. i.e. in my opinion, time spent pondering question such as:
 <ul>
-<li>&quot;Can I abstract over the index here or will that be ill-typed?&quot;</li>
-<li>&quot;When a function matches on a datatype indexed by a neutral AND the constructor is <em>also</em> indexed by a neutral, should I do a fording translation on the function or the constructor, or both?&quot;</li>
-<li>and &quot;What about if in some cases, the neutral ends up being unblocked and reduces to a value just in time for the match to work out? Does that change things?&quot;</li>
+<li>"Can I abstract over the index here or will that be ill-typed?"</li>
+<li>"When a function matches on a datatype indexed by a neutral AND the constructor is <em>also</em> indexed by a neutral, should I do a fording translation on the function or the constructor, or both?"</li>
+<li>and "What about if in some cases, the neutral ends up being unblocked and reduces to a value just in time for the match to work out? Does that change things?"</li>
 </ul>
-<p>is a complete waste of effort. In general, I think there should be more focus in the PL community (especially in the area of dependent types) on building easier-to-use languages which don't force the user to do the work of an elaborator/compiler. i.e. rather than accepting that the status quo as how these languages must work and maintaining a folklore of &quot;design patterns&quot; to help bypass these problems, let's put in the work to make such expert knowledge unnecessary! Without this, how can we ever hope for dependent types to &quot;go mainstream&quot;?</p>
+<p>is a complete waste of effort. In general, I think there should be more focus in the PL community (especially in the area of dependent types) on building easier-to-use languages which don't force the user to do the work of an elaborator/compiler. i.e. rather than accepting that the status quo as how these languages must work and maintaining a folklore of "design patterns" to help bypass these problems, let's put in the work to make such expert knowledge unnecessary! Without this, how can we ever hope for dependent types to "go mainstream"?</p>
 </details>
-<p>Fixing the first bullet is harder - we must increase the power of definitional equality. Note this problem might sound less important (it certainly did to me at first), but in larger examples, having rewrites apply only once, immediately, can end up giving rise to so-called &quot;<code>with</code>-jenga&quot;<sup class="footnote-reference"><a href="#jenga">5</a></sup> where the order of <code>with</code> abstractions needs to be chosen extremely carefully to have the types work out (i.e. without resorting to copious amounts of manual coercing). Again, in my opinion, time spent finding solutions to puzzles like these is time wasted (even if solving puzzles can sometimes be fun).</p>
+<p>Fixing the first bullet is harder - we must increase the power of definitional equality. Note this problem might sound less important (it certainly did to me at first), but in larger examples, having rewrites apply only once, immediately, can end up giving rise to so-called "<code>with</code>-jenga"<sup class="footnote-reference" id="fr-jenga-1"><a href="#footnote-jenga">5</a></sup> where the order of <code>with</code> abstractions needs to be chosen extremely carefully to have the types work out (i.e. without resorting to copious amounts of manual coercing). Again, in my opinion, time spent finding solutions to puzzles like these is time wasted (even if solving puzzles can sometimes be fun).</p>
 <p>Before I proceed to the proposal, I must give credit where it is due. I originally heard this idea from <a href="https://github.com/ollef">Ollef</a> on the r/ProgrammingLanguages Discord, and worked through a lot of the tricky details with <a href="https://github.com/RiscInside">Iurii</a> - thanks for the interesting discussions!</p>
 <h2 id="solution-2-neutral---value-mappings"><a class="header" href="#solution-2-neutral---value-mappings">Solution 2: Neutral -&gt; Value Mappings</a></h2>
 <p>Without further ado, the core idea is thus: Make it possible for the context to contain local rewrite rules (from neutrals to values), subject to an occurs check to prevent loops. We can then define dependent pattern matching where the scrutinee is a neutral as a process which adds such rewrite rules to the context (i.e. as opposed to the usual one-time-substitutions-of-variables-for-patterns).</p>
-<p>An important note: the solution here is not &quot;complete&quot;. I believe this is by necessity (a perfect solution would give arbitrary equality reflection and naturally make typechecking undecidable). It is simply designed to handle a majority of easy cases, with the fall-back of transport-patterns (or manual fording I suppose) always in reach.</p>
+<p>An important note: the solution here is not "complete". I believe this is by necessity (a perfect solution would give arbitrary equality reflection and naturally make typechecking undecidable). It is simply designed to handle a majority of easy cases, with the fall-back of transport-patterns (or manual fording I suppose) always in reach.</p>
 <p>TODO: Add paragraph on the occurs check and why it is necessary</p>
 <p>Of course, the scrutinee of a pattern match may not always be a neutral or variable. It could be a <em>canonical value</em>. More severely, what might have started as a mapping from a neutral might become not so if some later pattern match causes the neutral to unblock. Our proposed scheme for handling such cases is as follows:</p>
 <ul>
@@ -286,7 +290,7 @@ More than the boilerplate, I think my frustration with the manual translations i
 </ul>
 </li>
 </ul>
-<p>The final case, (*), is tricky situation. In the case that this was a new rewrite rule which we just attempted to add, we are probably screwed (the context is very likely reliant on this rewrite to typecheck, but adding a definitional rewrite between potentially not-equal values is BAD <sup class="footnote-reference"><a href="#bad">6</a></sup>).</p>
+<p>The final case, (*), is tricky situation. In the case that this was a new rewrite rule which we just attempted to add, we are probably screwed (the context is very likely reliant on this rewrite to typecheck, but adding a definitional rewrite between potentially not-equal values is BAD <sup class="footnote-reference" id="fr-bad-1"><a href="#footnote-bad">6</a></sup>).</p>
 <p>However, if we have reached this case by reducing the LHS of a previously valid rewrite, then we might hope that applying the rewrite eagerly to everything in the context will mean that we might discard the rewrite rule and everything will continue to typecheck (even if prior definitional equalities might no longer hold equal - which is odd, but not the end of the world).</p>
 <p>However, recall the subtlety highlighted above as problem (3.):</p>
 <pre><code class="language-agda">Pred : ∀ x y → Fin (x + y) → Set
@@ -312,15 +316,26 @@ function is well-formed
 </ul>
 <p>I'll admit that I am partial to the latter here: I think erroring for any type that could possibly yield an undecidable unification puzzle is too conservative, given this must include not just functions, but also any inductive datatype which might contain a function, and also general QITs/HITs (which are pretty exotic constructions, but are also very exciting features which I would like a modern proof assistant to support well). I also don't like the idea that adding stuff to your context could trigger an error when there was none previously (validity of typechecking being stable under weakening seems highly desirable).</p>
 <p>Now to actually try and implement such a feature! (just kidding, I'm a type theorist, I would never write code)</p>
-<div class="footnote-definition" id="slime"><sup class="footnote-definition-label">1</sup>
-<p><a href="https://personal.cis.strath.ac.uk/conor.mcbride/PolyTest.pdf">A polynomial testing principle</a>
-<sup class="footnote-reference"><a href="#pattern">2</a></sup>: Note that the concept of a &quot;pattern&quot; in dependently typed languages is much more flexible than in mainstream PLs: constructors of inductive families are allowed to be indexed by arbitrary expressions, and so &quot;inaccessible patterns&quot; can take the form of such arbitrary expressions. There are a ton of great papers on the topic of dependent matching, but I don't think you could go wrong with <a href="https://static.googleusercontent.com/media/research.google.com/en//pubs/archive/99.pdf">Eliminating Dependent Pattern Matching</a> as an introduction.
-<sup class="footnote-reference"><a href="#with">3</a></sup>: <a href="https://agda.readthedocs.io/en/v2.6.4.3/language/with-abstraction.html">With-Abstraction | Agda Docs</a>
-<sup class="footnote-reference"><a href="#inspect">4</a></sup>: <a href="https://agda.readthedocs.io/en/v2.6.4.3/language/with-abstraction.html#with-abstraction-equality">With-Abstraction Equality | Agda Docs</a> <a href="https://agda.github.io/agda-stdlib/README.Inspect.html">README.Inspect | Agda standard library</a>
-<sup class="footnote-reference"><a href="#jenga">5</a></sup>: Coined (as far as I know) by Connor McBride, see https://types.pl/@pigworker/112005915524041848, and some discussion of some (IMO very clunky) solutions https://types.pl/@pigworker/112006024839462007, https://types.pl/@pigworker/112016097261103609
-<sup class="footnote-reference"><a href="#bad">6</a></sup>: Whether such a rule would lead to subject reduction failure or undecidable typechecking probably depends on niche implementation details of conversion checking and evaluation order, but for a sample of the problems, consider the rewrite rule <code>(λ x y → x) -&gt; (λ x y → y) : Set → Set → Set</code>. I would argue that a complete implementation of definitional equality should then give us <code>(λ x y → x) ⊤ (⊤ → ⊤) ≡ ⊤ ≡ ⊤ → ⊤</code>, at which point we can type self-application and write a fixpoint combinator. Oh dear...</p>
-</div>
-
+<hr>
+<ol class="footnote-definition"><li id="footnote-slime">
+<p><a href="https://personal.cis.strath.ac.uk/conor.mcbride/PolyTest.pdf">A polynomial testing principle</a> <a href="#fr-slime-1">↩</a></p>
+</li>
+<li id="footnote-pattern">
+<p>Note that the concept of a "pattern" in dependently typed languages is much more flexible than in mainstream PLs: constructors of inductive families are allowed to be indexed by arbitrary expressions, and so "inaccessible patterns" can take the form of such arbitrary expressions. There are a ton of great papers on the topic of dependent matching, but I don't think you could go wrong with <a href="https://static.googleusercontent.com/media/research.google.com/en//pubs/archive/99.pdf">Eliminating Dependent Pattern Matching</a> as an introduction. <a href="#fr-pattern-1">↩</a></p>
+</li>
+<li id="footnote-with">
+<p><a href="https://agda.readthedocs.io/en/v2.6.4.3/language/with-abstraction.html">With-Abstraction | Agda Docs</a> <a href="#fr-with-1">↩</a></p>
+</li>
+<li id="footnote-inspect">
+<p><a href="https://agda.readthedocs.io/en/v2.6.4.3/language/with-abstraction.html#with-abstraction-equality">With-Abstraction Equality | Agda Docs</a> <a href="https://agda.github.io/agda-stdlib/README.Inspect.html">README.Inspect | Agda standard library</a> <a href="#fr-inspect-1">↩</a></p>
+</li>
+<li id="footnote-jenga">
+<p>Coined (as far as I know) by Connor McBride, see https://types.pl/@pigworker/112005915524041848, and some discussion of some (IMO very clunky) solutions https://types.pl/@pigworker/112006024839462007, https://types.pl/@pigworker/112016097261103609 <a href="#fr-jenga-1">↩</a></p>
+</li>
+<li id="footnote-bad">
+<p>Whether such a rule would lead to subject reduction failure or undecidable typechecking probably depends on niche implementation details of conversion checking and evaluation order, but for a sample of the problems, consider the rewrite rule <code>(λ x y → x) -&gt; (λ x y → y) : Set → Set → Set</code>. I would argue that a complete implementation of definitional equality should then give us <code>(λ x y → x) ⊤ (⊤ → ⊤) ≡ ⊤ ≡ ⊤ → ⊤</code>, at which point we can type self-application and write a fixpoint combinator. Oh dear... <a href="#fr-bad-1">↩</a></p>
+</li>
+</ol>
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
@@ -362,6 +377,7 @@ function is well-formed
 
         <!-- Custom JS scripts -->
         <script src="../theme/ligature_toggle.js"></script>
+
 
 
     </div>

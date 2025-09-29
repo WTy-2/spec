@@ -251,7 +251,7 @@ veryBad = case bad of MkDict -&gt; MkDict
 <p>Indeed, Haskell runtime loops when executing this program, despite there being no explicit recursion in the code[^note].</p>
 <p>IMO it is <em>pretty</em> important we avoid this. Mathematicians might argue the cause of the problem here is the typeclass declaration itself, but ruling it out would require a drastic reduction of WTy2's expressivity (e.g: removing an entire feature, like the <code>(&lt;&lt;=)</code> operator) or adding type universes.</p>
 <p>Luckily, there is a much easier fix: not giving the solver access to an implication-introduction rule. Instead implications should only be brought into scope via superclass constraints, instances and explicitly written <code>proof</code>s. We could of course write a <code>proof</code> of <code>Russel :: Russel =&gt; Bottom</code>, but that this would loop at runtime is fine - we at least have source code we can point to in a stack trace (<code>proof</code>s are not totality-checked in WTy2).</p>
-<p>[^note] See http://liamoc.net/posts/2015-09-10-girards-paradox.html for a nice walkthrough of how to derive this in Agda.</p>
+<p>[^note] See <a href="http://liamoc.net/posts/2015-09-10-girards-paradox.html">http://liamoc.net/posts/2015-09-10-girards-paradox.html</a> for a nice walkthrough of how to derive this in Agda.</p>
 <p>[^note] Though do note that the loop in Haskell can be encoded much more simply (and arguably arises from using superclass constraints when checking instances):</p>
 <pre><code class="language-hs">class (ImpliesBottom =&gt; Bottom) =&gt; ImpliesBottom
 

@@ -330,7 +330,7 @@ function is well-formed
 <p><a href="https://agda.readthedocs.io/en/v2.6.4.3/language/with-abstraction.html#with-abstraction-equality">With-Abstraction Equality | Agda Docs</a> <a href="https://agda.github.io/agda-stdlib/README.Inspect.html">README.Inspect | Agda standard library</a> <a href="#fr-inspect-1">↩</a></p>
 </li>
 <li id="footnote-jenga">
-<p>Coined (as far as I know) by Connor McBride, see https://types.pl/@pigworker/112005915524041848, and some discussion of some (IMO very clunky) solutions https://types.pl/@pigworker/112006024839462007, https://types.pl/@pigworker/112016097261103609 <a href="#fr-jenga-1">↩</a></p>
+<p>Coined (as far as I know) by Connor McBride, see <a href="https://types.pl/@pigworker/112005915524041848">https://types.pl/@pigworker/112005915524041848</a>, and some discussion of some (IMO very clunky) solutions <a href="https://types.pl/@pigworker/112006024839462007">https://types.pl/@pigworker/112006024839462007</a>, <a href="https://types.pl/@pigworker/112016097261103609">https://types.pl/@pigworker/112016097261103609</a> <a href="#fr-jenga-1">↩</a></p>
 </li>
 <li id="footnote-bad">
 <p>Whether such a rule would lead to subject reduction failure or undecidable typechecking probably depends on niche implementation details of conversion checking and evaluation order, but for a sample of the problems, consider the rewrite rule <code>(λ x y → x) -&gt; (λ x y → y) : Set → Set → Set</code>. I would argue that a complete implementation of definitional equality should then give us <code>(λ x y → x) ⊤ (⊤ → ⊤) ≡ ⊤ ≡ ⊤ → ⊤</code>, at which point we can type self-application and write a fixpoint combinator. Oh dear... <a href="#fr-bad-1">↩</a></p>

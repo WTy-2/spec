@@ -885,8 +885,8 @@ Further, when references become pervasive in a language with subtyping, consider
 <p>For the curious reader, here were my two main ideas, which I still think are potentially cool, but simply do not fit with WTy2 whatsoever. <a href="#fr-note-1">↩</a></p>
 </li>
 </ol><div style="break-before: page; page-break-before: always;"></div><h1 id="runtime-representation"><a class="header" href="#runtime-representation">Runtime Representation</a></h1>
-<p>Note that there is likely a <strong>ton</strong> of flexibility here, and I know very little about writing efficient language runtimes/low-level performance optimisation. The design I layout here is just a suggestion, that will probably be changed significantly over time <sup class="footnote-reference" id="fr-note-1"><a href="#footnote-note">1</a></sup>.</p>
-<p>WTy2 values are linked lists <sup class="footnote-reference" id="fr-note-2"><a href="#footnote-note">1</a></sup> of tags, where each tag is 32-bits. The starting point for this idea is that these lists of tags are just the natural serialisations of the values (i.e: the <code>data</code> constructors). All tags are associated with some source-code identifier, and so to illustrate below, I will denote all tags as <code>T_&lt;Ident&gt;</code> where <code>&lt;Ident&gt;</code> is the associated identifier.</p>
+<p>Note that there is likely a <strong>ton</strong> of flexibility here, and I know very little about writing efficient language runtimes/low-level performance optimisation. The design I layout here is just a suggestion, that will probably be changed significantly over time <sup class="footnote-reference" id="fr-dict_passing-1"><a href="#footnote-dict_passing">1</a></sup>.</p>
+<p>WTy2 values are linked lists <sup class="footnote-reference" id="fr-packing_tags-1"><a href="#footnote-packing_tags">2</a></sup> of tags, where each tag is 32-bits. The starting point for this idea is that these lists of tags are just the natural serialisations of the values (i.e: the <code>data</code> constructors). All tags are associated with some source-code identifier, and so to illustrate below, I will denote all tags as <code>T_&lt;Ident&gt;</code> where <code>&lt;Ident&gt;</code> is the associated identifier.</p>
 <p>The first obvious issue with this is how to fit all the tags into 32-bits. For example, 32-bit integers alone would fill the space of tags. This is fixed by giving <code>datatype</code> declarations slightly unique semantics. A <code>datatype</code> defines one tag for the type, and then all variants are placed in a separate tag-space (and so are free to overlap with other tags in other <code>datatype</code>s).</p>
 <p>To clarify, after the below two declarations:</p>
 <pre><code class="language-WTy2">datatype Bool0 where
@@ -898,11 +898,18 @@ data False0
 type Bool1 = True1 | False1
 </code></pre>
 <p><code>x: Bool0 = True0</code> and <code>y: Bool1 = True1</code> (in the absence of other optimisations) will have differently lengthed tag lists at runtime - <code>x</code> will have a tag list of length two (<code>T_Bool0</code> and <code>T_True0</code>), while <code>y</code> will just be a single tag (<code>T_True1</code>).</p>
-<p>In order to "be not stupid" <sup class="footnote-reference" id="fr-note-3"><a href="#footnote-note">1</a></sup>, tags which are known to be fixed at compile time really should be elided. Achieving this is subtle though. Consider that WTy2 allows writing extensional proofs about functions like <code>for(x: Int) { foo(x) :: Int }</code> - does this mean we must elide the <code>T_Int0</code> tag from <code>foo</code>-returned values? Achieving this consistently in general is catastrophically undecidable (for the same reason WTy2 bounds the number of automatic proof insertions to one per goal constraint).</p>
+<p>In order to "be not stupid" <sup class="footnote-reference" id="fr-being_stupid-1"><a href="#footnote-being_stupid">3</a></sup>, tags which are known to be fixed at compile time really should be elided. Achieving this is subtle though. Consider that WTy2 allows writing extensional proofs about functions like <code>for(x: Int) { foo(x) :: Int }</code> - does this mean we must elide the <code>T_Int0</code> tag from <code>foo</code>-returned values? Achieving this consistently in general is catastrophically undecidable (for the same reason WTy2 bounds the number of automatic proof insertions to one per goal constraint).</p>
 <p>TODO - Come up with some tag-elision system that actually works, and supports aliasing (HARD).</p>
 <hr>
-<ol class="footnote-definition"><li id="footnote-note">
-<p>FYI, for a while, I really was aiming to avoid dictionary passing in ,pst cases by having longer tag lists which retain enough information to do instance selection, and dispatching based on those - I still am not sure if this is a good idea or not, but it felt much messier than what I currently outline here. <a href="#fr-note-1">↩</a> <a href="#fr-note-2">↩2</a> <a href="#fr-note-3">↩3</a></p>
+<ol class="footnote-definition"><li id="footnote-dict_passing">
+<p>FYI, for a while, I really was aiming to avoid dictionary passing in ,pst cases by having longer tag lists which retain enough information to do instance selection, and dispatching based on those - I still am not sure if this is a good idea or not, but it felt much messier than what I currently outline here. <a href="#fr-dict_passing-1">↩</a></p>
+</li>
+<li id="footnote-packing_tags">
+<p>I think packing tags in memory might actually be possible if we added a special tag denoting a reference which could appear in any place in a value, but I need to think this over more.
+In any case, this packing definitely would make implementation more complicated, and for an initial compiler I really want something easy and consistent, not necessarily fast. <a href="#fr-packing_tags-1">↩</a></p>
+</li>
+<li id="footnote-being_stupid">
+<p>https://youtu.be/BcC3KScZ-yA?t=2150 <a href="#fr-being_stupid-1">↩</a></p>
 </li>
 </ol><div style="break-before: page; page-break-before: always;"></div><h1 id="core-language"><a class="header" href="#core-language">Core Language</a></h1>
 <p>Implementing a typechecker and compiler for the entire WTy2 language at once is likely to prove somewhat challenging. Here, a design for an intermediate, typed core language (inspired by efforts on GHC) is outlined.</p>
@@ -926,7 +933,7 @@ type Bool1 = True1 | False1
 <li>How to represent recursion? Could either use recursive binders or a dedicated fixpoint operator.</li>
 </ul>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="specialisation"><a class="header" href="#specialisation">Specialisation</a></h1>
-<p>WTy2 does NOT currently feature "specialisation" as a high-level language feature (à la Rust <sup class="footnote-reference" id="fr-note-1"><a href="#footnote-note">1</a></sup>), being able to override typeclass instances for specific types. Instead, specialisation in the context of WTy2 refers to an optimisation strategy that is key to get highly polymorphic WTy2 programs to perform well<sup class="footnote-reference" id="fr-note-2"><a href="#footnote-note">1</a></sup>.</p>
+<p>WTy2 does NOT currently feature "specialisation" as a high-level language feature (à la Rust <sup class="footnote-reference" id="fr-rust_spec_bad-1"><a href="#footnote-rust_spec_bad">1</a></sup>), being able to override typeclass instances for specific types. Instead, specialisation in the context of WTy2 refers to an optimisation strategy that is key to get highly polymorphic WTy2 programs to perform well<sup class="footnote-reference" id="fr-haskel_spec_good-1"><a href="#footnote-haskel_spec_good">2</a></sup>.</p>
 <p>Specialisation can be thought of a bit like a "lite" version of monomorphisation. Types can be arbitrarily large in WTy2, so full monomorphisation as a compilation strategy is infeasible; however, where possible, compiling separate versions of functions for specific argument values (or sets of argument values) and dispatching to those specialised versions can get most of the benefits (the main downside being the compiler now has to decide on a strategy for deciding when to specialise).</p>
 <p>Some possible heuristics for deciding when specialisation is a good idea might include:</p>
 <ul>
@@ -937,10 +944,16 @@ type Bool1 = True1 | False1
 <p>Specialisation is similar to inlining, but generated specialised code can be reused, reducing executable bloat. Prioritising specialisation over inlining seems like a reasonable goal.</p>
 <h2 id="dispatching-to-specialised-functions"><a class="header" href="#dispatching-to-specialised-functions">Dispatching to Specialised Functions</a></h2>
 <p>Dispatching to specialised functions at runtime rather than compile time would greatly increase the power of this optimisation. i.e: suppose there is a function <code>foo : impl(Num) -&gt; Bool</code> with a much faster specialisation for <code>n ~ Int</code>. We would like to ensure that even code like <code>x: Int = 0; y: Num = x; z = foo(y);</code> uses the specialiased version of <code>foo</code>, using the type information (in the form of variant tags) that is kept around at runtime to dispatch appropriately (assuming the savings from running the specialised version are worth it over the cost of dispatching appropriately).</p>
-<p>Exactly how feasible this is will likely have to be reassessed after the design for open types/instances is finalised, but this potentially could be implemented very simply as just a compiler pass which adds seemingly redundant pattern matches before various function calls that appear to be good candidates for specialisation <sup class="footnote-reference" id="fr-note-3"><a href="#footnote-note">1</a></sup>.</p>
+<p>Exactly how feasible this is will likely have to be reassessed after the design for open types/instances is finalised, but this potentially could be implemented very simply as just a compiler pass which adds seemingly redundant pattern matches before various function calls that appear to be good candidates for specialisation <sup class="footnote-reference" id="fr-closed_in_impl-1"><a href="#footnote-closed_in_impl">3</a></sup>.</p>
 <hr>
-<ol class="footnote-definition"><li id="footnote-note">
-<p>The writer of the specification personally considers this form of specialisation (sometimes called ad-hoc polymorphism) as a misfeature and so would be hesitent to work on it, even if there was a feasible implementation strategy for it in WTy2. <a href="#fr-note-1">↩</a> <a href="#fr-note-2">↩2</a> <a href="#fr-note-3">↩3</a></p>
+<ol class="footnote-definition"><li id="footnote-rust_spec_bad">
+<p>The writer of the specification personally considers this form of specialisation (sometimes called ad-hoc polymorphism) as a misfeature and so would be hesitent to work on it, even if there was a feasible implementation strategy for it in WTy2. <a href="#fr-rust_spec_bad-1">↩</a></p>
+</li>
+<li id="footnote-haskel_spec_good">
+<p>À la Haskell - https://wiki.haskell.org/Inlining_and_Specialisation#What_is_specialisation.3F <a href="#fr-haskel_spec_good-1">↩</a></p>
+</li>
+<li id="footnote-closed_in_impl">
+<p>Of course, pattern matches are only possible on values of closed types in the source language, but when it comes to implementation, all values could (and likely will) be fully tagged. <a href="#fr-closed_in_impl-1">↩</a></p>
 </li>
 </ol><div style="break-before: page; page-break-before: always;"></div><h1 id="soundness"><a class="header" href="#soundness">Soundness</a></h1>
 <p>WTy2 is a programming language with dependent types first and foremost, NOT a theorem prover.</p>

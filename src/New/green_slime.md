@@ -59,7 +59,7 @@ foo x y fz | x+y@.(suc _) = {!!}
 foo x y (fs n) | x+y@.(suc _) = {!!}
 ```
 
-This typechecks, but we have lost all connection between the index of the `Fin` and `x + y`. Such a `with` abstraction only works by indiscriminately replacing all occurences of `x + y` in the context with a new variable, so this is an inherent limitation.
+This typechecks, but we have lost all connection between the index of the `Fin` and `x + y`. Such a `with` abstraction only works by indiscriminately replacing all occurrences of `x + y` in the context with a new variable, so this is an inherent limitation.
 
 Luckily, using Agda's `with ... in ...` syntax (or the `inspect` idiom) [^inspect] we can retain propositional evidence of this connection
 
@@ -176,7 +176,7 @@ But of course `Pred x y` is not a variable, and therefore we cannot _record_ the
 
 So, how do we resolve these cases? I think this has to be some sort of type error, but exactly where to error and what to blame is somewhat debatable. I can think of three different reasonable-ish perspectives:
 
-- The culprit was that the rewrite rule related values whos type can yield undecidable unification problems. Therefore error much earlier, at the original match which introduced the rewrite.
+- The culprit was that the rewrite rule related values whose type can yield undecidable unification problems. Therefore error much earlier, at the original match which introduced the rewrite.
 - The culprit is that an expression in the context relied on the rewrite rule but the match made it invalid. Therefore blame the `p : Pred x y n` and the match on `x` and `y`.
 - The culprit was that the match on `x` and `y` unblocked the LHS of the rewrite rule which forced it to be discarded (i.e. the problem is _unrelated_ to whether such a rewrite rule was _necessary_ for validity for the context). Therefore blame the `x + y -> suc n` rewrite rule and the match on `x` and `y`.
 

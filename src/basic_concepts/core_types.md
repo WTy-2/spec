@@ -73,7 +73,7 @@ type Unit = '();
 WTy2 also supports singleton tuples. The parsing ambiguity of expression in parens vs a singleton tuple is resolved as follows:
 `(E)` where `E` is an expression - parenthesised expression
 `(E,)` where `E` is an expression - singleton tuple
-`(i: E)` where `i` is an identifer and `E` is an expression - named value (`t <: (i: t)`)
+`(i: E)` where `i` is an identifier and `E` is an expression - named value (`t <: (i: t)`)
 `(i: E,)` where `i` is an identifier and `E` is an expression - named singleton tuple/singleton record
 
 ### Design Note: Bindings

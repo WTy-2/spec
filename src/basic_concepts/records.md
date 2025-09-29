@@ -24,7 +24,7 @@ WTy2 defines a primitive `shuffle` to work with records with different orders of
 shuffle: [a](x: a, b: Type) <<= { a: permutation(b) } -> b;
 ```
 
-Where `permutation` is a type family that produces a type containing all record types that are permuations of the fields of the argument record.
+Where `permutation` is a type family that produces a type containing all record types that are permutations of the fields of the argument record.
 
 ## Partial Application ("`?`")
 

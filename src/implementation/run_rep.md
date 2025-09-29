@@ -18,7 +18,7 @@ data False0
 type Bool1 = True1 | False1
 ```
 
-`x: Bool0 = True0` and `y: Bool1 = True1` (in the absense of other optimisations) will have differently lengthed tag lists at runtime - `x` will have a tag list of length two (`T_Bool0` and `T_True0`), while `y` will just be a single tag (`T_True1`).
+`x: Bool0 = True0` and `y: Bool1 = True1` (in the absence of other optimisations) will have differently lengthed tag lists at runtime - `x` will have a tag list of length two (`T_Bool0` and `T_True0`), while `y` will just be a single tag (`T_True1`).
 
 In order to "be not stupid" [^note], tags which are known to be fixed at compile time really should be elided. Achieving this is subtle though. Consider that WTy2 allows writing extensional proofs about functions like `for(x: Int) { foo(x) :: Int }` - does this mean we must elide the `T_Int0` tag from `foo`-returned values? Achieving this consistently in general is catastrophically undecidable (for the same reason WTy2 bounds the number of automatic proof insertions to one per goal constraint).
 

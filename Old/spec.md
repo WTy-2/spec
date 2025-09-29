@@ -255,7 +255,7 @@ To make working with records and tuples easier, WTy2 supports converting between
 
 #### Tuple -> Record
 
-Tuple-to-record conversions in WTy2 can be perfomed implicitly. Elements of the tuple are matched with fields of the record based on position (i.e: the first element of the tuple is attempted to be matched with the first field of the record and so on). If the tuple is larger than the record, the conversion fails. If the record is larger than the tuple, all remaining, unmatched fields must have defaults and are initialised with them.
+Tuple-to-record conversions in WTy2 can be performed implicitly. Elements of the tuple are matched with fields of the record based on position (i.e: the first element of the tuple is attempted to be matched with the first field of the record and so on). If the tuple is larger than the record, the conversion fails. If the record is larger than the tuple, all remaining, unmatched fields must have defaults and are initialised with them.
 
 #### Record -> Tuple
 
@@ -268,7 +268,7 @@ Let "A" be the record being converted from and "B" be the record being converted
 ```
 (1) Try to match all fields of B with same-named fields in A.
 (2) Try to initialise any remaining fields in B with defaults.
-(3) Fail if any fields in B remain unitialised
+(3) Fail if any fields in B remain uninitialised
 ```
 
 ### Construction
@@ -303,7 +303,7 @@ One way to read this is as constructing a record that obeys the constraint `(x: 
 
 #### Design Note: Transitivity
 
-Transitivity of implicit conversions between types in WTy2 is a very useful property to try and retain, both for making the language intuitive to the programmer and for making implementation of type checking and inference easier. Decisions with regards to where types of record constraints can appear and which convertions can be done implicitly should be made carefully to ensure transitivity is not broken.
+Transitivity of implicit conversions between types in WTy2 is a very useful property to try and retain, both for making the language intuitive to the programmer and for making implementation of type checking and inference easier. Decisions with regards to where types of record constraints can appear and which conversions can be done implicitly should be made carefully to ensure transitivity is not broken.
 
 Note if defaults could appear simply in the constraints of local variables, it would be possible to have:
 
@@ -327,8 +327,8 @@ But `r2 = r1` should be disallowed.
 
 #### Unresolved Questions
 
-- Should records support row polymorphism, or should convertion just throw away unmatched fields?
-  - Row polymorphism would be quite a powerful feature, but it is unclear how it would operate with data declations (would the constructors also be polymorphic?)
+- Should records support row polymorphism, or should conversion just throw away unmatched fields?
+  - Row polymorphism would be quite a powerful feature, but it is unclear how it would operate with data declarations (would the constructors also be polymorphic?)
 - Could record constraints containing default expressions appear in more places?
 - At what point should the default expression be evaluated? It is part of a signature, so compile-time seems most natural, but WTy2's advanced typing features could make something even more ambitious here possible if there is a good use-case.
 
@@ -347,7 +347,7 @@ One data declaration defines both a closed trait and a constructor which can cre
 
 Defining constructors independently of the sum types they are used in (and allowing them to be used in multiple sum types) is similar in principle to polymorphic variants in OCAML (see: [OCaml - Polymorphic variants](https://v2.ocaml.org/manual/polyvariant.html)).
 
-All tags must share the same space of values given they can be combined in arbitrary disjunction constraints. This means the arguably most natural implementation is to simply prefix any variant with an integer, with every tag given a unique integer value. While this does have the advantage that no convertion work needs to be done when passing a value satisfying `A` to a function that expects `A | B`, it does mean zero-cost newtype wrappers as often used in Haskell are impossible. Luckily, WTy2 provides features to try and avoid this idiom (see named instances).
+All tags must share the same space of values given they can be combined in arbitrary disjunction constraints. This means the arguably most natural implementation is to simply prefix any variant with an integer, with every tag given a unique integer value. While this does have the advantage that no conversion work needs to be done when passing a value satisfying `A` to a function that expects `A | B`, it does mean zero-cost newtype wrappers as often used in Haskell are impossible. Luckily, WTy2 provides features to try and avoid this idiom (see named instances).
 
 ### Dependent Types
 
@@ -397,7 +397,7 @@ WTy2 features three different existential quantifiers with different purposes. A
 
 - `pure` and `impl` can appear within any type signature in a WTy2 program. `exis`, on the other hand can only appear in function return types.
 
-##### Convertion
+##### Conversion
 
 - Quantifiers can be implicitly downcast in the following hierarchy: `pure` -> `impl` -> `exis`.
 - `exis` quantified terms can be converted into `impl` quantified ones by performing an existential bind. An `impl` that depends on an `exis` cannot escape the local scope and so must be implicitly converted back into `exis`.
@@ -414,7 +414,7 @@ WTy2 also supports erased existentials. For example, say we want to return a vec
 fun returnsVecOfUnknownLength() -> (n: Nat, Vec[t=Int, n])
 ```
 
-but if the length of vector is not needed by the caller, or the length could be retrieved from the vector itself with a method, then returning the length itself is reundant. Instead, we can write:
+but if the length of vector is not needed by the caller, or the length could be retrieved from the vector itself with a method, then returning the length itself is redundant. Instead, we can write:
 
 ```
 fun returnsVecOfUnknownLength() -> [n: Nat](Vec[t=Int, n])
@@ -446,7 +446,7 @@ functionCo = mk FunctionCo erasedParams (params *> "->") erasedParams params
 
 ##### Variance
 
-Functions are contravariant in argument constraint and covariant in return constraint. Note that this, perhaps unintuitively, with the implicit convertion rules for records, allows for treating functions taking records (i.e: `Fun(x: Int, y: Int) -> Int`) as subtypes of functions taking matching tuples (i.e: `Fun(Int, Int) -> Int`). `(x: Int, y: Int)` is indeed not a subtype of `(Int, Int)`, but it is a supertype.
+Functions are contravariant in argument constraint and covariant in return constraint. Note that this, perhaps unintuitively, with the implicit conversion rules for records, allows for treating functions taking records (i.e: `Fun(x: Int, y: Int) -> Int`) as subtypes of functions taking matching tuples (i.e: `Fun(Int, Int) -> Int`). `(x: Int, y: Int)` is indeed not a subtype of `(Int, Int)`, but it is a supertype.
 
 ## Syntax
 

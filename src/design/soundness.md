@@ -24,11 +24,11 @@ WTy2's expressivity and subtyping allows for a much more direct encoding of Russ
 type Russel = (t: Type) <<= { t :: t => Bottom };
 ```
 
-The additional danger here is that a suffiently advanced constraint solver could derive bottom entirely on it's own just from this definition being in-scope.
+The additional danger here is that a sufficiently advanced constraint solver could derive bottom entirely on it's own just from this definition being in-scope.
 
 An informal sketch of how this might happen is outlined is below:
 
-Constraints are written in similar syntax to WTy2 source, but we elide types of `for` bound variables, instead prefering to write them as implications.
+Constraints are written in similar syntax to WTy2 source, but we elide types of `for` bound variables, instead preferring to write them as implications.
 
 ```WTy2CoSo
 # From definition of Russel

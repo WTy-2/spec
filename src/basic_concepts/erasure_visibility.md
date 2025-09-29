@@ -4,7 +4,7 @@
 
 In Haskell, runtime relevance can effectively be summarised as: types are erased, constraints are not. Even equality constraints like `a ~ b` which don't contain any fields often do not get fully optimised away as `Constraint` is lifted and so could point to a bottoming value (see discussion at https://github.com/ghc-proposals/ghc-proposals/pull/547).
 
-In WTy2, we take the opposite approach: constraints are erased but types are not. To perform dispatch, implementations will in all likelyhood need to implement some sort of runtime.
+In WTy2, we take the opposite approach: constraints are erased but types are not. To perform dispatch, implementations will in all likelihood need to implement some sort of runtime.
 
 # Erasure and Visibility in Types and Values
 
